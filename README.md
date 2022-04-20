@@ -11,7 +11,8 @@ git clone https://github.com/Konev37/vue3_vite.git
 cd vue3_vite
 
 # 安装依赖
-yarn --registry=https://registry.npm.taobao.org
+# yarn --registry=https://registry.npm.taobao.org
+yarn --registry=https://registry.npmmirror.com
 
 # 启动服务
 yarn dev

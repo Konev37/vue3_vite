@@ -8,7 +8,7 @@
                   v-model="deptName"
                   placeholder="请输入部门名称"
                   clearable
-                  prefix-icon="el-icon-search"
+                  prefix-icon="Search"
                   style="margin-bottom: 20px"
                />
             </div>
@@ -151,36 +151,32 @@
                </el-table-column>
                <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
                   <template #default="scope">
-                     <el-tooltip content="修改" placement="top">
+                     <el-tooltip content="修改" placement="top" v-if="scope.row.userId !== 1">
                         <el-button
-                           v-if="scope.row.userId !== 1"
                            type="text"
                            icon="Edit"
                            @click="handleUpdate(scope.row)"
                            v-hasPermi="['system:user:edit']"
                         ></el-button>
                      </el-tooltip>
-                     <el-tooltip content="删除" placement="top">
+                     <el-tooltip content="删除" placement="top" v-if="scope.row.userId !== 1">
                         <el-button
-                           v-if="scope.row.userId !== 1"
                            type="text"
                            icon="Delete"
                            @click="handleDelete(scope.row)"
                            v-hasPermi="['system:user:remove']"
                         ></el-button>
                      </el-tooltip>
-                     <el-tooltip content="重置密码" placement="top">
+                     <el-tooltip content="重置密码" placement="top" v-if="scope.row.userId !== 1">
                         <el-button
-                           v-if="scope.row.userId !== 1"
                            type="text"
                            icon="Key"
                            @click="handleResetPwd(scope.row)"
                            v-hasPermi="['system:user:resetPwd']"
                         ></el-button>
                      </el-tooltip>
-                     <el-tooltip content="分配角色" placement="top">
+                     <el-tooltip content="分配角色" placement="top" v-if="scope.row.userId !== 1">
                         <el-button
-                           v-if="scope.row.userId !== 1"
                            type="text"
                            icon="CircleCheck"
                            @click="handleAuthRole(scope.row)"
@@ -386,7 +382,7 @@ const upload = reactive({
   // 设置上传的请求头部
   headers: { Authorization: "Bearer " + getToken() },
   // 上传的地址
-  url: import.meta.env.VITE_APP_BASE_API + "system/user/importData"
+  url: import.meta.env.VITE_APP_BASE_API + "/system/user/importData"
 });
 // 列显隐信息
 const columns = ref([
@@ -592,7 +588,7 @@ function handleAdd() {
     roleOptions.value = response.roles;
     open.value = true;
     title.value = "添加用户";
-    form.password.value = initPassword.value;
+    form.value.password = initPassword.value;
   });
 };
 /** 修改按钮操作 */
