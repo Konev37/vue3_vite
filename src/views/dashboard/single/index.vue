@@ -205,6 +205,7 @@ var links = [
     source: "Agent_1_2",
     target: "Agent_2_3",
     name: "迁移",
+    task: "任务2",
   },
   {
     source: "Agent_1_2",
@@ -485,20 +486,20 @@ getCache().then(() => {
   // }
   
   const allInfoIntance = echarts.init(allInfo.value, "macarons");
-	allInfoIntance.setOption(option);
+	allInfoIntance.setOption(options[0]);
   // for (var i = 1; i < 13; i++) {
-  // setTimeout(function(){ allInfoIntance.setOption(options[1]); }, 2000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[2]); }, 4000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[3]); }, 6000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[4]); }, 8000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[5]); }, 10000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[6]); }, 12000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[7]); }, 14000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[8]); }, 16000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[9]); }, 18000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[10]); }, 20000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[11]); }, 22000);
-  // setTimeout(function(){ allInfoIntance.setOption(options[12]); }, 24000);
+  setTimeout(function(){ allInfoIntance.setOption(options[1]); }, 2000);
+  setTimeout(function(){ allInfoIntance.setOption(options[2]); }, 4000);
+  setTimeout(function(){ allInfoIntance.setOption(options[3]); }, 6000);
+  setTimeout(function(){ allInfoIntance.setOption(options[4]); }, 8000);
+  setTimeout(function(){ allInfoIntance.setOption(options[5]); }, 10000);
+  setTimeout(function(){ allInfoIntance.setOption(options[6]); }, 12000);
+  setTimeout(function(){ allInfoIntance.setOption(options[7]); }, 14000);
+  setTimeout(function(){ allInfoIntance.setOption(options[8]); }, 16000);
+  setTimeout(function(){ allInfoIntance.setOption(options[9]); }, 18000);
+  setTimeout(function(){ allInfoIntance.setOption(options[10]); }, 20000);
+  setTimeout(function(){ allInfoIntance.setOption(options[11]); }, 22000);
+  setTimeout(function(){ allInfoIntance.setOption(options[12]); }, 24000);
  
 
   
