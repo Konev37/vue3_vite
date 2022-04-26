@@ -11,7 +11,7 @@
                 <div
                   class="el-table el-table--enable-row-hover el-table--medium"
                 >
-                  <div ref="allInfo" style="height: 600px" />
+                  <div ref="allInfo" style="height: 620px" />
                 </div>
               </el-col>
               <el-col :span="12">
@@ -152,7 +152,7 @@ getCache().then(() => {
             params.value[2]
           );
         } else {
-          return params.name + "<br>迁移详细信息：" + params.value;
+          return params.name + "<br>所迁移的任务编号：" + params.value;
         }
       },
     },
@@ -169,21 +169,23 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        links: graph.links,
+        // links: graph.links.slice(graph.links.length-1, graph.links.length),
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
         label: {
           show: true,
           position: "right",
-          formatter: "{b}",
+          formatter: function (params) {
+            return params.dataIndex + ", " + params.name;
+          },
         },
         labelLayout: {
           hideOverlap: true,
         },
         scaleLimit: {
           min: 0.5,
-          max: 3,
+          max: 4,
         },
         lineStyle: {
           color: "source",
@@ -199,7 +201,35 @@ getCache().then(() => {
     ],
   };
   allInfoIntance.setOption(option);
+
+  let v = 20; // 每一帧连线数的上限
+  let t = 500; // 动画间隔
+  for (let i = 1; i < v; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(0, i) }],
+      });
+    }, i * t);
+  }
+  for (let i = 0; i <= graph.links.length - v; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(i, i + v) }],
+      });
+    }, i * t + v * t);
+  }
+  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(i, graph.links.length) }],
+      });
+    }, i * t + v * t);
+  }
+  setTimeout(() => {
+    allInfoIntance.setOption(option);
+  }, graph.links.length * t + v * t);
 });
+
 const handleInnerOpen = () => {
   getCache().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
