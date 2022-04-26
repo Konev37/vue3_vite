@@ -147,7 +147,7 @@ const value4 = ref(50);
       ...datasetWithFilters
     ],
     title: {
-      text: 'Income of Germany and France since 1950'
+      text: '任务完成率动态展示'
     },
     tooltip: {
       order: 'valueDesc',
