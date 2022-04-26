@@ -24,7 +24,7 @@ defineProps({
   }
 })
 
-const title = ref('若依管理系统');
+const title = ref('集群协同计算平台');
 const store = useStore();
 const sideTheme = computed(() => store.state.settings.sideTheme);
 </script>

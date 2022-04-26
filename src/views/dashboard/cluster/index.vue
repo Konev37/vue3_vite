@@ -1,114 +1,85 @@
 <template>
   <div class="app-container">
-    <el-container>
-      <el-main>
+    <el-row>
+      <el-col :span="24">
         <el-card class="card">
-          <div class="card-block">
-            <el-row>
-              <el-col :span="24" class="card-box">
-                <!-- 这个写在card下才能有效果 -->
-                <template #header><span>命令统计</span></template>
-                <div
-                  class="el-table el-table--enable-row-hover el-table--medium"
-                >
-                  <div ref="allInfo" style="height: 600px" />
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div>
-                  <div class="slider-demo-block">
-                    <span class="slide-text">任务完成<br />时间</span>
-                    <el-slider
-                      class="el-slider"
-                      v-model="value4"
-                      :format-tooltip="formatTooltip"
-                      :marks="marks"
-                      @change="onChange"
-                    />
-                    <span class="slide-text">任务完成<br />比例</span>
-                  </div>
-                  <!-- <el-button type="primary" @click="onSubmit">优化</el-button> -->
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <template v-slot:header>
-                  <div class="clearfix">
-                    <span>全部集群总状态</span>
-                  </div>
-                </template>
-                <el-table :data="allClusterInfo" border style="width: 100%">
-                  <el-table-column
-                    prop="allRatio"
-                    label="任务完成率"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="allCost"
-                    label="当前总成本"
-                    width="180"
-                  />
-                  <el-table-column prop="allLoss" label="Agent损失率" />
-                </el-table>
-                <el-button
-                  type="primary"
-                  style="margin-left: 16px; margin-top: 10px"
-                  @click="drawer = true"
-                >
-                  各集群详细信息
-                </el-button>
-              </el-col>
-            </el-row>
+          <template #header><span>集群信息及任务迁移动态示意图</span></template>
+          <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="allInfo" style="height: 620px" />
           </div>
         </el-card>
-        <el-drawer
-          v-model="drawer"
-          title="各集群详细信息"
-          direction="rtl"
-          size="40%"
-        >
-          <el-table :data="clusterInfo" stripe border>
-            <el-table-column prop="clusterId" label="集群编号" />
-            <el-table-column prop="eachRatio" label="任务完成率" />
-            <el-table-column prop="eachCost" label="当前总成本" />
-            <el-table-column prop="eachLoss" label="Agent损失率" />
-            <el-table-column label="详细信息" width="120">
-              <template #default>
-                <el-button type="text" @click="innerDrawer = true"
-                  >进入</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-drawer
-            v-model="innerDrawer"
-            title="集群详细信息"
-            size="50%"
-            :append-to-body="true"
-            @open="handleInnerOpen"
-          >
-            <!-- <p>_(:зゝ∠)_</p> -->
-            <div ref="singleInfo" style="height: 600px" />
-          </el-drawer>
-        </el-drawer>
-      </el-main>
-      <el-footer>
-        <!-- <el-row>
-          <el-card class="card">
-            <template v-slot:header>
-            <div class="clearfix">
-              <span>Agent集群属性</span>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-optimize-header">
+              <span>优化目标倾向</span>
             </div>
           </template>
-          <div class="body">
-            <el-table :data="propData" stripe border>
-              <el-table-column prop="clusterId" label="集群编号" width="210" />
-              <el-table-column prop="agentProp" label="属性" width="210"/>
-            </el-table>
+          <div class="slider-demo-block">
+            <span class="slide-text">任务完成<br />时间</span>
+            <el-slider
+              class="el-slider"
+              v-model="value4"
+              :format-tooltip="formatTooltip"
+              :marks="marks"
+              @change="onChange"
+            />
+            <span class="slide-text">任务完成<br />比例</span>
           </div>
-          </el-card>
-        </el-row> -->
-      </el-footer>
-    </el-container>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-cluster-header">
+              <span>全部集群总状态</span>
+              <el-button
+                type="text"
+                style="margin-left: 32px"
+                @click="drawer = true"
+                >各集群详细信息</el-button
+              >
+            </div>
+          </template>
+          <el-table :data="allClusterInfo" border style="width: 100%">
+            <el-table-column prop="allRatio" label="任务完成率" width="180" />
+            <el-table-column prop="allCost" label="当前总成本" width="180" />
+            <el-table-column prop="allLoss" label="Agent损失率" />
+          </el-table>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-drawer
+      v-model="drawer"
+      title="各集群详细信息"
+      direction="rtl"
+      size="40%"
+    >
+      <el-table :data="clusterInfo" stripe border>
+        <el-table-column prop="clusterId" label="集群编号" />
+        <el-table-column prop="eachRatio" label="任务完成率" />
+        <el-table-column prop="eachCost" label="当前总成本" />
+        <el-table-column prop="eachLoss" label="Agent损失率" />
+        <el-table-column label="详细信息" width="120">
+          <template #default>
+            <el-button type="text" @click="innerDrawer = true">进入</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-drawer
+        v-model="innerDrawer"
+        title="集群详细信息"
+        size="50%"
+        :append-to-body="true"
+        @open="handleInnerOpen"
+      >
+        <!-- <p>_(:зゝ∠)_</p> -->
+        <div ref="singleInfo" style="height: 600px" />
+      </el-drawer>
+    </el-drawer>
   </div>
 </template>
 
@@ -152,7 +123,7 @@ getCache().then(() => {
             params.value[2]
           );
         } else {
-          return params.name + "<br>迁移详细信息：" + params.value;
+          return params.name + "<br>所迁移的任务编号：" + params.value;
         }
       },
     },
@@ -169,21 +140,23 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        links: graph.links,
+        // links: graph.links.slice(graph.links.length-1, graph.links.length),
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
         label: {
           show: true,
           position: "right",
-          formatter: "{b}",
+          formatter: function (params) {
+            return params.dataIndex + ", " + params.name;
+          },
         },
         labelLayout: {
           hideOverlap: true,
         },
         scaleLimit: {
           min: 0.5,
-          max: 3,
+          max: 4,
         },
         lineStyle: {
           color: "source",
@@ -199,7 +172,35 @@ getCache().then(() => {
     ],
   };
   allInfoIntance.setOption(option);
+
+  let v = 20; // 每一帧连线数的上限
+  let t = 500; // 动画间隔
+  for (let i = 1; i < v; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(0, i) }],
+      });
+    }, i * t);
+  }
+  for (let i = 0; i <= graph.links.length - v; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(i, i + v) }],
+      });
+    }, i * t + v * t);
+  }
+  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) {
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: graph.links.slice(i, graph.links.length) }],
+      });
+    }, i * t + v * t);
+  }
+  setTimeout(() => {
+    allInfoIntance.setOption(option);
+  }, graph.links.length * t + v * t + t);
 });
+
 const handleInnerOpen = () => {
   getCache().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
@@ -328,10 +329,25 @@ const clusterInfo = [
 </script>
 
 <style scoped lang="scss">
+.el-row {
+  margin-bottom: 20px;
+}
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 0px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.text {
+  font-size: 22px;
+}
 .card {
   margin: 0px;
-}
-.card-block {
   text-align: center;
   border-right: solid 1px var(--el-border-color);
   display: inline-block;
@@ -339,7 +355,7 @@ const clusterInfo = [
   box-sizing: border-box;
   vertical-align: top;
 }
-.card-block:last-child {
+.card:last-child {
   border-right: none;
 }
 .slider-demo-block {
@@ -352,6 +368,7 @@ const clusterInfo = [
 }
 .slider-demo-block .slide-text {
   font-size: 14px;
+  text-align: center;
   color: var(--el-text-color-secondary);
   line-height: 44px;
   flex: 1;
