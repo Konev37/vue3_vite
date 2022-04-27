@@ -5,19 +5,19 @@
         <el-card class="card">
           <div class="card-block">
             <el-row>
-              <el-col :span="24" class="card-box">
+              <el-col :span="24" class="topo">
                 <!-- 这个写在card下才能有效果 -->
-                <template #header><span>命令统计</span></template>
+                <template #header><span>集群拓扑图</span></template>
                 <div
                   class="el-table el-table--enable-row-hover el-table--medium"
                 >
-                  <div ref="allInfo" style="height: 600px" />
+                  <div ref="allInfo" style="height: 400px; margin-bottom: 20px" />
                 </div>
               </el-col>
               <el-col :span="12">
                 <div>
                   <div class="slider-demo-block">
-                    <span class="slide-text">任务完成<br />时间</span>
+                    <span class="slide-text">任务完成<br />成本</span>
                     <el-slider
                       class="el-slider"
                       v-model="value4"
@@ -27,7 +27,7 @@
                     />
                     <span class="slide-text">任务完成<br />比例</span>
                   </div>
-                  <!-- <el-button type="primary" @click="onSubmit">优化</el-button> -->
+                  <!-- <el-button type="primary">优化</el-button> -->
                 </div>
               </el-col>
               <el-col :span="12">
@@ -36,47 +36,19 @@
                     <span>全部集群总状态</span>
                   </div>
                 </template>
-                <el-table :data="allClusterInfo" border style="width: 100%">
-                  <el-table-column
-                    prop="allRatio"
-                    label="任务完成率"
-                    width="180"
-                  />
-                  <el-table-column
-                    prop="allCost"
-                    label="当前总成本"
-                    width="180"
-                  />
-                  <el-table-column prop="allLoss" label="Agent损失率" />
+                <el-table :data="tableData" border>
+                  <el-table-column prop="date" label="任务完成率" width="180" />
+                  <el-table-column prop="name" label="当前总成本" width="180" />
+                  <el-table-column prop="address" label="Agent损失率" />
                 </el-table>
-                <el-button
-                  type="primary"
-                  style="margin-left: 16px; margin-top: 10px"
-                  @click="drawer = true"
-                >
-                  各集群详细信息
-                </el-button>
               </el-col>
             </el-row>
           </div>
         </el-card>
-        <el-drawer
-          v-model="drawer"
-          title="各集群详细信息"
-          direction="rtl"
-          size="30%"
-        >
-          <el-table :data="clusterInfo" stripe border>
-            <el-table-column prop="clusterId" label="集群编号" />
-            <el-table-column prop="eachRatio" label="任务完成率" />
-            <el-table-column prop="eachCost" label="当前总成本" />
-            <el-table-column prop="eachLoss" label="Agent损失率" />
-          </el-table>
-        </el-drawer>
       </el-main>
       <el-footer>
         <!-- <el-row>
-          <el-card class="card">
+          <el-card class="update-log">
             <template v-slot:header>
             <div class="clearfix">
               <span>Agent集群属性</span>
@@ -84,7 +56,7 @@
           </template>
           <div class="body">
             <el-table :data="propData" stripe border>
-              <el-table-column prop="clusterId" label="集群编号" width="210" />
+              <el-table-column prop="agentId" label="集群编号" width="210" />
               <el-table-column prop="agentProp" label="属性" width="210"/>
             </el-table>
           </div>
@@ -95,83 +67,218 @@
   </div>
 </template>
 
-<script setup name="All">
+<script setup name="Single" lang="js">
+declare module '*.json' {
+    const value: any;
+    export default value;
+}
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";
-import graph from "@/assets/data/all_cluster.json";
+
+import res0 from "@/assets/data/data.json";
+import res1 from "@/assets/data/life-expectancy-table.json";
+
+import _ from 'lodash'
+// import type { CSSProperties } from 'vue'
 
 function goTarget(url) {
   window.open(url, "__blank");
 }
-const drawer = ref(false);
-const table = ref(false);
 
 const allInfo = ref(null);
 const { proxy } = getCurrentInstance();
 const value4 = ref(50);
+var option;
 
-var allInfoIntance;
-
-proxy.$modal.loading("正在加载Agent数据，请稍候！");
-
-getCache().then(() => {
-  allInfoIntance = echarts.init(allInfo.value, "macarons");
-  proxy.$modal.closeLoading();
-  var option = {
-    tooltip: {
-      show: true,
-      formatter: "{b}的能力，执行任务数量<br />{c}",
+const updateFrequency = 2000;
+const dimension = 0;
+const countryColors = {
+  Australia: '#00008b',
+  Canada: '#f00',
+  China: '#ffde00',
+  Cuba: '#002a8f',
+  Finland: '#003580',
+  France: '#ed2939',
+  Germany: '#000',
+  Iceland: '#003897',
+  India: '#f93',
+  Japan: '#bc002d',
+  'North Korea': '#024fa2',
+  'South Korea': '#000',
+  'New Zealand': '#00247d',
+  Norway: '#ef2b2d',
+  Poland: '#dc143c',
+  Russia: '#d52b1e',
+  Turkey: '#e30a17',
+  'United Kingdom': '#00247d',
+  'United States': '#b22234'
+};
+  const flags = res0[0];
+  const data = res1[0];
+  const years = [];
+  for (let i = 0; i < data.length; ++i) {
+    if (years.length === 0 || years[years.length - 1] !== data[i][4]) {
+      years.push(data[i][4]);
+    }
+  }
+  function getFlag(countryName) {
+    if (!countryName) {
+      return '';
+    }
+    return (
+      flags.find(function (item) {
+        return item.name === countryName;
+      }) || {}
+    ).emoji;
+  }
+  let startIndex = 10;
+  let startYear = years[startIndex];
+  option = {
+    grid: {
+      top: 10,
+      bottom: 30,
+      left: 150,
+      right: 80
     },
-    legend: [
-      {
-        data: graph.categories.map(function (a) {
-          return a.name;
-        }),
+    xAxis: {
+      max: 'dataMax',
+      axisLabel: {
+        formatter: function (n) {
+          return Math.round(n) + '';
+        }
+      }
+    },
+    dataset: {
+      source: data.slice(1).filter(function (d) {
+        return d[4] === startYear;
+      })
+    },
+    yAxis: {
+      type: 'category',
+      inverse: true,
+      max: 10,
+      axisLabel: {
+        show: true,
+        fontSize: 14,
+        formatter: function (value) {
+          return value + '{flag|' + getFlag(value) + '}';
+        },
+        rich: {
+          flag: {
+            fontSize: 25,
+            padding: 5
+          }
+        }
       },
-    ],
+      animationDuration: 300,
+      animationDurationUpdate: 300
+    },
     series: [
       {
-        name: "Les Miserables",
-        type: "graph",
-        layout: "none",
-        data: graph.nodes,
-        links: graph.links,
-        categories: graph.categories,
-        roam: true,
-        edgeSymbol: ["circle", "arrow"],
+        realtimeSort: true,
+        seriesLayoutBy: 'column',
+        type: 'bar',
+        itemStyle: {
+          color: function (param) {
+            return countryColors[param.value[3]] || '#5470c6';
+          }
+        },
+        encode: {
+          x: dimension,
+          y: 3
+        },
         label: {
           show: true,
-          position: "right",
-          formatter: "{b}",
-        },
-        labelLayout: {
-          hideOverlap: true,
-        },
-        scaleLimit: {
-          min: 0.5,
-          max: 3,
-        },
-        lineStyle: {
-          color: "source",
-          curveness: 0.3,
-        },
-        emphasis: {
-          focus: "adjacency",
-          lineStyle: {
-            width: 10,
-          },
-        },
-      },
+          precision: 1,
+          position: 'right',
+          valueAnimation: true,
+          fontFamily: 'monospace'
+        }
+      }
     ],
+    // Disable init animation.
+    animationDuration: 0,
+    animationDurationUpdate: updateFrequency,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
+    graphic: {
+      elements: [
+        {
+          type: 'text',
+          right: 160,
+          bottom: 60,
+          style: {
+            text: startYear,
+            font: 'bolder 80px monospace',
+            fill: 'rgba(100, 100, 100, 0.25)'
+          },
+          z: 100
+        }
+      ]
+    }
   };
-  allInfoIntance.setOption(option);
-});
 
-// getList();
+getCache().then(() => {
+  // proxy.$modal.closeLoading();
+  
+  // for(var i=0 ; i< links.length ;i++){
+  //   allInfoIntance.setOption(options[i]);
+  //   sleep(3000);
+  // }
+  
+  const allInfoIntance = echarts.init(allInfo.value, "macarons");
+	allInfoIntance.setOption(option);
+  for (let i = startIndex; i < years.length - 1; ++i) {
+    (function (i) {
+      setTimeout(function () {
+        updateYear(years[i + 1]);
+      }, (i - startIndex) * updateFrequency);
+    })(i);
+  }
+  function updateYear(year) {
+    let source = data.slice(1).filter(function (d) {
+      return d[4] === year;
+    });
+    option.series[0].data = source;
+    option.graphic.elements[0].style.text = year;
+    allInfoIntance.setOption(option);
+  }
+  // for (var i = 1; i < 13; i++) {
+  
+
+  
+  // window.addEventListener("resize", function () {
+  //   allInfoIntance.resize();
+  //   allInfoIntance.setOption({
+  //     series: [
+  //       {
+  //         id: "a",
+  //         data: charts.nodes,
+  //       },
+  //     ],
+  //   });
+  // });
+});
+// function getList() {
+// proxy.$modal.loading("正在加载Agent数据，请稍候！");
+
+
+
+
+
+
 const formatTooltip = (val) => {
   return val / 100;
 };
+
+// interface Mark {
+//   style: CSSProperties
+//   label: string
+// }
+
+// type Marks = Record<number, Mark | string>
+
 const marks = {
   0: "0",
   20: "0.2",
@@ -189,64 +296,28 @@ const onChange = (val) => {
   console.log(val / 100);
 };
 
-const allClusterInfo = [
+const tableData = [
   {
-    allRatio: "80%",
-    allCost: "80%",
-    allLoss: "80%",
+    date: "80%",
+    name: "80%",
+    address: "80%",
   },
 ];
 
-const clusterInfo = [
-  {
-    clusterId: "集群1",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群2",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群3",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群4",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群5",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群6",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群7",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-  {
-    clusterId: "集群8",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
-  },
-];
+// const propData = [
+//   {
+//     agentId: '集群1',
+//     agentProp: '集群1的属性',
+//   },
+//   {
+//     agentId: '集群2',
+//     agentProp: '集群2的属性',
+//   },
+//   {
+//     agentId: '集群3',
+//     agentProp: '集群3的属性',
+//   },
+// ]
 </script>
 
 <style scoped lang="scss">
