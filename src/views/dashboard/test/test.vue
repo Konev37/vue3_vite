@@ -136,7 +136,7 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        links: graph.links,
+        // links: graph.links,
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
