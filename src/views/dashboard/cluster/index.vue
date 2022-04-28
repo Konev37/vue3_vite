@@ -43,7 +43,7 @@
             <span class="slide-text">任务完成<br />时间</span>
             <el-slider
               class="el-slider"
-              v-model="value4"
+              v-model="valueOptimize"
               :format-tooltip="formatTooltip"
               :marks="marks"
               @change="onChange"
@@ -94,7 +94,7 @@
       direction="rtl"
       size="40%"
     >
-      <el-table :data="clusterInfo" stripe border>
+      <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
         <el-table-column prop="eachCost" label="当前总成本" />
@@ -135,7 +135,8 @@ const innerDrawer = ref(false);
 const allInfo = ref(null);
 const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
-const value4 = ref(50);
+const valueOptimize = ref(0);
+var newLinks = JSON.parse(JSON.stringify(graph.links));
 
 var allInfoIntance, singleInfoIntance;
 
@@ -185,7 +186,7 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        links: graph.links,
+        // links: graph.links,
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
@@ -221,34 +222,120 @@ getCache().then(() => {
 const showMigrate = () => {
   let v = 20; // 每一帧连线数的上限
   let t = 400; // 动画间隔
-  allInfoIntance.setOption({ // 清空连线
+  allInfoIntance.setOption({
+    // 清空连线
     series: [{ links: null }],
   });
-  for (let i = 1; i < v; i++) { // 0 ~ v
+  for (let i = 1; i < v; i++) {
+    // 0 ~ v
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(0, i) }],
+        series: [{ links: newLinks.slice(0, i) }],
       });
     }, i * t);
   }
-  for (let i = 0; i <= graph.links.length - v; i++) { // v ~ (length-v)
+  for (let i = 0; i <= newLinks.length - v; i++) {
+    // v ~ (length-v)
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(i, i + v) }],
+        series: [{ links: newLinks.slice(i, i + v) }],
       });
     }, i * t + v * t);
   }
-  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) { // (length-v) - length
+  for (let i = newLinks.length - v + 1; i < newLinks.length; i++) {
+    // (length-v) - length
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(i, graph.links.length) }],
+        series: [{ links: newLinks.slice(i, newLinks.length) }],
       });
     }, i * t + v * t);
   }
-  setTimeout(() => { // 清空连线（但不知道为什么不起作用）
+  setTimeout(() => {
+    // 清空连线（但不知道为什么不起作用）
     allInfoIntance.setOption({ links: null });
-  }, graph.links.length * t + v * t);
+  }, newLinks.length * t + v * t);
 };
+
+const marks = {
+  0: "0",
+  20: "0.2",
+  50: {
+    style: {
+      color: "#1989FA",
+    },
+    label: "0.5",
+  },
+  80: "0.8",
+  100: "1",
+};
+const formatTooltip = (val) => {
+  return val / 100;
+};
+const onChange = (val) => {
+  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
+  changeMigrate(val);
+  changeAllClusterInfo(val);
+  changeMigrateRecord();
+  changeEachClusterInfo(val);
+};
+function changeMigrate(val) {
+  newLinks = JSON.parse(JSON.stringify(graph.links));
+  for (let i = 0; i < newLinks.length; i++) {
+    let source = parseInt(newLinks[i].source);
+    let target = parseInt(newLinks[i].target);
+    source += val;
+    target += val;
+    newLinks[i].source = source % 77;
+    newLinks[i].target = target % 77;
+  }
+  allInfoIntance.setOption({ series: [{ links: newLinks }] });
+}
+function changeAllClusterInfo(val) {
+  let ACInfo = allClusterInfo.value[0];
+  let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
+  let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
+  let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
+  allRatio = (10 + val * 0.6).toFixed(2);
+  allCost = (20 + val * 0.6).toFixed(2);
+  allLoss = (30 + val * 0.6).toFixed(2);
+  ACInfo.allRatio = allRatio + "%";
+  ACInfo.allCost = allCost + "%";
+  ACInfo.allLoss = allLoss + "%";
+}
+function changeMigrateRecord() {
+  migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+  for (var i = 0; i < newLinks.length; i++) {
+    var record = {
+      order: i + 1,
+      source: newLinks[i].source,
+      target: newLinks[i].target,
+      task: newLinks[i].value,
+    };
+    migrateRecord.value.push(record);
+  }
+}
+function changeEachClusterInfo(val) {
+  var ECInfo = eachClusterInfo.value;
+  var eachRatio, eachCost, eachLoss;
+  for (let i = 0; i < ECInfo.length; i++) {
+    eachRatio = parseInt(
+      ECInfo[i].eachRatio.slice(0, ECInfo[i].eachRatio.length - 1)
+    ); // 去除百分号，并转为整型
+    eachCost = parseInt(
+      ECInfo[i].eachCost.slice(0, ECInfo[i].eachCost.length - 1)
+    );
+    eachLoss = parseInt(
+      ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
+    );
+    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2); // 保留 2 位小数
+    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    ECInfo[i].eachRatio = eachRatio + "%";
+    ECInfo[i].eachCost = eachCost + "%";
+    ECInfo[i].eachLoss = eachLoss + "%";
+  }
+  // console.log(ECInfo);
+}
 
 const handleInnerOpen = () => {
   getCache().then(() => {
@@ -291,99 +378,80 @@ const handleInnerOpen = () => {
     singleInfoIntance.setOption(singleOption);
   });
 };
-const formatTooltip = (val) => {
-  return val / 100;
-};
-const marks = {
-  0: "0",
-  20: "0.2",
-  50: {
-    style: {
-      color: "#1989FA",
-    },
-    label: "0.5",
-  },
-  80: "0.8",
-  100: "1",
-};
 
-const onChange = (val) => {
-  console.log(val / 100);
-};
-
-const allClusterInfo = [
+const allClusterInfo = ref([
   {
-    allRatio: "80%",
-    allCost: "80%",
-    allLoss: "80%",
+    allRatio: "10%",
+    allCost: "20%",
+    allLoss: "30%",
   },
-];
-const migrateRecord = [];
-for (var i = 0; i < graph.links.length; i++) {
+]);
+const migrateRecord = ref([]);
+for (var i = 0; i < newLinks.length; i++) {
   var record = {
     order: i + 1,
-    source: graph.links[i].source,
-    target: graph.links[i].target,
-    task: graph.links[i].value,
+    source: newLinks[i].source,
+    target: newLinks[i].target,
+    task: newLinks[i].value,
   };
-  migrateRecord.push(record);
+  migrateRecord.value.push(record);
 }
-const clusterInfo = [
+const eachClusterInfo = ref([
   {
     clusterId: "集群1",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群2",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群3",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群4",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群5",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群6",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群7",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群8",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群9",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
-];
+]);
 </script>
 
 <style scoped lang="scss">
