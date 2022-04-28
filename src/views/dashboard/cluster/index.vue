@@ -5,7 +5,7 @@
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
-            <div ref="allInfo" style="height: 570px" />
+            <div ref="allInfo" style="height: 600px" />
           </div>
           <el-divider />
           <el-row>
@@ -15,7 +15,7 @@
                 style="margin-left: 50px; margin-bottom: 10px"
                 @click="showMigrate"
               >
-                展示所有迁移路径
+                展示任务迁移过程
               </el-button>
             </el-col>
             <el-col :span="12">
@@ -185,7 +185,7 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        // links: graph.links,
+        links: graph.links,
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
@@ -217,40 +217,39 @@ getCache().then(() => {
     ],
   };
   allInfoIntance.setOption(option);
-
+});
+const showMigrate = () => {
   let v = 20; // 每一帧连线数的上限
-  let t = 500; // 动画间隔
-  for (let i = 1; i < v; i++) {
+  let t = 400; // 动画间隔
+  allInfoIntance.setOption({ // 清空连线
+    series: [{ links: null }],
+  });
+  for (let i = 1; i < v; i++) { // 0 ~ v
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(0, i) }],
       });
     }, i * t);
   }
-  for (let i = 0; i <= graph.links.length - v; i++) {
+  for (let i = 0; i <= graph.links.length - v; i++) { // v ~ (length-v)
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(i, i + v) }],
       });
     }, i * t + v * t);
   }
-  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) {
+  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) { // (length-v) - length
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(i, graph.links.length) }],
       });
     }, i * t + v * t);
   }
-  setTimeout(() => {
-    // 这里还没能实现功能
-    allInfoIntance.setOption(option);
-  }, graph.links.length * t + v * t + t);
-});
-const showMigrate = () => {
-  allInfoIntance.setOption({
-    series: [{ links: graph.links }],
-  });
+  setTimeout(() => { // 清空连线（但不知道为什么不起作用）
+    allInfoIntance.setOption({ links: null });
+  }, graph.links.length * t + v * t);
 };
+
 const handleInnerOpen = () => {
   getCache().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
@@ -429,7 +428,7 @@ const clusterInfo = [
   font-size: 14px;
   text-align: center;
   color: var(--el-text-color-secondary);
-  line-height: 44px;
+  line-height: 33px;
   flex: 1;
   overflow: visible;
   text-overflow: ellipsis;
