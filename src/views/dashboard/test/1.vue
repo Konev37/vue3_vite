@@ -67,11 +67,8 @@
   </div>
 </template>
 
-<script setup name="Single" lang="ts">
-declare module '*.json' {
-    const value: any;
-    export default value;
-}
+<script setup name="Single" lang="js">
+
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";
