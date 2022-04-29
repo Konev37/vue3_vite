@@ -278,8 +278,11 @@ const onChange = (val) => {
   changeMigrateRecord();
   changeEachClusterInfo(val);
 };
+
 function changeMigrate(val) {
   newLinks = JSON.parse(JSON.stringify(graph.links));
+  var Len = Math.floor((1.0 / 25) * Math.pow(val - 50, 2) + 149); // 新的任务迁移数
+  newLinks = newLinks.slice(0, Len);
   for (let i = 0; i < newLinks.length; i++) {
     let source = parseInt(newLinks[i].source);
     let target = parseInt(newLinks[i].target);
@@ -304,7 +307,16 @@ function changeAllClusterInfo(val) {
 }
 function changeMigrateRecord() {
   migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
-  for (var i = 0; i < newLinks.length; i++) {
+  for (let i = 0; i < newLinks.length; i++) {
+    // newLinks[i].value.splice(0, newLinks[i].value.length);
+    newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
+    var len = Math.floor(Math.random() * 6);
+    while (newLinks[i].value.length < len) {
+      var dat = Math.floor(Math.random() * 200) + 1;
+      if (newLinks[i].value.indexOf(dat) == -1) {
+        newLinks[i].value.push(dat);
+      }
+    }
     var record = {
       order: i + 1,
       source: newLinks[i].source,
@@ -387,15 +399,15 @@ const allClusterInfo = ref([
   },
 ]);
 const migrateRecord = ref([]);
-for (var i = 0; i < newLinks.length; i++) {
-  var record = {
-    order: i + 1,
-    source: newLinks[i].source,
-    target: newLinks[i].target,
-    task: newLinks[i].value,
-  };
-  migrateRecord.value.push(record);
-}
+// for (var i = 0; i < newLinks.length; i++) {
+//   var record = {
+//     order: i + 1,
+//     source: newLinks[i].source,
+//     target: newLinks[i].target,
+//     task: newLinks[i].value,
+//   };
+//   migrateRecord.value.push(record);
+// }
 const eachClusterInfo = ref([
   {
     clusterId: "集群1",
