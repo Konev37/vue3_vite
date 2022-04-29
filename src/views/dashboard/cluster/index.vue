@@ -5,8 +5,29 @@
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
-            <div ref="allInfo" style="height: 620px" />
+            <div ref="allInfo" style="height: 600px" />
           </div>
+          <el-divider />
+          <el-row>
+            <el-col :span="12">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 10px"
+                @click="showMigrate"
+              >
+                展示任务迁移过程
+              </el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 10px"
+                @click="drawerTask = true"
+              >
+                任务迁移记录
+              </el-button>
+            </el-col>
+          </el-row>
         </el-card>
       </el-col>
     </el-row>
@@ -39,7 +60,7 @@
               <el-button
                 type="text"
                 style="margin-left: 32px"
-                @click="drawer = true"
+                @click="drawerCluster = true"
                 >各集群详细信息</el-button
               >
             </div>
@@ -53,7 +74,22 @@
       </el-col>
     </el-row>
     <el-drawer
-      v-model="drawer"
+      v-model="drawerTask"
+      title="任务迁移记录"
+      direction="rtl"
+      size="40%"
+    >
+      <el-table :data="migrateRecord" stripe border>
+        <el-table-column prop="order" label="迁移顺序" />
+        <el-table-column label="迁移方向">
+          <el-table-column prop="source" label="起始Agent编号" />
+          <el-table-column prop="target" label="目标Agent编号" />
+        </el-table-column>
+        <el-table-column prop="task" label="迁移任务编号" />
+      </el-table>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerCluster"
       title="各集群详细信息"
       direction="rtl"
       size="40%"
@@ -92,7 +128,8 @@ import graph from "@/assets/data/all_cluster.json";
 function goTarget(url) {
   window.open(url, "__blank");
 }
-const drawer = ref(false);
+const drawerTask = ref(false);
+const drawerCluster = ref(false);
 const innerDrawer = ref(false);
 
 const allInfo = ref(null);
@@ -111,7 +148,7 @@ getCache().then(() => {
     tooltip: {
       show: true,
       trigger: "item",
-      formatter: function (params) {
+      formatter: (params) => {
         if (params.name.indexOf(">") == -1) {
           return (
             params.name +
@@ -123,7 +160,15 @@ getCache().then(() => {
             params.value[2]
           );
         } else {
-          return params.name + "<br>所迁移的任务编号：" + params.value;
+          return (
+            "迁移方向：" +
+            params.name +
+            // "<br>这是第 " +
+            // params.name +
+            // " 个执行的迁移" +
+            "<br>所迁移的任务编号：" +
+            params.value
+          );
         }
       },
     },
@@ -140,7 +185,7 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        // links: graph.links.slice(graph.links.length-1, graph.links.length),
+        links: graph.links,
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
@@ -172,34 +217,38 @@ getCache().then(() => {
     ],
   };
   allInfoIntance.setOption(option);
-
+});
+const showMigrate = () => {
   let v = 20; // 每一帧连线数的上限
-  let t = 500; // 动画间隔
-  for (let i = 1; i < v; i++) {
+  let t = 400; // 动画间隔
+  allInfoIntance.setOption({ // 清空连线
+    series: [{ links: null }],
+  });
+  for (let i = 1; i < v; i++) { // 0 ~ v
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(0, i) }],
       });
     }, i * t);
   }
-  for (let i = 0; i <= graph.links.length - v; i++) {
+  for (let i = 0; i <= graph.links.length - v; i++) { // v ~ (length-v)
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(i, i + v) }],
       });
     }, i * t + v * t);
   }
-  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) {
+  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) { // (length-v) - length
     setTimeout(() => {
       allInfoIntance.setOption({
         series: [{ links: graph.links.slice(i, graph.links.length) }],
       });
     }, i * t + v * t);
   }
-  setTimeout(() => {
-    allInfoIntance.setOption(option);
-  }, graph.links.length * t + v * t + t);
-});
+  setTimeout(() => { // 清空连线（但不知道为什么不起作用）
+    allInfoIntance.setOption({ links: null });
+  }, graph.links.length * t + v * t);
+};
 
 const handleInnerOpen = () => {
   getCache().then(() => {
@@ -269,7 +318,16 @@ const allClusterInfo = [
     allLoss: "80%",
   },
 ];
-
+const migrateRecord = [];
+for (var i = 0; i < graph.links.length; i++) {
+  var record = {
+    order: i + 1,
+    source: graph.links[i].source,
+    target: graph.links[i].target,
+    task: graph.links[i].value,
+  };
+  migrateRecord.push(record);
+}
 const clusterInfo = [
   {
     clusterId: "集群1",
@@ -370,7 +428,7 @@ const clusterInfo = [
   font-size: 14px;
   text-align: center;
   color: var(--el-text-color-secondary);
-  line-height: 44px;
+  line-height: 33px;
   flex: 1;
   overflow: visible;
   text-overflow: ellipsis;

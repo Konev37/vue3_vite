@@ -191,6 +191,7 @@ var year =[2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 200
 
 
 getCache().then(() => {
+
   // proxy.$modal.closeLoading();
   
   // for(var i=0 ; i< links.length ;i++){
@@ -202,7 +203,7 @@ getCache().then(() => {
 
 
 
-allInfoIntance.setOption(option);
+  allInfoIntance.setOption(option);
 
     for (let i = 0; i < data.length; i++) {
         for(let j=0 ;j< data[data.length - i - 1].length ; j++)
@@ -222,6 +223,7 @@ allInfoIntance.setOption(option);
             allInfoIntance.setOption(option1)
         }, 500 * i)
     }
+
 });
 
   // for (var i = 1; i < 13; i++) {

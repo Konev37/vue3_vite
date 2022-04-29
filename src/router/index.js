@@ -70,12 +70,12 @@ export const constantRoutes = [
   {
     path: '',
     component: Layout,
-    redirect: '/dashboard/single',
+    redirect: '/dashboard/cluster',
     children: [
       {
-        path: '/dashboard/single',
-        component: () => import('@/views/dashboard/single'),
-        name: 'Single',
+        path: '/dashboard/cluster',
+        component: () => import('@/views/dashboard/cluster'),
+        name: 'Cluster',
       }
     ]
   },
