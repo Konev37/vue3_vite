@@ -70,7 +70,7 @@
   </div>
 </template>
 
-<script setup name="Single">
+<script setup name="Task">
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";

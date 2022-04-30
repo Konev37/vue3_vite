@@ -40,7 +40,8 @@
             </div>
           </template>
           <div class="slider-demo-block">
-            <span class="slide-text">任务完成<br />成本</span>
+            <!-- <span class="slide-text">任务完成<br />成本</span> -->
+            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
             <el-slider
               class="el-slider"
               v-model="valueOptimize"
@@ -48,7 +49,8 @@
               :marks="marks"
               @change="onChange"
             />
-            <span class="slide-text">任务完成<br />比例</span>
+            <!-- <span class="slide-text">任务完成<br />比例</span> -->
+            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
           </div>
         </el-card>
       </el-col>
@@ -127,7 +129,7 @@
   </div>
 </template>
 
-<script setup name="All">
+<script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";
@@ -305,13 +307,14 @@ function changeMigrate(val) {
 function changeAllClusterInfo(val) {
   let ACInfo = allClusterInfo.value[0];
   let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
-  let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
+  // let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
+  let allCost = parseInt(ACInfo.allCost); // 成本没有百分号
   let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
   allRatio = (10 + val * 0.6).toFixed(2);
   allCost = (20 + val * 0.6).toFixed(2);
   allLoss = (30 + val * 0.6).toFixed(2);
   ACInfo.allRatio = allRatio + "%";
-  ACInfo.allCost = allCost + "%";
+  ACInfo.allCost = allCost + "";
   ACInfo.allLoss = allLoss + "%";
 }
 function changeMigrateRecord() {
@@ -343,7 +346,8 @@ function changeEachClusterInfo(val) {
       ECInfo[i].eachRatio.slice(0, ECInfo[i].eachRatio.length - 1)
     ); // 去除百分号，并转为整型
     eachCost = parseInt(
-      ECInfo[i].eachCost.slice(0, ECInfo[i].eachCost.length - 1)
+      // ECInfo[i].eachCost.slice(0, ECInfo[i].eachCost.length - 1)
+      ECInfo[i].eachCost
     );
     eachLoss = parseInt(
       ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
@@ -352,7 +356,7 @@ function changeEachClusterInfo(val) {
     eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
     eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
     ECInfo[i].eachRatio = eachRatio + "%";
-    ECInfo[i].eachCost = eachCost + "%";
+    ECInfo[i].eachCost = eachCost + "";
     ECInfo[i].eachLoss = eachLoss + "%";
   }
   // console.log(ECInfo);
@@ -470,7 +474,7 @@ const handleInnerOpen = (SCIndex) => {
 const allClusterInfo = ref([
   {
     allRatio: "10%",
-    allCost: "20%",
+    allCost: "20",
     allLoss: "30%",
   },
 ]);
@@ -488,55 +492,55 @@ const eachClusterInfo = ref([
   {
     clusterId: "集群1",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群2",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群3",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群4",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群5",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群6",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群7",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群8",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
   {
     clusterId: "集群9",
     eachRatio: "10%",
-    eachCost: "20%",
+    eachCost: "20",
     eachLoss: "30%",
   },
 ]);
@@ -580,7 +584,18 @@ const eachClusterInfo = ref([
   margin-left: 5px;
   margin-right: 5px;
 }
-.slider-demo-block .slide-text {
+.tag-text {
+  font-size: 13px;
+  text-align: center;
+  // color: var(--el-text-color-secondary);
+  line-height: 17px;
+  // flex: 1;
+  // overflow: visible;
+  // text-overflow: ellipsis;
+  // white-space: normal; //文本换行属性
+  // margin-bottom: 0;
+}
+.slider-demo-block {
   font-size: 14px;
   text-align: center;
   color: var(--el-text-color-secondary);
