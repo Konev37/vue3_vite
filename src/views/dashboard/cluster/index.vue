@@ -127,7 +127,7 @@
   </div>
 </template>
 
-<script setup name="All">
+<script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";
