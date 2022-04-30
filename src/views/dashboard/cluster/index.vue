@@ -40,7 +40,7 @@
             </div>
           </template>
           <div class="slider-demo-block">
-            <span class="slide-text">任务完成<br />时间</span>
+            <span class="slide-text">任务完成<br />成本</span>
             <el-slider
               class="el-slider"
               v-model="valueOptimize"
@@ -372,7 +372,7 @@ var innerDrawerData = [
     "任务11",
     "任务12",
   ],
-  [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
+  [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 100.0, 100.0, 32.6, 20.0, 6.4, 3.3],
   [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
 ];
 const getRow = (index) => {
@@ -380,7 +380,6 @@ const getRow = (index) => {
 };
 const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
-  console.log(SCIndex);
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
   getCache().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
