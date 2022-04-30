@@ -100,14 +100,22 @@
         <el-table-column prop="eachCost" label="当前总成本" />
         <el-table-column prop="eachLoss" label="Agent损失率" />
         <el-table-column label="详细信息" width="120">
-          <template #default>
-            <el-button type="text" @click="innerDrawer = true">进入</el-button>
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click.prevent="
+                getRow(scope.$index);
+                innerDrawer = true;
+              "
+              >进入</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <el-drawer
         v-model="innerDrawer"
         title="集群详细信息"
+        direction="rtl"
         size="50%"
         :append-to-body="true"
         @open="handleInnerOpen"
@@ -139,6 +147,7 @@ const valueOptimize = ref(0);
 var newLinks = JSON.parse(JSON.stringify(graph.links));
 
 var allInfoIntance, singleInfoIntance;
+var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
@@ -348,42 +357,110 @@ function changeEachClusterInfo(val) {
   }
   // console.log(ECInfo);
 }
-
-const handleInnerOpen = () => {
+var innerDrawerData = [
+  [
+    "任务1",
+    "任务2",
+    "任务3",
+    "任务4",
+    "任务5",
+    "任务6",
+    "任务7",
+    "任务8",
+    "任务9",
+    "任务10",
+    "任务11",
+    "任务12",
+  ],
+  [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
+  [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
+];
+const getRow = (index) => {
+  singleClusterIndex = index;
+};
+const handleInnerOpen = (SCIndex) => {
+  SCIndex = SCIndex || singleClusterIndex;
+  console.log(SCIndex);
+  const colors = ["#5470C6", "#91CC75", "#EE6666"];
   getCache().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
     var singleOption = {
+      color: colors,
       tooltip: {
         trigger: "axis",
         axisPointer: {
-          type: "shadow",
+          type: "cross",
         },
       },
-      legend: {},
       grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
-        containLabel: true,
+        // right: '20%'
       },
-      xAxis: {
-        type: "value",
-        boundaryGap: [0, 0.01],
+      toolbox: {
+        feature: {
+          dataView: { show: true, readOnly: false },
+          restore: { show: true },
+          saveAsImage: { show: true },
+        },
       },
-      yAxis: {
-        type: "category",
-        data: ["任务1", "任务2", "任务3", "任务4", "任务5", "任务6"],
+      legend: {
+        data: ["任务进度", "成本"],
       },
+      xAxis: [
+        {
+          type: "value",
+          name: "任务进度",
+          position: "top",
+          alignTicks: true, // 是否开启自动对齐刻度
+          min: 0,
+          max: 100,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[0],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}%",
+          },
+        },
+        {
+          type: "value",
+          name: "成本",
+          position: "bottom",
+          alignTicks: true,
+          // offset: 80,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[1],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}c",
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "category",
+          axisTick: {
+            alignWithLabel: true,
+          },
+          // prettier-ignore
+          data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+        },
+      ],
       series: [
         {
           name: "任务进度",
           type: "bar",
-          data: [18203, 23489, 29034, 104970, 131744, 630230],
+          data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
         },
         {
           name: "成本",
           type: "bar",
-          data: [19325, 23438, 31000, 121594, 134141, 681807],
+          xAxisIndex: 1,
+          data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
         },
       ],
     };
