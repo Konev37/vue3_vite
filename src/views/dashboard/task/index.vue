@@ -11,7 +11,10 @@
                 <div
                   class="el-table el-table--enable-row-hover el-table--medium"
                 >
-                  <div ref="allInfo" style="height: 400px; margin-bottom: 20px" />
+                  <div
+                    ref="allInfo"
+                    style="height: 400px; margin-bottom: 20px"
+                  />
                 </div>
               </el-col>
               <el-col :span="12">
@@ -73,7 +76,7 @@ import { getCache } from "@/api/monitor/cache";
 import * as echarts from "echarts";
 import _rawData from "@/assets/data/life-expectancy-table.json";
 
-import _ from 'lodash'
+import _ from "lodash";
 // import type { CSSProperties } from 'vue'
 
 function goTarget(url) {
@@ -84,102 +87,100 @@ const allInfo = ref(null);
 const { proxy } = getCurrentInstance();
 const value4 = ref(50);
 
- const countries = [
-    'Finland',
-    'France',
-    'Germany',
-    'Iceland',
-    'Norway',
-    'Poland',
-    'Russia',
-    'United Kingdom'
-  ];
-  const datasetWithFilters = [];
-  const seriesList = [];
-  echarts.util.each(countries, function (country) {
-    var datasetId = 'dataset_' + country;
-    datasetWithFilters.push({
-      id: datasetId,
-      fromDatasetId: 'dataset_raw',
-      transform: {
-        type: 'filter',
-        config: {
-          and: [
-            { dimension: 'Year', gte: 1950 },
-            { dimension: 'Country', '=': country }
-          ]
-        }
-      }
-    });
-    seriesList.push({
-      type: 'line',
-      datasetId: datasetId,
-      showSymbol: false,
-      name: country,
-      endLabel: {
-        show: true,
-        formatter: function (params) {
-          return params.value[3] + ': ' + params.value[0]/1000 + "%";
-        }
+const countries = [
+  "Finland",
+  "France",
+  "Germany",
+  "Iceland",
+  "Norway",
+  "Poland",
+  "Russia",
+  "United Kingdom",
+];
+const datasetWithFilters = [];
+const seriesList = [];
+echarts.util.each(countries, function (country) {
+  var datasetId = "dataset_" + country;
+  datasetWithFilters.push({
+    id: datasetId,
+    fromDatasetId: "dataset_raw",
+    transform: {
+      type: "filter",
+      config: {
+        and: [
+          { dimension: "Year", gte: 1950 },
+          { dimension: "Country", "=": country },
+        ],
       },
-      labelLayout: {
-        moveOverlap: 'shiftY'
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      encode: {
-        x: 'Year',
-        y: 'Income',
-        label: ['Country', 'Income'],
-        itemName: 'Year',
-        tooltip: ['Income']
-      }
-    });
+    },
   });
-  var option = {
-    animationDuration: 10000,
-    dataset: [
-      {
-        id: 'dataset_raw',
-        source: _rawData
+  seriesList.push({
+    type: "line",
+    datasetId: datasetId,
+    showSymbol: false,
+    name: country,
+    endLabel: {
+      show: true,
+      formatter: function (params) {
+        return params.value[3] + ": " + params.value[0] / 1000 + "%";
       },
-      ...datasetWithFilters
-    ],
-    title: {
-      text: '任务完成率动态展示'
     },
-    tooltip: {
-      order: 'valueDesc',
-      trigger: 'axis'
+    labelLayout: {
+      moveOverlap: "shiftY",
     },
-    xAxis: {
-      type: 'category',
-      nameLocation: 'middle'
+    emphasis: {
+      focus: "series",
     },
-    yAxis: {
-      name: 'Income'
+    encode: {
+      x: "Year",
+      y: "Income",
+      label: ["Country", "Income"],
+      itemName: "Year",
+      tooltip: ["Income"],
     },
-    grid: {
-      right: 140
+  });
+});
+var option = {
+  animationDuration: 10000,
+  dataset: [
+    {
+      id: "dataset_raw",
+      source: _rawData,
     },
-    series: seriesList
-  };
+    ...datasetWithFilters,
+  ],
+  title: {
+    text: "任务完成率动态展示",
+  },
+  tooltip: {
+    order: "valueDesc",
+    trigger: "axis",
+  },
+  xAxis: {
+    type: "category",
+    nameLocation: "middle",
+  },
+  yAxis: {
+    name: "Income",
+  },
+  grid: {
+    right: 140,
+  },
+  series: seriesList,
+};
 
 getCache().then(() => {
   // proxy.$modal.closeLoading();
-  
+
   // for(var i=0 ; i< links.length ;i++){
   //   allInfoIntance.setOption(options[i]);
   //   sleep(3000);
   // }
-  
-  const allInfoIntance = echarts.init(allInfo.value, "macarons");
-	allInfoIntance.setOption(option);
-  // for (var i = 1; i < 13; i++) {
-  
 
-  
+  const allInfoIntance = echarts.init(allInfo.value, "macarons");
+  allInfoIntance.setOption(option);
+  // for (var i = 1; i < 13; i++) {
+
   // window.addEventListener("resize", function () {
   //   allInfoIntance.resize();
   //   allInfoIntance.setOption({
@@ -194,11 +195,6 @@ getCache().then(() => {
 });
 // function getList() {
 // proxy.$modal.loading("正在加载Agent数据，请稍候！");
-
-
-
-
-
 
 const formatTooltip = (val) => {
   return val / 100;

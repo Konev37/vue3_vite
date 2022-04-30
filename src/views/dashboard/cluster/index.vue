@@ -40,10 +40,10 @@
             </div>
           </template>
           <div class="slider-demo-block">
-            <span class="slide-text">任务完成<br />时间</span>
+            <span class="slide-text">任务完成<br />成本</span>
             <el-slider
               class="el-slider"
-              v-model="value4"
+              v-model="valueOptimize"
               :format-tooltip="formatTooltip"
               :marks="marks"
               @change="onChange"
@@ -94,20 +94,28 @@
       direction="rtl"
       size="40%"
     >
-      <el-table :data="clusterInfo" stripe border>
+      <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
         <el-table-column prop="eachCost" label="当前总成本" />
         <el-table-column prop="eachLoss" label="Agent损失率" />
         <el-table-column label="详细信息" width="120">
-          <template #default>
-            <el-button type="text" @click="innerDrawer = true">进入</el-button>
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click.prevent="
+                getRow(scope.$index);
+                innerDrawer = true;
+              "
+              >进入</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <el-drawer
         v-model="innerDrawer"
         title="集群详细信息"
+        direction="rtl"
         size="50%"
         :append-to-body="true"
         @open="handleInnerOpen"
@@ -135,9 +143,11 @@ const innerDrawer = ref(false);
 const allInfo = ref(null);
 const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
-const value4 = ref(50);
+const valueOptimize = ref(0);
+var newLinks = JSON.parse(JSON.stringify(graph.links));
 
 var allInfoIntance, singleInfoIntance;
+var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
@@ -185,7 +195,7 @@ getCache().then(() => {
         type: "graph",
         layout: "none",
         data: graph.nodes,
-        links: graph.links,
+        // links: graph.links,
         categories: graph.categories,
         roam: true,
         edgeSymbol: ["circle", "arrow"],
@@ -221,79 +231,40 @@ getCache().then(() => {
 const showMigrate = () => {
   let v = 20; // 每一帧连线数的上限
   let t = 400; // 动画间隔
-  allInfoIntance.setOption({ // 清空连线
+  allInfoIntance.setOption({
+    // 清空连线
     series: [{ links: null }],
   });
-  for (let i = 1; i < v; i++) { // 0 ~ v
+  for (let i = 1; i < v; i++) {
+    // 0 ~ v
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(0, i) }],
+        series: [{ links: newLinks.slice(0, i) }],
       });
     }, i * t);
   }
-  for (let i = 0; i <= graph.links.length - v; i++) { // v ~ (length-v)
+  for (let i = 0; i <= newLinks.length - v; i++) {
+    // v ~ (length-v)
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(i, i + v) }],
+        series: [{ links: newLinks.slice(i, i + v) }],
       });
     }, i * t + v * t);
   }
-  for (let i = graph.links.length - v + 1; i < graph.links.length; i++) { // (length-v) - length
+  for (let i = newLinks.length - v + 1; i < newLinks.length; i++) {
+    // (length-v) - length
     setTimeout(() => {
       allInfoIntance.setOption({
-        series: [{ links: graph.links.slice(i, graph.links.length) }],
+        series: [{ links: newLinks.slice(i, newLinks.length) }],
       });
     }, i * t + v * t);
   }
-  setTimeout(() => { // 清空连线（但不知道为什么不起作用）
+  setTimeout(() => {
+    // 清空连线（但不知道为什么不起作用）
     allInfoIntance.setOption({ links: null });
-  }, graph.links.length * t + v * t);
+  }, newLinks.length * t + v * t);
 };
 
-const handleInnerOpen = () => {
-  getCache().then(() => {
-    singleInfoIntance = echarts.init(singleInfo.value, "macarons");
-    var singleOption = {
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "shadow",
-        },
-      },
-      legend: {},
-      grid: {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
-        containLabel: true,
-      },
-      xAxis: {
-        type: "value",
-        boundaryGap: [0, 0.01],
-      },
-      yAxis: {
-        type: "category",
-        data: ["任务1", "任务2", "任务3", "任务4", "任务5", "任务6"],
-      },
-      series: [
-        {
-          name: "任务进度",
-          type: "bar",
-          data: [18203, 23489, 29034, 104970, 131744, 630230],
-        },
-        {
-          name: "成本",
-          type: "bar",
-          data: [19325, 23438, 31000, 121594, 134141, 681807],
-        },
-      ],
-    };
-    singleInfoIntance.setOption(singleOption);
-  });
-};
-const formatTooltip = (val) => {
-  return val / 100;
-};
 const marks = {
   0: "0",
   20: "0.2",
@@ -306,84 +277,269 @@ const marks = {
   80: "0.8",
   100: "1",
 };
-
+const formatTooltip = (val) => {
+  return val / 100;
+};
 const onChange = (val) => {
-  console.log(val / 100);
+  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
+  changeMigrate(val);
+  changeAllClusterInfo(val);
+  changeMigrateRecord();
+  changeEachClusterInfo(val);
 };
 
-const allClusterInfo = [
-  {
-    allRatio: "80%",
-    allCost: "80%",
-    allLoss: "80%",
-  },
-];
-const migrateRecord = [];
-for (var i = 0; i < graph.links.length; i++) {
-  var record = {
-    order: i + 1,
-    source: graph.links[i].source,
-    target: graph.links[i].target,
-    task: graph.links[i].value,
-  };
-  migrateRecord.push(record);
+function changeMigrate(val) {
+  newLinks = JSON.parse(JSON.stringify(graph.links));
+  var Len = Math.floor((1.0 / 25) * Math.pow(val - 50, 2) + 149); // 新的任务迁移数
+  newLinks = newLinks.slice(0, Len);
+  for (let i = 0; i < newLinks.length; i++) {
+    let source = parseInt(newLinks[i].source);
+    let target = parseInt(newLinks[i].target);
+    source += val;
+    target += val;
+    newLinks[i].source = source % 77;
+    newLinks[i].target = target % 77;
+  }
+  allInfoIntance.setOption({ series: [{ links: newLinks }] });
 }
-const clusterInfo = [
+function changeAllClusterInfo(val) {
+  let ACInfo = allClusterInfo.value[0];
+  let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
+  let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
+  let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
+  allRatio = (10 + val * 0.6).toFixed(2);
+  allCost = (20 + val * 0.6).toFixed(2);
+  allLoss = (30 + val * 0.6).toFixed(2);
+  ACInfo.allRatio = allRatio + "%";
+  ACInfo.allCost = allCost + "%";
+  ACInfo.allLoss = allLoss + "%";
+}
+function changeMigrateRecord() {
+  migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+  for (let i = 0; i < newLinks.length; i++) {
+    // newLinks[i].value.splice(0, newLinks[i].value.length);
+    newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
+    var len = Math.floor(Math.random() * 6);
+    while (newLinks[i].value.length < len) {
+      var dat = Math.floor(Math.random() * 200) + 1;
+      if (newLinks[i].value.indexOf(dat) == -1) {
+        newLinks[i].value.push(dat);
+      }
+    }
+    var record = {
+      order: i + 1,
+      source: newLinks[i].source,
+      target: newLinks[i].target,
+      task: newLinks[i].value,
+    };
+    migrateRecord.value.push(record);
+  }
+}
+function changeEachClusterInfo(val) {
+  var ECInfo = eachClusterInfo.value;
+  var eachRatio, eachCost, eachLoss;
+  for (let i = 0; i < ECInfo.length; i++) {
+    eachRatio = parseInt(
+      ECInfo[i].eachRatio.slice(0, ECInfo[i].eachRatio.length - 1)
+    ); // 去除百分号，并转为整型
+    eachCost = parseInt(
+      ECInfo[i].eachCost.slice(0, ECInfo[i].eachCost.length - 1)
+    );
+    eachLoss = parseInt(
+      ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
+    );
+    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2); // 保留 2 位小数
+    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    ECInfo[i].eachRatio = eachRatio + "%";
+    ECInfo[i].eachCost = eachCost + "%";
+    ECInfo[i].eachLoss = eachLoss + "%";
+  }
+  // console.log(ECInfo);
+}
+var innerDrawerData = [
+  [
+    "任务1",
+    "任务2",
+    "任务3",
+    "任务4",
+    "任务5",
+    "任务6",
+    "任务7",
+    "任务8",
+    "任务9",
+    "任务10",
+    "任务11",
+    "任务12",
+  ],
+  [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 100.0, 100.0, 32.6, 20.0, 6.4, 3.3],
+  [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
+];
+const getRow = (index) => {
+  singleClusterIndex = index;
+};
+const handleInnerOpen = (SCIndex) => {
+  SCIndex = SCIndex || singleClusterIndex;
+  const colors = ["#5470C6", "#91CC75", "#EE6666"];
+  getCache().then(() => {
+    singleInfoIntance = echarts.init(singleInfo.value, "macarons");
+    var singleOption = {
+      color: colors,
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+        },
+      },
+      grid: {
+        // right: '20%'
+      },
+      toolbox: {
+        feature: {
+          dataView: { show: true, readOnly: false },
+          restore: { show: true },
+          saveAsImage: { show: true },
+        },
+      },
+      legend: {
+        data: ["任务进度", "成本"],
+      },
+      xAxis: [
+        {
+          type: "value",
+          name: "任务进度",
+          position: "top",
+          alignTicks: true, // 是否开启自动对齐刻度
+          min: 0,
+          max: 100,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[0],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}%",
+          },
+        },
+        {
+          type: "value",
+          name: "成本",
+          position: "bottom",
+          alignTicks: true,
+          // offset: 80,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[1],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}c",
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "category",
+          axisTick: {
+            alignWithLabel: true,
+          },
+          // prettier-ignore
+          data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+        },
+      ],
+      series: [
+        {
+          name: "任务进度",
+          type: "bar",
+          data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+        },
+        {
+          name: "成本",
+          type: "bar",
+          xAxisIndex: 1,
+          data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
+        },
+      ],
+    };
+    singleInfoIntance.setOption(singleOption);
+  });
+};
+
+const allClusterInfo = ref([
+  {
+    allRatio: "10%",
+    allCost: "20%",
+    allLoss: "30%",
+  },
+]);
+const migrateRecord = ref([]);
+// for (var i = 0; i < newLinks.length; i++) {
+//   var record = {
+//     order: i + 1,
+//     source: newLinks[i].source,
+//     target: newLinks[i].target,
+//     task: newLinks[i].value,
+//   };
+//   migrateRecord.value.push(record);
+// }
+const eachClusterInfo = ref([
   {
     clusterId: "集群1",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群2",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群3",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群4",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群5",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群6",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群7",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群8",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
   {
     clusterId: "集群9",
-    eachRatio: "80%",
-    eachCost: "80%",
-    eachLoss: "80%",
+    eachRatio: "10%",
+    eachCost: "20%",
+    eachLoss: "30%",
   },
-];
+]);
 </script>
 
 <style scoped lang="scss">
