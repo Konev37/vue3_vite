@@ -581,8 +581,8 @@ const eachClusterInfo = ref([
   align-items: center;
 }
 .el-slider {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 13px;
+  margin-right: 13px;
 }
 .tag-text {
   font-size: 13px;
@@ -604,7 +604,7 @@ const eachClusterInfo = ref([
   overflow: visible;
   text-overflow: ellipsis;
   white-space: normal; //文本换行属性
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 .slider-demo-block .slide-text + .el-slider {
   flex: 0 0 70%;
