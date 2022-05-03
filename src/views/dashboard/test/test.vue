@@ -73,6 +73,7 @@
 <script setup name="Test">
 import { reactive, ref } from "vue";
 import { getCache } from "@/api/monitor/cache";
+import { getCluster } from "@/api/dashboard/cluster";
 import * as echarts from "echarts";
 // import graph from "@/assets/data/all_cluster.json";
 
@@ -203,7 +204,7 @@ var option = {
 //   });
 // }
 
-getCache().then(() => {
+getCluster().then(() => {
   // proxy.$modal.closeLoading();
 
   // for(var i=0 ; i< links.length ;i++){
