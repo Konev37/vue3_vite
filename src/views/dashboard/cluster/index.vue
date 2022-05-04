@@ -41,7 +41,9 @@
           </template>
           <div class="slider-demo-block">
             <!-- <span class="slide-text">任务完成<br />成本</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
             <el-slider
               class="el-slider"
               v-model="valueOptimize"
@@ -50,7 +52,9 @@
               @change="onChange"
             />
             <!-- <span class="slide-text">任务完成<br />比例</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
         </el-card>
       </el-col>
@@ -153,9 +157,10 @@ var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
-getCluster().then(() => {
+getCluster().then((response) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
+  console.log(response)
   var option = {
     tooltip: {
       show: true,
