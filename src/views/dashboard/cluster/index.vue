@@ -160,7 +160,7 @@ proxy.$modal.loading("正在加载Agent数据，请稍候！");
 getCluster().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
-  console.log(res)
+  // console.log(res)
   var option = {
     tooltip: {
       show: true,
