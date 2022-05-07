@@ -135,7 +135,7 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCluster, updateSlider } from "@/api/dashboard/cluster";
+import { getCluster} from "@/api/dashboard/cluster";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -160,7 +160,7 @@ proxy.$modal.loading("正在加载Agent数据，请稍候！");
 getCluster().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
-  // console.log(res)
+  console.log(res)
   var option = {
     tooltip: {
       show: true,
@@ -288,10 +288,7 @@ const formatTooltip = (val) => {
   return val / 100;
 };
 const onChange = (val) => {
-  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
-  updateSlider(val).then(res => {
-    console.log(res + "，传值成功")
-  })
+  // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   changeMigrate(val);
   changeAllClusterInfo(val);
   changeMigrateRecord();

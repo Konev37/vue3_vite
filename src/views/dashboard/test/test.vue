@@ -135,7 +135,7 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCluster, updateSlider } from "@/api/dashboard/cluster";
+import { getTest, updateSlider } from "@/api/dashboard/test";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -157,7 +157,7 @@ var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
-getCluster().then((res) => {
+getTest().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
   console.log(res);
