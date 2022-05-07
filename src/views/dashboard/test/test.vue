@@ -165,7 +165,7 @@ getTest().then((res) => {
     xAxis: {
       type: "category",
       // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      data: res.xAxisData,
+      data: res.xAxis,
     },
     yAxis: {
       type: "value",
