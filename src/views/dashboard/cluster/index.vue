@@ -41,7 +41,9 @@
           </template>
           <div class="slider-demo-block">
             <!-- <span class="slide-text">任务完成<br />成本</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
             <el-slider
               class="el-slider"
               v-model="valueOptimize"
@@ -50,7 +52,9 @@
               @change="onChange"
             />
             <!-- <span class="slide-text">任务完成<br />比例</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
         </el-card>
       </el-col>
@@ -131,7 +135,7 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCluster } from "@/api/dashboard/cluster";
+import { getCluster} from "@/api/dashboard/cluster";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -153,9 +157,10 @@ var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
-getCluster().then(() => {
+getCluster().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
+  console.log(res)
   var option = {
     tooltip: {
       show: true,
@@ -283,7 +288,7 @@ const formatTooltip = (val) => {
   return val / 100;
 };
 const onChange = (val) => {
-  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
+  // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   changeMigrate(val);
   changeAllClusterInfo(val);
   changeMigrateRecord();

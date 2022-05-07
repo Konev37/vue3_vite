@@ -1,268 +1,221 @@
 <template>
   <div class="app-container">
-    <el-container>
-      <el-main>
+    <el-row>
+      <el-col :span="24">
         <el-card class="card">
-          <div class="card-block">
-            <el-row>
-              <el-col :span="24" class="topo">
-                <!-- 这个写在card下才能有效果 -->
-                <template #header><span>集群拓扑图</span></template>
-                <div
-                  class="el-table el-table--enable-row-hover el-table--medium"
-                >
-                  <div
-                    ref="allInfo"
-                    style="height: 400px; margin-bottom: 20px"
-                  />
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div>
-                  <div class="slider-demo-block">
-                    <span class="slide-text">任务完成<br />成本</span>
-                    <el-slider
-                      class="el-slider"
-                      v-model="value4"
-                      :format-tooltip="formatTooltip"
-                      :marks="marks"
-                      @change="onChange"
-                    />
-                    <span class="slide-text">任务完成<br />比例</span>
-                  </div>
-                  <!-- <el-button type="primary">优化</el-button> -->
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <template v-slot:header>
-                  <div class="clearfix">
-                    <span>全部集群总状态</span>
-                  </div>
-                </template>
-                <el-table :data="tableData" border>
-                  <el-table-column prop="date" label="任务完成率" width="180" />
-                  <el-table-column prop="name" label="当前总成本" width="180" />
-                  <el-table-column prop="address" label="Agent损失率" />
-                </el-table>
-              </el-col>
-            </el-row>
+          <template #header><span>集群信息及任务迁移动态示意图</span></template>
+          <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="allInfo" style="height: 600px" />
           </div>
+          <el-divider />
+          <el-row>
+            <el-col :span="12">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 10px"
+                @click="showMigrate"
+              >
+                展示任务迁移过程
+              </el-button>
+            </el-col>
+            <el-col :span="12">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 10px"
+                @click="drawerTask = true"
+              >
+                任务迁移记录
+              </el-button>
+            </el-col>
+          </el-row>
         </el-card>
-      </el-main>
-      <el-footer>
-        <!-- <el-row>
-          <el-card class="update-log">
-            <template v-slot:header>
-            <div class="clearfix">
-              <span>Agent集群属性</span>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-optimize-header">
+              <span>优化目标倾向</span>
             </div>
           </template>
-          <div class="body">
-            <el-table :data="propData" stripe border>
-              <el-table-column prop="agentId" label="集群编号" width="210" />
-              <el-table-column prop="agentProp" label="属性" width="210"/>
-            </el-table>
+          <div class="slider-demo-block">
+            <!-- <span class="slide-text">任务完成<br />成本</span> -->
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
+            <el-slider
+              class="el-slider"
+              v-model="valueOptimize"
+              :format-tooltip="formatTooltip"
+              :marks="marks"
+              @change="onChange"
+            />
+            <!-- <span class="slide-text">任务完成<br />比例</span> -->
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
-          </el-card>
-        </el-row> -->
-      </el-footer>
-    </el-container>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-cluster-header">
+              <span>全部集群总状态</span>
+              <el-button
+                type="text"
+                style="margin-left: 32px"
+                @click="drawerCluster = true"
+                >各集群详细信息</el-button
+              >
+            </div>
+          </template>
+          <el-table :data="allClusterInfo" border style="width: 100%">
+            <el-table-column prop="allRatio" label="任务完成率" width="180" />
+            <el-table-column prop="allCost" label="当前总成本" width="180" />
+            <el-table-column prop="allLoss" label="Agent损失率" />
+          </el-table>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-drawer
+      v-model="drawerTask"
+      title="任务迁移记录"
+      direction="rtl"
+      size="40%"
+    >
+      <el-table :data="migrateRecord" stripe border>
+        <el-table-column prop="order" label="迁移顺序" />
+        <el-table-column label="迁移方向">
+          <el-table-column prop="source" label="起始Agent编号" />
+          <el-table-column prop="target" label="目标Agent编号" />
+        </el-table-column>
+        <el-table-column prop="task" label="迁移任务编号" />
+      </el-table>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerCluster"
+      title="各集群详细信息"
+      direction="rtl"
+      size="40%"
+    >
+      <el-table :data="eachClusterInfo" stripe border>
+        <el-table-column prop="clusterId" label="集群编号" />
+        <el-table-column prop="eachRatio" label="任务完成率" />
+        <el-table-column prop="eachCost" label="当前总成本" />
+        <el-table-column prop="eachLoss" label="Agent损失率" />
+        <el-table-column label="详细信息" width="120">
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click.prevent="
+                getRow(scope.$index);
+                innerDrawer = true;
+              "
+              >进入</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-drawer
+        v-model="innerDrawer"
+        title="集群详细信息"
+        direction="rtl"
+        size="50%"
+        :append-to-body="true"
+        @open="handleInnerOpen"
+      >
+        <!-- <p>_(:зゝ∠)_</p> -->
+        <div ref="singleInfo" style="height: 600px" />
+      </el-drawer>
+    </el-drawer>
   </div>
 </template>
 
-<script setup name="Test">
+<script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCache } from "@/api/monitor/cache";
-import { getCluster } from "@/api/dashboard/cluster";
+import { getTest, updateSlider } from "@/api/dashboard/test";
 import * as echarts from "echarts";
-// import graph from "@/assets/data/all_cluster.json";
-
-import _ from "lodash";
-// import type { CSSProperties } from 'vue'
+import graph from "@/assets/data/all_cluster.json";
 
 function goTarget(url) {
   window.open(url, "__blank");
 }
+const drawerTask = ref(false);
+const drawerCluster = ref(false);
+const innerDrawer = ref(false);
 
 const allInfo = ref(null);
+const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
-const value4 = ref(50);
+const valueOptimize = ref(0);
+var newLinks = JSON.parse(JSON.stringify(graph.links));
 
-var year = [
-  2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008,
-  2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995,
-  1994, 1993, 1992, 1991, 1990, 1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982,
-];
-var data = [
-  [431, 550, 878, 989, 351, 391, 508, 118],
-  [428, 521, 868, 950, 335, 377, 506, 116],
-  [422, 512, 867, 936, 316, 367, 502, 116],
-  [423, 502, 867, 936, 299, 354, 478, 115],
-  [411, 486, 850, 915, 300, 355, 461, 111],
-  [409, 478, 837, 889, 285, 370, 458, 109],
-  [405, 462, 828, 879, 271, 380, 443, 105],
-  [407, 452, 801, 872, 261, 376, 430, 102],
-  [400, 462, 790, 868, 253, 356, 430, 983],
-  [384, 454, 790, 839, 254, 346, 420, 970],
-  [372, 452, 770, 823, 259, 347, 394, 932],
-  [359, 448, 770, 802, 240, 349, 394, 923],
-  [357, 460, 751, 761, 230, 364, 365, 901],
-  [343, 444, 735, 733, 226, 353, 363, 871],
-  [331, 453, 722, 718, 225, 364, 339, 856],
-  [312, 424, 717, 702, 226, 339, 325, 837],
-  [307, 407, 713, 674, 220, 336, 314, 809],
-  [300, 409, 686, 661, 211, 308, 312, 774],
-  [298, 380, 664, 633, 192, 298, 309, 760],
-  [282, 377, 657, 621, 181, 280, 289, 721],
-  [279, 367, 646, 578, 178, 264, 285, 682],
-  [280, 361, 645, 572, 172, 278, 278, 682],
-  [276, 359, 641, 545, 171, 274, 278, 633],
-  [261, 348, 629, 527, 168, 256, 263, 590],
-  [258, 332, 601, 512, 156, 244, 243, 567],
-  [238, 313, 601, 467, 151, 225, 237, 521],
-  [227, 286, 594, 424, 137, 201, 237, 488],
-  [226, 287, 571, 411, 127, 200, 210, 486],
-  [230, 274, 548, 381, 120, 178, 201, 466],
-  [218, 262, 541, 334, 103, 188, 187, 421],
-  [205, 260, 525, 330, 93, 162, 187, 375],
-  [190, 264, 502, 295, 86, 161, 186, 330],
-  [173, 236, 473, 292, 76, 140, 159, 282],
-  [162, 215, 453, 251, 68, 113, 140, 253],
-  [159, 192, 444, 210, 71, 89, 134, 243],
-  [140, 198, 434, 206, 64, 99, 123, 196],
-  [120, 213, 420, 206, 52, 83, 108, 186],
-  [119, 192, 413, 193, 47, 90, 82, 142],
-  [120, 206, 392, 150, 45, 60, 80, 120],
-];
-// 指定图表的配置项和数据
-var option = {
-  title: {
-    text: "ECharts 入门示例",
-  },
-  tooltip: { formatter: "{c}%" },
-  legend: {
-    data: ["Agent"],
-  },
-  yAxis: {
-    data: [
-      "agent1负载",
-      "agent2负载",
-      "agent3负载",
-      "agent4负载",
-      "agent5负载",
-      "agent6负载",
-      "agent7负载",
-      "agent8负载",
-    ],
-    inverse: true,
-    // max: 5,
-  },
-  xAxis: {
-    axisLabel: {
-      formatter: "{value}%",
+var allInfoIntance, singleInfoIntance;
+var singleClusterIndex;
+
+proxy.$modal.loading("正在加载Agent数据，请稍候！");
+
+getTest().then((res) => {
+  allInfoIntance = echarts.init(allInfo.value, "macarons");
+  proxy.$modal.closeLoading();
+  console.log(res);
+  var option = {
+    xAxis: {
+      type: "category",
+      // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      data: res.xAxisData,
     },
-  },
-  series: [
-    {
-      realtimeSort: true,
-      name: "Agent",
-      showBackground: true,
-      label: {
-        show: true,
-        position: "right",
-        valueAnimation: true,
-        formatter: "{c}%",
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        // data: [150, 230, 224, 218, 135, 147, 260],
+        data: res.data,
+        type: "line",
       },
-      stack: {},
-      type: "bar",
-      data: [12, 20.6, 39.2, 15],
-    },
-  ],
-  animationDuration: 0,
-  animationDurationUpdate: 500,
-  animationEasing: "linear",
-  animationEasingUpdate: "linear",
-};
-
-// 使用刚指定的配置项和数据显示图表。
-
-// function run() {
-//   for (var i = 0; i < data.length; ++i) {
-//     if (Math.random() > 0.9) {
-//       data[i] += Math.round(Math.random() * 2000);
-//     } else {
-//       data[i] += Math.round(Math.random() * 200);
-//     }
-//   }
-//   allInfoIntance.setOption({
-//     series: [
-//       {
-//         type: 'bar',
-//         data: data,
-//       }
-//     ]
-//   });
-// }
-
-getCluster().then(() => {
-  // proxy.$modal.closeLoading();
-
-  // for(var i=0 ; i< links.length ;i++){
-  //   allInfoIntance.setOption(options[i]);
-  //   sleep(3000);
-  // }
-  const allInfoIntance = echarts.init(allInfo.value, "macarons");
-
+    ],
+  };
   allInfoIntance.setOption(option);
-
-  for (let i = 0; i < data.length; i++) {
-    for (let j = 0; j < data[data.length - i - 1].length; j++) {
-      data[data.length - i - 1][j] = data[data.length - i - 1][j] / 10;
-    }
-    setTimeout(function () {
-      var option1 = {
-        title: {
-          text: year[data.length - i - 1].toString() + "时刻agent负载状况",
-        },
-        series: [
-          {
-            data: data[data.length - i - 1],
-          },
-        ],
-      };
-      console.log(option1);
-      allInfoIntance.setOption(option1);
-    }, 500 * i);
-  }
 });
-
-// for (var i = 1; i < 13; i++) {
-
-// window.addEventListener("resize", function () {
-//   allInfoIntance.resize();
-//   allInfoIntance.setOption({
-//     series: [
-//       {
-//         id: "a",
-//         data: charts.nodes,
-//       },
-//     ],
-//   });
-// });
-
-// function getList() {
-// proxy.$modal.loading("正在加载Agent数据，请稍候！");
-
-const formatTooltip = (val) => {
-  return val / 100;
+const showMigrate = () => {
+  let v = 20; // 每一帧连线数的上限
+  let t = 400; // 动画间隔
+  allInfoIntance.setOption({
+    // 清空连线
+    series: [{ links: null }],
+  });
+  for (let i = 1; i < v; i++) {
+    // 0 ~ v
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(0, i) }],
+      });
+    }, i * t);
+  }
+  for (let i = 0; i <= newLinks.length - v; i++) {
+    // v ~ (length-v)
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(i, i + v) }],
+      });
+    }, i * t + v * t);
+  }
+  for (let i = newLinks.length - v + 1; i < newLinks.length; i++) {
+    // (length-v) - length
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(i, newLinks.length) }],
+      });
+    }, i * t + v * t);
+  }
+  setTimeout(() => {
+    // 清空连线（但不知道为什么不起作用）
+    allInfoIntance.setOption({ links: null });
+  }, newLinks.length * t + v * t);
 };
-
-// interface Mark {
-//   style: CSSProperties
-//   label: string
-// }
-
-// type Marks = Record<number, Mark | string>
 
 const marks = {
   0: "0",
@@ -276,40 +229,296 @@ const marks = {
   80: "0.8",
   100: "1",
 };
-
+const formatTooltip = (val) => {
+  return val / 100;
+};
 const onChange = (val) => {
-  console.log(val / 100);
+  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
+  updateSlider(val).then((res) => {
+    console.log(res + "，传值成功");
+  });
+  changeMigrate(val);
+  changeAllClusterInfo(val);
+  changeMigrateRecord();
+  changeEachClusterInfo(val);
 };
 
-const tableData = [
-  {
-    date: "80%",
-    name: "80%",
-    address: "80%",
-  },
+function changeMigrate(val) {
+  newLinks = JSON.parse(JSON.stringify(graph.links));
+  var Len = Math.floor((1.0 / 25) * Math.pow(val - 50, 2) + 149); // 新的任务迁移数
+  newLinks = newLinks.slice(0, Len);
+  for (let i = 0; i < newLinks.length; i++) {
+    let source = parseInt(newLinks[i].source);
+    let target = parseInt(newLinks[i].target);
+    source += val;
+    target += val;
+    newLinks[i].source = source % 77;
+    newLinks[i].target = target % 77;
+  }
+  allInfoIntance.setOption({ series: [{ links: newLinks }] });
+}
+function changeAllClusterInfo(val) {
+  let ACInfo = allClusterInfo.value[0];
+  let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
+  // let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
+  let allCost = parseInt(ACInfo.allCost); // 成本没有百分号
+  let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
+  allRatio = (10 + val * 0.6).toFixed(2);
+  allCost = (20 + val * 0.6).toFixed(2);
+  allLoss = (30 + val * 0.6).toFixed(2);
+  ACInfo.allRatio = allRatio + "%";
+  ACInfo.allCost = allCost + "";
+  ACInfo.allLoss = allLoss + "%";
+}
+function changeMigrateRecord() {
+  migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+  for (let i = 0; i < newLinks.length; i++) {
+    // newLinks[i].value.splice(0, newLinks[i].value.length);
+    newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
+    var len = Math.floor(Math.random() * 6);
+    while (newLinks[i].value.length < len) {
+      var dat = Math.floor(Math.random() * 200) + 1;
+      if (newLinks[i].value.indexOf(dat) == -1) {
+        newLinks[i].value.push(dat);
+      }
+    }
+    var record = {
+      order: i + 1,
+      source: newLinks[i].source,
+      target: newLinks[i].target,
+      task: newLinks[i].value,
+    };
+    migrateRecord.value.push(record);
+  }
+}
+function changeEachClusterInfo(val) {
+  var ECInfo = eachClusterInfo.value;
+  var eachRatio, eachCost, eachLoss;
+  for (let i = 0; i < ECInfo.length; i++) {
+    eachRatio = parseInt(
+      ECInfo[i].eachRatio.slice(0, ECInfo[i].eachRatio.length - 1)
+    ); // 去除百分号，并转为整型
+    eachCost = parseInt(
+      // ECInfo[i].eachCost.slice(0, ECInfo[i].eachCost.length - 1)
+      ECInfo[i].eachCost
+    );
+    eachLoss = parseInt(
+      ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
+    );
+    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2); // 保留 2 位小数
+    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    ECInfo[i].eachRatio = eachRatio + "%";
+    ECInfo[i].eachCost = eachCost + "";
+    ECInfo[i].eachLoss = eachLoss + "%";
+  }
+  // console.log(ECInfo);
+}
+var innerDrawerData = [
+  [
+    "任务1",
+    "任务2",
+    "任务3",
+    "任务4",
+    "任务5",
+    "任务6",
+    "任务7",
+    "任务8",
+    "任务9",
+    "任务10",
+    "任务11",
+    "任务12",
+  ],
+  [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 100.0, 100.0, 32.6, 20.0, 6.4, 3.3],
+  [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
 ];
+const getRow = (index) => {
+  singleClusterIndex = index;
+};
+const handleInnerOpen = (SCIndex) => {
+  SCIndex = SCIndex || singleClusterIndex;
+  const colors = ["#5470C6", "#91CC75", "#EE6666"];
+  getCache().then(() => {
+    singleInfoIntance = echarts.init(singleInfo.value, "macarons");
+    var singleOption = {
+      color: colors,
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+        },
+      },
+      grid: {
+        // right: '20%'
+      },
+      toolbox: {
+        feature: {
+          dataView: { show: true, readOnly: false },
+          restore: { show: true },
+          saveAsImage: { show: true },
+        },
+      },
+      legend: {
+        data: ["任务进度", "成本"],
+      },
+      xAxis: [
+        {
+          type: "value",
+          name: "任务进度",
+          position: "top",
+          alignTicks: true, // 是否开启自动对齐刻度
+          min: 0,
+          max: 100,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[0],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}%",
+          },
+        },
+        {
+          type: "value",
+          name: "成本",
+          position: "bottom",
+          alignTicks: true,
+          // offset: 80,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: colors[1],
+            },
+          },
+          axisLabel: {
+            formatter: "{value}c",
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "category",
+          axisTick: {
+            alignWithLabel: true,
+          },
+          // prettier-ignore
+          data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+        },
+      ],
+      series: [
+        {
+          name: "任务进度",
+          type: "bar",
+          data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+        },
+        {
+          name: "成本",
+          type: "bar",
+          xAxisIndex: 1,
+          data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
+        },
+      ],
+    };
+    singleInfoIntance.setOption(singleOption);
+  });
+};
 
-// const propData = [
-//   {
-//     agentId: '集群1',
-//     agentProp: '集群1的属性',
-//   },
-//   {
-//     agentId: '集群2',
-//     agentProp: '集群2的属性',
-//   },
-//   {
-//     agentId: '集群3',
-//     agentProp: '集群3的属性',
-//   },
-// ]
+const allClusterInfo = ref([
+  {
+    allRatio: "10%",
+    allCost: "20",
+    allLoss: "30%",
+  },
+]);
+const migrateRecord = ref([]);
+// for (var i = 0; i < newLinks.length; i++) {
+//   var record = {
+//     order: i + 1,
+//     source: newLinks[i].source,
+//     target: newLinks[i].target,
+//     task: newLinks[i].value,
+//   };
+//   migrateRecord.value.push(record);
+// }
+const eachClusterInfo = ref([
+  {
+    clusterId: "集群1",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群2",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群3",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群4",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群5",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群6",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群7",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群8",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+  {
+    clusterId: "集群9",
+    eachRatio: "10%",
+    eachCost: "20",
+    eachLoss: "30%",
+  },
+]);
 </script>
 
 <style scoped lang="scss">
+.el-row {
+  margin-bottom: 20px;
+}
+.el-row:last-child {
+  margin-bottom: 0;
+}
+.el-col {
+  border-radius: 0px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.text {
+  font-size: 22px;
+}
 .card {
   margin: 0px;
-}
-.card-block {
   text-align: center;
   border-right: solid 1px var(--el-border-color);
   display: inline-block;
@@ -317,7 +526,7 @@ const tableData = [
   box-sizing: border-box;
   vertical-align: top;
 }
-.card-block:last-child {
+.card:last-child {
   border-right: none;
 }
 .slider-demo-block {
@@ -325,18 +534,30 @@ const tableData = [
   align-items: center;
 }
 .el-slider {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 13px;
+  margin-right: 13px;
 }
-.slider-demo-block .slide-text {
+.tag-text {
+  font-size: 13px;
+  text-align: center;
+  // color: var(--el-text-color-secondary);
+  line-height: 17px;
+  // flex: 1;
+  // overflow: visible;
+  // text-overflow: ellipsis;
+  // white-space: normal; //文本换行属性
+  // margin-bottom: 0;
+}
+.slider-demo-block {
   font-size: 14px;
+  text-align: center;
   color: var(--el-text-color-secondary);
-  line-height: 44px;
+  line-height: 33px;
   flex: 1;
   overflow: visible;
   text-overflow: ellipsis;
   white-space: normal; //文本换行属性
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 .slider-demo-block .slide-text + .el-slider {
   flex: 0 0 70%;
