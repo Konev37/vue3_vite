@@ -137,6 +137,7 @@
 import { reactive, ref } from "vue";
 import { getCluster} from "@/api/dashboard/cluster";
 import {getAgent} from "@/api/dashboard/agent"
+import {getTask} from "@/api/dashboard/task"
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -164,6 +165,9 @@ getCluster().then((res) => {
   console.log(res);
   getAgent().then((resAgent) => {
     console.log(resAgent);
+  });
+  getTask().then((resTask) => {
+    console.log(resTask);
   });
   var option = {
     tooltip: {
