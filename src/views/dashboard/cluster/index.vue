@@ -138,6 +138,7 @@ import { reactive, ref } from "vue";
 import { getCluster} from "@/api/dashboard/cluster";
 import {getAgent} from "@/api/dashboard/agent"
 import {getTask} from "@/api/dashboard/task"
+import {getMigration} from "@/api/dashboard/migration"
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -168,6 +169,9 @@ getCluster().then((res) => {
   });
   getTask().then((resTask) => {
     console.log(resTask);
+  });
+  getMigration().then((resMigration) => {
+    console.log(resMigration);
   });
   var option = {
     tooltip: {
