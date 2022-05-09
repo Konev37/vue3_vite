@@ -162,9 +162,11 @@ proxy.$modal.loading("正在加载Agent数据，请稍候！");
 getCluster().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
+  var agents;
   console.log(res);
-  getAgent().then((resAgent) => {
-    console.log(resAgent);
+  getAgent().then((res) => {
+    // console.log(res);
+    agents = res;
   });
   getTask().then((resTask) => {
     console.log(resTask);
@@ -208,8 +210,9 @@ getCluster().then((res) => {
       {
         name: "Les Miserables",
         type: "graph",
-        layout: "none",
-        data: graph.nodes,
+        layout: "force",
+        // data: graph.nodes,
+        data: agents,
         // links: graph.links,
         categories: graph.categories,
         roam: true,
@@ -238,6 +241,9 @@ getCluster().then((res) => {
             width: 10,
           },
         },
+        force: {
+          repulsion: 300
+        }
       },
     ],
   };
