@@ -138,6 +138,7 @@ import { reactive, ref } from "vue";
 import { getCluster} from "@/api/dashboard/cluster";
 import {getAgent} from "@/api/dashboard/agent"
 import {getTask} from "@/api/dashboard/task"
+import {getMigration} from "@/api/dashboard/migration"
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -159,18 +160,17 @@ var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
-getCluster().then((res) => {
+getAgent().then((agents) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
-  var agents;
-  console.log(res);
-  getAgent().then((res) => {
-    // console.log(res);
-    agents = res;
+  // console.log(agents);
+  // getTask().then((resTask) => {
+  //   console.log(resTask);
+  // });
+  getMigration().then((resMigration) => {
+    console.log(resMigration);
   });
-  getTask().then((resTask) => {
-    console.log(resTask);
-  });
+
   var option = {
     tooltip: {
       show: true,
@@ -182,9 +182,11 @@ getCluster().then((res) => {
             "<br>能力: " +
             params.value[0] +
             "<br>执行任务数量: " +
-            params.value[1] +
+            params.value[3] +
             "<br>执行任务总大小: " +
-            params.value[2]
+            params.value[2] +
+            "<br>最大负载: " +
+            params.value[1]
           );
         } else {
           return (
@@ -242,7 +244,7 @@ getCluster().then((res) => {
           },
         },
         force: {
-          repulsion: 300
+          repulsion: 0.01
         }
       },
     ],
