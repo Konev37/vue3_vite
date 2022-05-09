@@ -136,6 +136,7 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster} from "@/api/dashboard/cluster";
+import {getAgent} from "@/api/dashboard/agent"
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -160,7 +161,10 @@ proxy.$modal.loading("正在加载Agent数据，请稍候！");
 getCluster().then((res) => {
   allInfoIntance = echarts.init(allInfo.value, "macarons");
   proxy.$modal.closeLoading();
-  console.log(res)
+  console.log(res);
+  getAgent().then((resAgent) => {
+    console.log(resAgent);
+  });
   var option = {
     tooltip: {
       show: true,
