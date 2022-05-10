@@ -137,7 +137,12 @@
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
 import { getAgent } from "@/api/dashboard/agent";
-import { getTask, taskRatio } from "@/api/dashboard/task";
+import {
+  getTask,
+  taskRatio,
+  eachAgentRatio,
+  eachClusterRatio,
+} from "@/api/dashboard/task";
 import { getMigration, migrationCost } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -311,7 +316,7 @@ const onChange = (val) => {
   changeMigrate(val);
   //changeAllClusterInfo(val);
   // changeMigrateRecord();
-  changeEachClusterInfo(val);
+  // changeEachClusterInfo(val);
 };
 
 function changeMigrate(val) {
@@ -409,7 +414,7 @@ const getRow = (index) => {
 const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
-  getCache().then(() => {
+  getCluster().then(() => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
     var singleOption = {
       color: colors,
@@ -529,61 +534,72 @@ getMigration().then((migrations) => {
   // console.log(migrateRecord.value);
 });
 const eachClusterInfo = ref([
-  {
-    clusterId: "集群1",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群2",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群3",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群4",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群5",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群6",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群7",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群8",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群9",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
+  // {
+  //   clusterId: "集群1",
+  //   // eachRatio: "10%",
+  //   // eachCost: "20",
+  //   // eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群2",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群3",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群4",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群5",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群6",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群7",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群8",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群9",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
 ]);
+getCluster().then((clusters) => {
+  eachClusterRatio().then((ratio) => {
+    for (let i = 0; i < clusters.length; i++) {
+      var cluster = {
+        clusterId: clusters[i].name,
+        eachRatio: ratio[i+1],
+      };
+      eachClusterInfo.value.push(cluster);
+    }
+  });
+});
 </script>
 
 <style scoped lang="scss">

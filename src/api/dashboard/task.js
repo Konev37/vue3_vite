@@ -15,3 +15,19 @@ export function taskRatio() {
     method: 'get'
   })
 }
+
+// 获取每一个 Agent 的任务完成率
+export function eachAgentRatio() {
+  return request({
+    url: '/dashboard/task/eachAgentRatio',
+    method: 'get'
+  })
+}
+
+// 获取每一个 集群 的任务完成率
+export function eachClusterRatio() {
+  return request({
+    url: '/dashboard/task/eachClusterRatio',
+    method: 'get'
+  })
+}
