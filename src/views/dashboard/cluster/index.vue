@@ -313,7 +313,7 @@ const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   changeMigrate(val);
   changeAllClusterInfo(val);
-  changeMigrateRecord();
+  // changeMigrateRecord();
   changeEachClusterInfo(val);
 };
 
@@ -505,16 +505,24 @@ const allClusterInfo = ref([
     allLoss: "30%",
   },
 ]);
+
 const migrateRecord = ref([]);
-// for (var i = 0; i < newLinks.length; i++) {
-//   var record = {
-//     order: i + 1,
-//     source: newLinks[i].source,
-//     target: newLinks[i].target,
-//     task: newLinks[i].value,
-//   };
-//   migrateRecord.value.push(record);
-// }
+getMigration().then((migrations) => {
+  console.log(migrations.length);
+  console.log(migrations[1].source);
+
+
+for (let i = 0; i < migrations.length; i++) {
+  var record = {
+    order: i + 1,
+    source: migrations[i].source,
+    target: migrations[i].target,
+    task: migrations[i].taskId,
+  };
+  migrateRecord.value.push(record);
+}
+console.log(migrateRecord.value);
+});
 const eachClusterInfo = ref([
   {
     clusterId: "集群1",
