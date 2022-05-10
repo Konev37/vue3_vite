@@ -137,7 +137,7 @@
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
 import { getAgent } from "@/api/dashboard/agent";
-import { getTask } from "@/api/dashboard/task";
+import { getTask, taskRatio } from "@/api/dashboard/task";
 import { getMigration, migrationCost } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -168,9 +168,6 @@ getAgent().then((agents) => {
       // console.log(agents);
       // console.log(migrations);
       // console.log(clusters);
-      // getTask().then((resTask) => {
-      //   console.log(resTask);
-      // });
 
       var option = {
         tooltip: {
@@ -505,11 +502,14 @@ const allClusterInfo = ref([
     // allLoss: "30%",
   },
 ]);
-migrationCost().then((migCost) => {
-  let ACInfo = allClusterInfo.value[0];
-  ACInfo.allRatio = "10%";
-  ACInfo.allCost = migCost;
-  ACInfo.allLoss = "30%";
+taskRatio().then((ratio) => {
+  migrationCost().then((cost) => {
+    let ACInfo = allClusterInfo.value[0];
+    ratio = (100 * ratio).toFixed(2);
+    ACInfo.allRatio = ratio + "%";
+    ACInfo.allCost = cost;
+    ACInfo.allLoss = "30%";
+  });
 });
 
 const migrateRecord = ref([]);
