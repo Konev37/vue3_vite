@@ -162,94 +162,99 @@ proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
 getAgent().then((agents) => {
   getMigration().then((migrations) => {
-    allInfoIntance = echarts.init(allInfo.value, "macarons");
-    proxy.$modal.closeLoading();
-    // console.log(agents);
-    // console.log(migrations);
-    // getTask().then((resTask) => {
-    //   console.log(resTask);
-    // });
+    getCluster().then((clusters) => {
+      allInfoIntance = echarts.init(allInfo.value, "macarons");
+      proxy.$modal.closeLoading();
+      // console.log(agents);
+      // console.log(migrations);
+      // console.log(clusters);
+      // getTask().then((resTask) => {
+      //   console.log(resTask);
+      // });
 
-    var option = {
-      tooltip: {
-        show: true,
-        trigger: "item",
-        formatter: (params) => {
-          if (params.name.indexOf(">") == -1) {
-            return (
-              params.name +
-              "<br>能力: " +
-              params.value[0] +
-              "<br>执行任务数量: " +
-              params.value[3] +
-              "<br>执行任务总大小: " +
-              params.value[2] +
-              "<br>最大负载: " +
-              params.value[1]
-            );
-          } else {
-            return (
-              "迁移方向：" +
-              params.name +
-              // "<br>这是第 " +
-              // params.name +
-              // " 个执行的迁移" +
-              "<br>所迁移的任务编号：" +
-              params.value
-            );
-          }
+      var option = {
+        tooltip: {
+          show: true,
+          trigger: "item",
+          formatter: (params) => {
+            if (params.name.indexOf(">") == -1) {
+              return (
+                params.name +
+                "<br>能力: " +
+                params.value[0] +
+                "<br>执行任务数量: " +
+                params.value[3] +
+                "<br>执行任务总大小: " +
+                params.value[2] +
+                "<br>最大负载: " +
+                params.value[1]
+              );
+            } else {
+              return (
+                "迁移方向：" +
+                params.name +
+                // "<br>这是第 " +
+                // params.name +
+                // " 个执行的迁移" +
+                "<br>所迁移的任务编号：" +
+                params.value
+              );
+            }
+          },
         },
-      },
-      legend: [
-        {
-          data: graph.categories.map(function (a) {
-            return a.name;
-          }),
-        },
-      ],
-      series: [
-        {
-          name: "Les Miserables",
-          type: "graph",
-          layout: "force",
-          // data: graph.nodes,
-          data: agents,
-          // links: graph.links,
-          links: migrations,
-          categories: graph.categories,
-          roam: true,
-          edgeSymbol: ["circle", "arrow"],
-          label: {
-            show: true,
-            position: "right",
-            formatter: function (params) {
-              return params.dataIndex + ", " + params.name;
+        legend: [
+          {
+            // data: graph.categories.map(function (a) {
+            data: clusters.map(function (a) {
+              return a.name;
+            }),
+          },
+        ],
+        series: [
+          {
+            name: "Les Miserables",
+            type: "graph",
+            layout: "force",
+            data: agents,
+            links: migrations,
+            categories: clusters,
+            // data: graph.nodes,
+            // links: graph.links,
+            // categories: graph.categories,
+            roam: true,
+            edgeSymbol: ["circle", "arrow"],
+            label: {
+              show: true,
+              position: "right",
+              formatter: function (params) {
+                return params.data.id + ", " + params.name;
+              },
             },
-          },
-          labelLayout: {
-            hideOverlap: true,
-          },
-          scaleLimit: {
-            min: 0.005,
-            max: 4,
-          },
-          lineStyle: {
-            color: "source",
-            curveness: 0.3,
-          },
-          emphasis: {
-            focus: "adjacency",
+            labelLayout: {
+              hideOverlap: true,
+            },
+            scaleLimit: {
+              min: 0.005,
+              max: 4,
+            },
             lineStyle: {
-              width: 10,
+              color: "source",
+              curveness: 0.3,
+            },
+            emphasis: {
+              focus: "adjacency",
+              lineStyle: {
+                width: 10,
+              },
+            },
+            force: {
+              repulsion: 0.000000000001,
             },
           },
-          force: {
-            repulsion: 0.00000001,
-          },
-        },
-      ],
-    };
-    allInfoIntance.setOption(option);
+        ],
+      };
+      allInfoIntance.setOption(option);
+    });
   });
 });
 const showMigrate = () => {
