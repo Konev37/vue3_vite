@@ -138,7 +138,7 @@ import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
 import { getAgent } from "@/api/dashboard/agent";
 import { getTask } from "@/api/dashboard/task";
-import { getMigration } from "@/api/dashboard/migration";
+import { getMigration, migrationCost } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -312,7 +312,7 @@ const formatTooltip = (val) => {
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   changeMigrate(val);
-  changeAllClusterInfo(val);
+  //changeAllClusterInfo(val);
   // changeMigrateRecord();
   changeEachClusterInfo(val);
 };
@@ -500,28 +500,33 @@ const handleInnerOpen = (SCIndex) => {
 
 const allClusterInfo = ref([
   {
-    allRatio: "10%",
-    allCost: "20",
-    allLoss: "30%",
+    // allRatio: "10%",
+    // allCost: 20,
+    // allLoss: "30%",
   },
 ]);
+migrationCost().then((migCost) => {
+  let ACInfo = allClusterInfo.value[0];
+  ACInfo.allRatio = "10%";
+  ACInfo.allCost = migCost;
+  ACInfo.allLoss = "30%";
+});
 
 const migrateRecord = ref([]);
 getMigration().then((migrations) => {
-  console.log(migrations.length);
-  console.log(migrations[1].source);
+  // console.log(migrations.length);
+  // console.log(migrations[1].source);
 
-
-for (let i = 0; i < migrations.length; i++) {
-  var record = {
-    order: i + 1,
-    source: migrations[i].source,
-    target: migrations[i].target,
-    task: migrations[i].taskId,
-  };
-  migrateRecord.value.push(record);
-}
-console.log(migrateRecord.value);
+  for (let i = 0; i < migrations.length; i++) {
+    var record = {
+      order: i + 1,
+      source: migrations[i].source,
+      target: migrations[i].target,
+      task: migrations[i].taskId,
+    };
+    migrateRecord.value.push(record);
+  }
+  // console.log(migrateRecord.value);
 });
 const eachClusterInfo = ref([
   {
