@@ -136,18 +136,13 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
-<<<<<<< HEAD
-import { getAgent } from "@/api/dashboard/agent";
+import { getAgent, getLossRatio } from "@/api/dashboard/agent";
 import {
   getTask,
   taskRatio,
   eachAgentRatio,
   eachClusterRatio,
 } from "@/api/dashboard/task";
-=======
-import { getAgent, getLossRatio } from "@/api/dashboard/agent";
-import { getTask, taskRatio } from "@/api/dashboard/task";
->>>>>>> a750f112d95fdbfbc6e9c98f3ed1b9e6e3bffa31
 import { getMigration, migrationCost } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
