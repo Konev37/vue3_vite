@@ -136,6 +136,7 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
+<<<<<<< HEAD
 import { getAgent } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -143,6 +144,10 @@ import {
   eachAgentRatio,
   eachClusterRatio,
 } from "@/api/dashboard/task";
+=======
+import { getAgent, getLossRatio } from "@/api/dashboard/agent";
+import { getTask, taskRatio } from "@/api/dashboard/task";
+>>>>>>> a750f112d95fdbfbc6e9c98f3ed1b9e6e3bffa31
 import { getMigration, migrationCost } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -173,7 +178,9 @@ getAgent().then((agents) => {
       // console.log(agents);
       // console.log(migrations);
       // console.log(clusters);
-
+      getTask().then((tasks) => {
+        console.log(tasks);
+      });
       var option = {
         tooltip: {
           show: true,
@@ -509,11 +516,13 @@ const allClusterInfo = ref([
 ]);
 taskRatio().then((ratio) => {
   migrationCost().then((cost) => {
+    getLossRatio().then((lossratio)=> {
     let ACInfo = allClusterInfo.value[0];
     ratio = (100 * ratio).toFixed(2);
     ACInfo.allRatio = ratio + "%";
     ACInfo.allCost = cost;
-    ACInfo.allLoss = "30%";
+    ACInfo.allLoss = lossratio*100 + "%";
+    });
   });
 });
 

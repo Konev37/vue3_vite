@@ -1,72 +1,64 @@
 <template>
   <div class="app-container">
-    <el-container>
-      <el-main>
-        <el-card class="card">
-          <div class="card-block">
-            <el-row>
-              <el-col :span="24" class="topo">
+    <el-row>
+        <el-col :span="24">
+          <el-card class="card">
                 <!-- 这个写在card下才能有效果 -->
-                <template #header><span>集群拓扑图</span></template>
-                <div
-                  class="el-table el-table--enable-row-hover el-table--medium"
-                >
-                  <div
-                    ref="allInfo"
-                    style="height: 400px; margin-bottom: 20px"
-                  />
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div>
-                  <div class="slider-demo-block">
-                    <span class="slide-text">任务完成<br />成本</span>
-                    <el-slider
-                      class="el-slider"
-                      v-model="value4"
-                      :format-tooltip="formatTooltip"
-                      :marks="marks"
-                      @change="onChange"
-                    />
-                    <span class="slide-text">任务完成<br />比例</span>
-                  </div>
-                  <!-- <el-button type="primary">优化</el-button> -->
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <template v-slot:header>
-                  <div class="clearfix">
-                    <span>全部集群总状态</span>
-                  </div>
-                </template>
-                <el-table :data="tableData" border>
-                  <el-table-column prop="date" label="任务完成率" width="180" />
-                  <el-table-column prop="name" label="当前总成本" width="180" />
-                  <el-table-column prop="address" label="Agent损失率" />
-                </el-table>
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
-      </el-main>
-      <el-footer>
-        <!-- <el-row>
-          <el-card class="update-log">
-            <template v-slot:header>
-            <div class="clearfix">
-              <span>Agent集群属性</span>
+                <template #header><span>任务完成率</span></template>
+                <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="allInfo" style="height: 600px" />
+            </div>
+          </el-card>
+        </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-optimize-header">
+              <span>优化目标倾向</span>
             </div>
           </template>
-          <div class="body">
-            <el-table :data="propData" stripe border>
-              <el-table-column prop="agentId" label="集群编号" width="210" />
-              <el-table-column prop="agentProp" label="属性" width="210"/>
-            </el-table>
+          <div class="slider-demo-block">
+            <!-- <span class="slide-text">任务完成<br />成本</span> -->
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
+            <el-slider
+              class="el-slider"
+              v-model="valueOptimize"
+              :format-tooltip="formatTooltip"
+              :marks="marks"
+              @change="onChange"
+            />
+            <!-- <span class="slide-text">任务完成<br />比例</span> -->
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
-          </el-card>
-        </el-row> -->
-      </el-footer>
-    </el-container>
+        </el-card>
+      </el-col>
+      <el-col :span="12">
+        <el-card>
+          <template #header>
+            <div class="card-cluster-header">
+              <span>全部集群总状态</span>
+              <el-button
+                type="text"
+                style="margin-left: 32px"
+                @click="drawerCluster = true"
+                >各集群详细信息</el-button
+              >
+            </div>
+          </template>
+          <el-table :data="allClusterInfo" border style="width: 100%">
+            <el-table-column prop="allRatio" label="任务完成率" width="180" />
+            <el-table-column prop="allCost" label="当前总成本" width="180" />
+            <el-table-column prop="allLoss" label="Agent损失率" />
+          </el-table>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
