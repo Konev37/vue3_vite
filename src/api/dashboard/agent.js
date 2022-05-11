@@ -15,3 +15,11 @@ export function getLossRatio() {
     method: 'get'
   })
 }
+
+// 查询某个集群的Agent损失率
+export function getClusterLossRatio() {
+  return request({
+    url: '/dashboard/agent/clusterloss',
+    method: 'get'
+  })
+}

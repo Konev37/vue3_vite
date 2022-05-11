@@ -143,7 +143,7 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
-import { getAgent, getLossRatio } from "@/api/dashboard/agent";
+import { getAgent, getLossRatio ,getClusterLossRatio } from "@/api/dashboard/agent";
 import {
   getTask,
   allTaskRatio,
@@ -607,15 +607,18 @@ const eachClusterInfo = ref([
 getCluster().then((clusters) => {
   eachClusterRatio().then((eachRatio) => {
     eachMigrationCost().then((eachCost) => {
-      for (let i = 0; i < clusters.length; i++) {
+      getClusterLossRatio().then ((eachLossRatio)=>{
+        for (let i = 0; i < clusters.length; i++) {
         var ratio = (eachRatio[i + 1] * 100).toFixed(2);
         var cluster = {
           clusterId: clusters[i].name,
           eachRatio: ratio + "%",
           eachCost: eachCost[i + 1],
+          eachLoss: eachLossRatio[i+1]*100 + "%",
         };
         eachClusterInfo.value.push(cluster);
       }
+      });
     });
   });
 });
