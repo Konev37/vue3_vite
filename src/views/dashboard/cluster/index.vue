@@ -143,7 +143,7 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
-import { getAgent, getLossRatio } from "@/api/dashboard/agent";
+import { getAgent, getLossRatio ,getClusterLossRatio } from "@/api/dashboard/agent";
 import {
   getTask,
   allTaskRatio,
@@ -329,26 +329,33 @@ const formatTooltip = (val) => {
 };
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
-  changeMigrate(val);
+  // newLinks = JSON.parse(JSON.stringify(migrations));
+  getMigration().then((migrations) => {
+    changeMigrate(val , migrations);
+  });
   //changeAllClusterInfo(val);
   // changeMigrateRecord();
   // changeEachClusterInfo(val);
 };
 
-function changeMigrate(val) {
-  newLinks = JSON.parse(JSON.stringify(graph.links));
-  var Len = Math.floor((1.0 / 25) * Math.pow(val - 50, 2) + 149); // 新的任务迁移数
+function changeMigrate(val ,migrations) {
+  newLinks = JSON.parse(JSON.stringify(migrations));
+  // console.log(migrations);
+  var Len = Math.floor((1.0 / 250) * Math.pow(val - 50, 2) + 1); // 新的任务迁移数
+  console.log(Len);
   newLinks = newLinks.slice(0, Len);
-  for (let i = 0; i < newLinks.length; i++) {
-    let source = parseInt(newLinks[i].source);
-    let target = parseInt(newLinks[i].target);
-    source += val;
-    target += val;
-    newLinks[i].source = source % 77;
-    newLinks[i].target = target % 77;
-  }
+  // console.log(newLinks);
+  // for (let i = 0; i < newLinks.length; i++) {
+  //   let source = parseInt(newLinks[i].source);
+  //   let target = parseInt(newLinks[i].target);
+  //   source += val;
+  //   target += val;
+  //   newLinks[i].source = source % 77;
+  //   newLinks[i].target = target % 77;
+  // }
   allInfoIntance.setOption({ series: [{ links: newLinks }] });
 }
+
 function changeAllClusterInfo(val) {
   let ACInfo = allClusterInfo.value[0];
   let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
@@ -612,7 +619,8 @@ const eachClusterInfo = ref([
 getCluster().then((clusters) => {
   eachClusterRatio().then((eachRatio) => {
     eachMigrationCost().then((eachCost) => {
-      for (let i = 0; i < clusters.length; i++) {
+      getClusterLossRatio().then ((eachLossRatio)=>{
+        for (let i = 0; i < clusters.length; i++) {
         var ratio = (eachRatio[i + 1] * 100).toFixed(2);
         if (eachCost[i + 1] == null) {
           eachCost[i + 1] = 0;
@@ -621,9 +629,11 @@ getCluster().then((clusters) => {
           clusterId: clusters[i].name,
           eachRatio: ratio + "%",
           eachCost: eachCost[i + 1],
+          eachLoss: eachLossRatio[i+1]*100 + "%",
         };
         eachClusterInfo.value.push(cluster);
       }
+      });
     });
   });
 });
