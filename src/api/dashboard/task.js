@@ -31,3 +31,11 @@ export function eachClusterRatio() {
     method: 'get'
   })
 }
+
+// 获取每一个 集群 的任务详情
+export function eachClusterTask() {
+  return request({
+    url: '/dashboard/task/eachClusterTask',
+    method: 'get'
+  })
+}

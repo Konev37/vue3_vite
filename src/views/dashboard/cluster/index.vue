@@ -149,6 +149,7 @@ import {
   allTaskRatio,
   eachAgentRatio,
   eachClusterRatio,
+  eachClusterTask
 } from "@/api/dashboard/task";
 import {
   getMigration,
@@ -187,7 +188,7 @@ getAgent().then((agents) => {
       // console.log(migrations);
       // console.log(clusters);
       getTask().then((tasks) => {
-        console.log(tasks);
+        // console.log(tasks);
       });
       var option = {
         tooltip: {
@@ -429,8 +430,9 @@ const getRow = (index) => {
 const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
-  getCluster().then(() => {
+  eachClusterTask().then((clustTsk) => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
+    console.log(clustTsk);
     var singleOption = {
       color: colors,
       tooltip: {
@@ -494,20 +496,21 @@ const handleInnerOpen = (SCIndex) => {
             alignWithLabel: true,
           },
           // prettier-ignore
-          data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+          // data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+          data: clustTsk[SCIndex + 1],
         },
       ],
       series: [
         {
           name: "任务进度",
           type: "bar",
-          data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+          // data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
         },
         {
           name: "成本",
           type: "bar",
           xAxisIndex: 1,
-          data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
+          // data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
         },
       ],
     };
@@ -611,6 +614,9 @@ getCluster().then((clusters) => {
     eachMigrationCost().then((eachCost) => {
       for (let i = 0; i < clusters.length; i++) {
         var ratio = (eachRatio[i + 1] * 100).toFixed(2);
+        if (eachCost[i + 1] == null) {
+          eachCost[i + 1] = 0;
+        }
         var cluster = {
           clusterId: clusters[i].name,
           eachRatio: ratio + "%",
