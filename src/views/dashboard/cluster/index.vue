@@ -169,7 +169,8 @@ const allInfo = ref(null);
 const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
 const valueOptimize = ref(0);
-var newLinks = JSON.parse(JSON.stringify(graph.links));
+// var newLinks = JSON.parse(JSON.stringify(graph.links));
+var newLinks;
 
 var allInfoIntance, singleInfoIntance;
 var singleClusterIndex;
@@ -181,6 +182,7 @@ getAgent().then((agents) => {
     getCluster().then((clusters) => {
       allInfoIntance = echarts.init(allInfo.value, "macarons");
       proxy.$modal.closeLoading();
+      newLinks = JSON.parse(JSON.stringify(migrations));
       // console.log(agents);
       // console.log(migrations);
       // console.log(clusters);
@@ -229,9 +231,9 @@ getAgent().then((agents) => {
           {
             name: "Les Miserables",
             type: "graph",
-            layout: "force",
+            // layout: "force",
             data: agents,
-            links: migrations,
+            // links: migrations,
             categories: clusters,
             // data: graph.nodes,
             // links: graph.links,
@@ -262,9 +264,9 @@ getAgent().then((agents) => {
                 width: 10,
               },
             },
-            force: {
-              repulsion: 0.000000000001,
-            },
+            // force: {
+            //   repulsion: 0.000000000001,
+            // },
           },
         ],
       };
@@ -273,8 +275,8 @@ getAgent().then((agents) => {
   });
 });
 const showMigrate = () => {
-  let v = 20; // 每一帧连线数的上限
-  let t = 400; // 动画间隔
+  let v = 5; // 每一帧连线数的上限
+  let t = 500; // 动画间隔
   allInfoIntance.setOption({
     // 清空连线
     series: [{ links: null }],
