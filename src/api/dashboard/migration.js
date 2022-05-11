@@ -8,10 +8,18 @@ export function getMigration() {
   })
 }
 
-// 获取迁移成本
-export function migrationCost() {
+// 获取总迁移成本
+export function allMigrationCost() {
   return request({
-    url: '/dashboard/migration/cost',
+    url: '/dashboard/migration/allCost',
+    method: 'get'
+  })
+}
+
+// 获取每个集群内部的迁移成本
+export function eachMigrationCost() {
+  return request({
+    url: '/dashboard/migration/eachCost',
     method: 'get'
   })
 }

@@ -73,7 +73,11 @@
           </template>
           <el-table :data="allClusterInfo" border style="width: 100%">
             <el-table-column prop="allRatio" label="任务完成率" width="180" />
-            <el-table-column prop="allCost" label="当前总成本" width="180" />
+            <el-table-column
+              prop="allCost"
+              label="当前总成本（仅计算迁移成本）"
+              width="180"
+            />
             <el-table-column prop="allLoss" label="Agent损失率" />
           </el-table>
         </el-card>
@@ -103,7 +107,10 @@
       <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
-        <el-table-column prop="eachCost" label="当前总成本" />
+        <el-table-column
+          prop="eachCost"
+          label="当前总成本（仅考虑集群内部迁移）"
+        />
         <el-table-column prop="eachLoss" label="Agent损失率" />
         <el-table-column label="详细信息" width="120">
           <template #default="scope">
@@ -139,11 +146,15 @@ import { getCluster } from "@/api/dashboard/cluster";
 import { getAgent, getLossRatio } from "@/api/dashboard/agent";
 import {
   getTask,
-  taskRatio,
+  allTaskRatio,
   eachAgentRatio,
   eachClusterRatio,
 } from "@/api/dashboard/task";
-import { getMigration, migrationCost } from "@/api/dashboard/migration";
+import {
+  getMigration,
+  allMigrationCost,
+  eachMigrationCost,
+} from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 
@@ -509,14 +520,14 @@ const allClusterInfo = ref([
     // allLoss: "30%",
   },
 ]);
-taskRatio().then((ratio) => {
-  migrationCost().then((cost) => {
-    getLossRatio().then((lossratio)=> {
-    let ACInfo = allClusterInfo.value[0];
-    ratio = (100 * ratio).toFixed(2);
-    ACInfo.allRatio = ratio + "%";
-    ACInfo.allCost = cost;
-    ACInfo.allLoss = lossratio*100 + "%";
+allTaskRatio().then((ratio) => {
+  allMigrationCost().then((cost) => {
+    getLossRatio().then((lossratio) => {
+      let ACInfo = allClusterInfo.value[0];
+      ratio = (100 * ratio).toFixed(2);
+      ACInfo.allRatio = ratio + "%";
+      ACInfo.allCost = cost;
+      ACInfo.allLoss = lossratio * 100 + "%";
     });
   });
 });
@@ -594,14 +605,18 @@ const eachClusterInfo = ref([
   // },
 ]);
 getCluster().then((clusters) => {
-  eachClusterRatio().then((ratio) => {
-    for (let i = 0; i < clusters.length; i++) {
-      var cluster = {
-        clusterId: clusters[i].name,
-        eachRatio: ratio[i+1],
-      };
-      eachClusterInfo.value.push(cluster);
-    }
+  eachClusterRatio().then((eachRatio) => {
+    eachMigrationCost().then((eachCost) => {
+      for (let i = 0; i < clusters.length; i++) {
+        var ratio = (eachRatio[i + 1] * 100).toFixed(2);
+        var cluster = {
+          clusterId: clusters[i].name,
+          eachRatio: ratio + "%",
+          eachCost: eachCost[i + 1],
+        };
+        eachClusterInfo.value.push(cluster);
+      }
+    });
   });
 });
 </script>

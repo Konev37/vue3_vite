@@ -8,10 +8,10 @@ export function getTask() {
   })
 }
 
-// 获取任务完成率
-export function taskRatio() {
+// 获取总任务完成率
+export function allTaskRatio() {
   return request({
-    url: '/dashboard/task/ratio',
+    url: '/dashboard/task/allRatio',
     method: 'get'
   })
 }
