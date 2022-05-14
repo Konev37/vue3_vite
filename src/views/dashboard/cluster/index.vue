@@ -73,11 +73,18 @@
           </template>
           <el-table :data="allClusterInfo" border style="width: 100%">
             <el-table-column prop="allRatio" label="任务完成率" width="180" />
-            <el-table-column
-              prop="allCost"
-              label="当前总成本（仅计算迁移成本）"
-              width="180"
-            />
+            <el-table-column label="总成本" width="180">
+              <el-table-column
+                prop="allMigrationCost"
+                label="迁移成本"
+                width="90"
+              />
+              <el-table-column
+                prop="allTaskExecCost"
+                label="任务执行成本（时间）"
+                width="90"
+              />
+            </el-table-column>
             <el-table-column prop="allLoss" label="Agent损失率" />
           </el-table>
         </el-card>
@@ -147,6 +154,7 @@ import {
   getAgent,
   getLossRatio,
   getClusterLossRatio,
+  allTaskExecCost,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -446,9 +454,9 @@ const handleInnerOpen = (SCIndex) => {
 
     // 把字符串类型的最大值为 1 的任务完成进度
     // 转换成浮点数类型，且最大值为100
-    for(var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
+    for (var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
       for (var j = 0; j < clstTskInfo[i][1].length; j++) {
-        clstTskInfo[i][1][j] = +(clstTskInfo[i][1][j]) * 100;
+        clstTskInfo[i][1][j] = +clstTskInfo[i][1][j] * 100;
       }
     }
 
@@ -546,13 +554,16 @@ const allClusterInfo = ref([
   },
 ]);
 allTaskRatio().then((ratio) => {
-  allMigrationCost().then((cost) => {
-    getLossRatio().then((lossratio) => {
-      let ACInfo = allClusterInfo.value[0];
-      ratio = (100 * ratio).toFixed(3);
-      ACInfo.allRatio = ratio + "%";
-      ACInfo.allCost = cost;
-      ACInfo.allLoss = lossratio * 100 + "%";
+  allMigrationCost().then((migCost) => {
+    allTaskExecCost().then((execCost) => {
+      getLossRatio().then((lossratio) => {
+        let ACInfo = allClusterInfo.value[0];
+        ratio = (100 * ratio).toFixed(3);
+        ACInfo.allRatio = ratio + "%";
+        ACInfo.allMigrationCost = migCost;
+        ACInfo.allTaskExecCost = execCost.toFixed(3);
+        ACInfo.allLoss = lossratio * 100 + "%";
+      });
     });
   });
 });

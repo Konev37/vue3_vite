@@ -23,3 +23,11 @@ export function getClusterLossRatio() {
     method: 'get'
   })
 }
+
+// 获取总的任务执行成本
+export function allTaskExecCost() {
+  return request({
+    url: '/dashboard/agent/allCost',
+    method: 'get'
+  })
+}
