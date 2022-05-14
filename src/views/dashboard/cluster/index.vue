@@ -72,17 +72,17 @@
             </div>
           </template>
           <el-table :data="allClusterInfo" border style="width: 100%">
-            <el-table-column prop="allRatio" label="任务完成率" width="180" />
-            <el-table-column label="总成本" width="180">
+            <el-table-column prop="allRatio" label="任务完成率" width="140" />
+            <el-table-column label="总成本" width="260">
               <el-table-column
                 prop="allMigrationCost"
                 label="迁移成本"
-                width="90"
+                width="130"
               />
               <el-table-column
                 prop="allTaskExecCost"
                 label="任务执行成本（时间）"
-                width="90"
+                width="130"
               />
             </el-table-column>
             <el-table-column prop="allLoss" label="Agent损失率" />
@@ -114,12 +114,12 @@
       <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
-        <el-table-column
-          prop="eachCost"
-          label="当前总成本（仅考虑集群内部迁移）"
-        />
+        <el-table-column label="总成本">
+          <el-table-column prop="eachMigCost" label="集群内迁移成本" />
+          <el-table-column prop="eachExecCost" label="任务执行成本（时间）" />
+        </el-table-column>
         <el-table-column prop="eachLoss" label="Agent损失率" />
-        <el-table-column label="详细信息" width="120">
+        <el-table-column label="详细信息" width="100">
           <template #default="scope">
             <el-button
               type="text"
@@ -155,6 +155,8 @@ import {
   getLossRatio,
   getClusterLossRatio,
   allTaskExecCost,
+  eachTaskExecCost,
+  eachExecCost,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -450,99 +452,102 @@ const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
   eachClusterTaskInfo().then((clstTskInfo) => {
-    singleInfoIntance = echarts.init(singleInfo.value, "macarons");
+    eachExecCost().then((execCost) => {
+      singleInfoIntance = echarts.init(singleInfo.value, "macarons");
 
-    // 把字符串类型的最大值为 1 的任务完成进度
-    // 转换成浮点数类型，且最大值为100
-    for (var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
-      for (var j = 0; j < clstTskInfo[i][1].length; j++) {
-        clstTskInfo[i][1][j] = +clstTskInfo[i][1][j] * 100;
+      // 把字符串类型的最大值为 1 的任务完成进度
+      // 转换成浮点数类型，且最大值为100
+      for (var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
+        for (var j = 0; j < clstTskInfo[i][1].length; j++) {
+          clstTskInfo[i][1][j] = +clstTskInfo[i][1][j] * 100;
+        }
       }
-    }
 
-    var singleOption = {
-      color: colors,
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "cross",
+      var singleOption = {
+        color: colors,
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+          },
         },
-      },
-      grid: {
-        // right: '20%'
-      },
-      toolbox: {
-        feature: {
-          dataView: { show: true, readOnly: false },
-          restore: { show: true },
-          saveAsImage: { show: true },
+        grid: {
+          // right: '20%'
         },
-      },
-      legend: {
-        data: ["任务进度", "成本"],
-      },
-      xAxis: [
-        {
-          type: "value",
-          name: "任务进度",
-          position: "top",
-          alignTicks: true, // 是否开启自动对齐刻度
-          min: 0,
-          max: 100,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: colors[0],
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        legend: {
+          data: ["任务进度", "成本"],
+        },
+        xAxis: [
+          {
+            type: "value",
+            name: "任务进度",
+            position: "top",
+            alignTicks: true, // 是否开启自动对齐刻度
+            min: 0,
+            max: 100,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: colors[0],
+              },
+            },
+            axisLabel: {
+              formatter: "{value}%",
             },
           },
-          axisLabel: {
-            formatter: "{value}%",
-          },
-        },
-        {
-          type: "value",
-          name: "成本",
-          position: "bottom",
-          alignTicks: true,
-          // offset: 80,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: colors[1],
+          {
+            type: "value",
+            name: "成本",
+            position: "bottom",
+            alignTicks: true,
+            // offset: 80,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: colors[1],
+              },
+            },
+            axisLabel: {
+              formatter: "{value}c",
             },
           },
-          axisLabel: {
-            formatter: "{value}c",
+        ],
+        yAxis: [
+          {
+            type: "category",
+            axisTick: {
+              alignWithLabel: true,
+            },
+            // prettier-ignore
+            // data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+            data: clstTskInfo[SCIndex + 1][0],
           },
-        },
-      ],
-      yAxis: [
-        {
-          type: "category",
-          axisTick: {
-            alignWithLabel: true,
+        ],
+        series: [
+          {
+            name: "任务进度",
+            type: "bar",
+            // data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+            data: clstTskInfo[SCIndex + 1][1],
           },
-          // prettier-ignore
-          // data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
-          data: clstTskInfo[SCIndex + 1][0],
-        },
-      ],
-      series: [
-        {
-          name: "任务进度",
-          type: "bar",
-          // data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
-          data: clstTskInfo[SCIndex + 1][1],
-        },
-        {
-          name: "成本",
-          type: "bar",
-          xAxisIndex: 1,
-          // data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
-        },
-      ],
-    };
-    singleInfoIntance.setOption(singleOption);
+          {
+            name: "成本",
+            type: "bar",
+            xAxisIndex: 1,
+            // data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
+            data: execCost,
+          },
+        ],
+      };
+      singleInfoIntance.setOption(singleOption);
+    });
   });
 };
 
@@ -642,20 +647,23 @@ const eachClusterInfo = ref([
 ]);
 getCluster().then((clusters) => {
   eachClusterRatio().then((eachRatio) => {
-    eachMigrationCost().then((eachCost) => {
-      getClusterLossRatio().then((eachLossRatio) => {
-        for (let i = 0; i < clusters.length; i++) {
-          if (eachCost[i + 1] == null) {
-            eachCost[i + 1] = 0;
+    eachMigrationCost().then((eachMigCost) => {
+      eachTaskExecCost().then((eachExecCost) => {
+        getClusterLossRatio().then((eachLossRatio) => {
+          for (let i = 0; i < clusters.length; i++) {
+            if (eachMigCost[i + 1] == null) {
+              eachMigCost[i + 1] = 0;
+            }
+            var cluster = {
+              clusterId: clusters[i].name,
+              eachRatio: (eachRatio[i] * 100).toFixed(3) + "%",
+              eachMigCost: eachMigCost[i + 1],
+              eachExecCost: eachExecCost[i].toFixed(3),
+              eachLoss: eachLossRatio[i + 1] * 100 + "%",
+            };
+            eachClusterInfo.value.push(cluster);
           }
-          var cluster = {
-            clusterId: clusters[i].name,
-            eachRatio: (eachRatio[i] * 100).toFixed(3) + "%",
-            eachCost: eachCost[i + 1],
-            eachLoss: eachLossRatio[i + 1] * 100 + "%",
-          };
-          eachClusterInfo.value.push(cluster);
-        }
+        });
       });
     });
   });
