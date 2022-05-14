@@ -153,7 +153,7 @@ import {
   allTaskRatio,
   eachAgentProgress,
   eachClusterRatio,
-  eachClusterTask,
+  eachClusterTaskInfo,
 } from "@/api/dashboard/task";
 import {
   getMigration,
@@ -441,9 +441,17 @@ const getRow = (index) => {
 const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
-  eachClusterTask().then((clustTsk) => {
+  eachClusterTaskInfo().then((clstTskInfo) => {
     singleInfoIntance = echarts.init(singleInfo.value, "macarons");
-    console.log(clustTsk);
+
+    // 把字符串类型的最大值为 1 的任务完成进度
+    // 转换成浮点数类型，且最大值为100
+    for(var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
+      for (var j = 0; j < clstTskInfo[i][1].length; j++) {
+        clstTskInfo[i][1][j] = +(clstTskInfo[i][1][j]) * 100;
+      }
+    }
+
     var singleOption = {
       color: colors,
       tooltip: {
@@ -508,7 +516,7 @@ const handleInnerOpen = (SCIndex) => {
           },
           // prettier-ignore
           // data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
-          data: clustTsk[SCIndex + 1],
+          data: clstTskInfo[SCIndex + 1][0],
         },
       ],
       series: [
@@ -516,6 +524,7 @@ const handleInnerOpen = (SCIndex) => {
           name: "任务进度",
           type: "bar",
           // data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+          data: clstTskInfo[SCIndex + 1][1],
         },
         {
           name: "成本",

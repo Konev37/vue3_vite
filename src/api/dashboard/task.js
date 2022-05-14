@@ -50,9 +50,9 @@ export function eachClusterRatio() {
 
 
 // 获取每一个 集群 的任务详情
-export function eachClusterTask() {
+export function eachClusterTaskInfo() {
   return request({
-    url: '/dashboard/task/eachClusterTask',
+    url: '/dashboard/task/eachClusterTaskInfo',
     method: 'get'
   })
 }
