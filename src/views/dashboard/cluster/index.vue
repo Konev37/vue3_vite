@@ -159,6 +159,7 @@ import {
   getMigration,
   allMigrationCost,
   eachMigrationCost,
+  postSliderVal,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -334,9 +335,13 @@ const formatTooltip = (val) => {
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
-  getMigration().then((migrations) => {
-    changeMigrate(val, migrations);
+  postSliderVal(val).then((resmigration) => {
+    // console.log(res + "，传值成功");
+    allInfoIntance.setOption({ series: [{ links: resmigration }] });
   });
+  // getMigration().then((migrations) => {
+  //   changeMigrate(val, migrations);
+  // });
   //changeAllClusterInfo(val);
   // changeMigrateRecord();
   // changeEachClusterInfo(val);

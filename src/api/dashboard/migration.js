@@ -23,3 +23,11 @@ export function eachMigrationCost() {
     method: 'get'
   })
 }
+
+export function postSliderVal(val) {
+  return request({
+    url: '/dashboard/migration/postval',
+    method: 'post',
+    data: val
+  })
+}

@@ -11,8 +11,9 @@ export function getTest() {
 // 修改滑块值
 export function updateSlider(val) {
   return request({
-    url: '/dashboard/test',
+    url: '/dashboard/test/updateval',
     method: 'put',
     data: val
   })
 }
+
