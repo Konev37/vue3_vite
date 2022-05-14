@@ -143,13 +143,17 @@
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
 import { getCluster } from "@/api/dashboard/cluster";
-import { getAgent, getLossRatio ,getClusterLossRatio } from "@/api/dashboard/agent";
+import {
+  getAgent,
+  getLossRatio,
+  getClusterLossRatio,
+} from "@/api/dashboard/agent";
 import {
   getTask,
   allTaskRatio,
-  eachAgentRatio,
+  eachAgentProgress,
   eachClusterRatio,
-  eachClusterTask
+  eachClusterTask,
 } from "@/api/dashboard/task";
 import {
   getMigration,
@@ -331,14 +335,14 @@ const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
   getMigration().then((migrations) => {
-    changeMigrate(val , migrations);
+    changeMigrate(val, migrations);
   });
   //changeAllClusterInfo(val);
   // changeMigrateRecord();
   // changeEachClusterInfo(val);
 };
 
-function changeMigrate(val ,migrations) {
+function changeMigrate(val, migrations) {
   newLinks = JSON.parse(JSON.stringify(migrations));
   // console.log(migrations);
   var Len = Math.floor((1.0 / 250) * Math.pow(val - 50, 2) + 1); // 新的任务迁移数
@@ -362,9 +366,9 @@ function changeAllClusterInfo(val) {
   // let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
   let allCost = parseInt(ACInfo.allCost); // 成本没有百分号
   let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
-  allRatio = (10 + val * 0.6).toFixed(2);
-  allCost = (20 + val * 0.6).toFixed(2);
-  allLoss = (30 + val * 0.6).toFixed(2);
+  allRatio = (10 + val * 0.6).toFixed(3);
+  allCost = (20 + val * 0.6).toFixed(3);
+  allLoss = (30 + val * 0.6).toFixed(3);
   ACInfo.allRatio = allRatio + "%";
   ACInfo.allCost = allCost + "";
   ACInfo.allLoss = allLoss + "%";
@@ -404,9 +408,9 @@ function changeEachClusterInfo(val) {
     eachLoss = parseInt(
       ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
     );
-    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2); // 保留 2 位小数
-    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
-    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3); // 保留 2 位小数
+    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3);
+    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3);
     ECInfo[i].eachRatio = eachRatio + "%";
     ECInfo[i].eachCost = eachCost + "";
     ECInfo[i].eachLoss = eachLoss + "%";
@@ -536,7 +540,7 @@ allTaskRatio().then((ratio) => {
   allMigrationCost().then((cost) => {
     getLossRatio().then((lossratio) => {
       let ACInfo = allClusterInfo.value[0];
-      ratio = (100 * ratio).toFixed(2);
+      ratio = (100 * ratio).toFixed(3);
       ACInfo.allRatio = ratio + "%";
       ACInfo.allCost = cost;
       ACInfo.allLoss = lossratio * 100 + "%";
@@ -619,20 +623,19 @@ const eachClusterInfo = ref([
 getCluster().then((clusters) => {
   eachClusterRatio().then((eachRatio) => {
     eachMigrationCost().then((eachCost) => {
-      getClusterLossRatio().then ((eachLossRatio)=>{
+      getClusterLossRatio().then((eachLossRatio) => {
         for (let i = 0; i < clusters.length; i++) {
-        var ratio = (eachRatio[i + 1] * 100).toFixed(2);
-        if (eachCost[i + 1] == null) {
-          eachCost[i + 1] = 0;
+          if (eachCost[i + 1] == null) {
+            eachCost[i + 1] = 0;
+          }
+          var cluster = {
+            clusterId: clusters[i].name,
+            eachRatio: (eachRatio[i] * 100).toFixed(3) + "%",
+            eachCost: eachCost[i + 1],
+            eachLoss: eachLossRatio[i + 1] * 100 + "%",
+          };
+          eachClusterInfo.value.push(cluster);
         }
-        var cluster = {
-          clusterId: clusters[i].name,
-          eachRatio: ratio + "%",
-          eachCost: eachCost[i + 1],
-          eachLoss: eachLossRatio[i+1]*100 + "%",
-        };
-        eachClusterInfo.value.push(cluster);
-      }
       });
     });
   });
