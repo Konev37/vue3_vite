@@ -348,6 +348,43 @@ const onChange = (val) => {
   postSliderVal(val).then((resmigration) => {
     // console.log(res + "，传值成功");
     allInfoIntance.setOption({ series: [{ links: resmigration }] });
+    newLinks = JSON.parse(JSON.stringify(resmigration));
+    const showMigrate = () => {
+  let v = 1; // 每一帧连线数的上限
+  let t = 500; // 动画间隔
+  allInfoIntance.setOption({
+    // 清空连线
+    series: [{ links: null }],
+  });
+  for (let i = 1; i < v; i++) {
+    // 0 ~ v
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(0, i) }],
+      });
+    }, i * t);
+  }
+  for (let i = 0; i <= newLinks.length - v; i++) {
+    // v ~ (length-v)
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(i, i + v) }],
+      });
+    }, i * t + v * t);
+  }
+  for (let i = newLinks.length - v + 1; i < newLinks.length; i++) {
+    // (length-v) - length
+    setTimeout(() => {
+      allInfoIntance.setOption({
+        series: [{ links: newLinks.slice(i, newLinks.length) }],
+      });
+    }, i * t + v * t);
+  }
+  setTimeout(() => {
+    // 清空连线（但不知道为什么不起作用）
+    allInfoIntance.setOption({ links: null });
+  }, newLinks.length * t + v * t);
+};
   });
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
