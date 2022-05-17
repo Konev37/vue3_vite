@@ -205,6 +205,9 @@ getAgent().then((agents) => {
       getTask().then((tasks) => {
         // console.log(tasks);
       });
+      for (let i = 0; i < agents.length; i++) { // 第一次加载的时候大小都是 10
+        agents[i].symbolSize = 10;
+      };
       var option = {
         tooltip: {
           show: true,
@@ -291,7 +294,7 @@ getAgent().then((agents) => {
   });
 });
 const showMigrate = () => {
-  let v = 5; // 每一帧连线数的上限
+  let v = 3; // 每一帧连线数的上限
   let t = 500; // 动画间隔
   allInfoIntance.setOption({
     // 清空连线
@@ -345,46 +348,15 @@ const formatTooltip = (val) => {
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
-  postSliderVal(val).then((resmigration) => {
-    // console.log(res + "，传值成功");
-    allInfoIntance.setOption({ series: [{ links: resmigration }] });
-    newLinks = JSON.parse(JSON.stringify(resmigration));
-    const showMigrate = () => {
-  let v = 1; // 每一帧连线数的上限
-  let t = 500; // 动画间隔
-  allInfoIntance.setOption({
-    // 清空连线
-    series: [{ links: null }],
-  });
-  for (let i = 1; i < v; i++) {
-    // 0 ~ v
-    setTimeout(() => {
-      allInfoIntance.setOption({
-        series: [{ links: newLinks.slice(0, i) }],
+  postSliderVal(val).then((resMigration) => {
+    getAgent().then((agents) => {
+      getCluster().then((clusters) => {
+        allInfoIntance.setOption({
+          series: [{ data: agents, links: resMigration, categories: clusters }],
+        });
+        newLinks = JSON.parse(JSON.stringify(resMigration));
       });
-    }, i * t);
-  }
-  for (let i = 0; i <= newLinks.length - v; i++) {
-    // v ~ (length-v)
-    setTimeout(() => {
-      allInfoIntance.setOption({
-        series: [{ links: newLinks.slice(i, i + v) }],
-      });
-    }, i * t + v * t);
-  }
-  for (let i = newLinks.length - v + 1; i < newLinks.length; i++) {
-    // (length-v) - length
-    setTimeout(() => {
-      allInfoIntance.setOption({
-        series: [{ links: newLinks.slice(i, newLinks.length) }],
-      });
-    }, i * t + v * t);
-  }
-  setTimeout(() => {
-    // 清空连线（但不知道为什么不起作用）
-    allInfoIntance.setOption({ links: null });
-  }, newLinks.length * t + v * t);
-};
+    });
   });
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
