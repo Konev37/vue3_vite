@@ -345,7 +345,11 @@ const marks = {
 const formatTooltip = (val) => {
   return val / 100;
 };
+var test;
+
+const migrateRecord = ref([]);
 const onChange = (val) => {
+  
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
   postSliderVal(val).then((resMigration) => {
@@ -355,6 +359,18 @@ const onChange = (val) => {
           series: [{ data: agents, links: resMigration, categories: clusters }],
         });
         newLinks = JSON.parse(JSON.stringify(resMigration));
+        migrateRecord.value.length = 0;
+        for (let i = 0; i < newLinks.length; i++) {
+    var record = {
+      order: i + 1,
+      source: newLinks[i].source,
+      target: newLinks[i].target,
+      task: newLinks[i].taskId,
+    };
+    migrateRecord.value.push(record);
+  }
+        // test = val;
+        // console.log(newLinks);
       });
     });
   });
@@ -587,22 +603,22 @@ allTaskRatio().then((ratio) => {
   });
 });
 
-const migrateRecord = ref([]);
-getMigration().then((migrations) => {
+
+
   // console.log(migrations.length);
   // console.log(migrations[1].source);
-
-  for (let i = 0; i < migrations.length; i++) {
-    var record = {
-      order: i + 1,
-      source: migrations[i].source,
-      target: migrations[i].target,
-      task: migrations[i].taskId,
-    };
-    migrateRecord.value.push(record);
-  }
+  console.log(newLinks);
+  // for (let i = 0; i < newLinks.length; i++) {
+  //   var record = {
+  //     order: i + 1,
+  //     source: newLinks[i].source,
+  //     target: newLinks[i].target,
+  //     task: newLinks[i].taskId,
+  //   };
+  //   migrateRecord.value.push(record);
+  // }
   // console.log(migrateRecord.value);
-});
+
 const eachClusterInfo = ref([
   // {
   //   clusterId: "集群1",
