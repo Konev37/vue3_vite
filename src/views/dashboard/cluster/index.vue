@@ -607,7 +607,7 @@ allTaskRatio().then((ratio) => {
 
   // console.log(migrations.length);
   // console.log(migrations[1].source);
-  console.log(newLinks);
+  // console.log(newLinks)
   // for (let i = 0; i < newLinks.length; i++) {
   //   var record = {
   //     order: i + 1,
