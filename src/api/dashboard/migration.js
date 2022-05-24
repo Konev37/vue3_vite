@@ -31,3 +31,11 @@ export function postSliderVal(val) {
     data: val
   })
 }
+
+// 获取每个 agent 上能被迁移的任务
+export function TasksCanBeMigrated() {
+  return request({
+    url: '/dashboard/migration/tasks',
+    method: 'get'
+  })
+}
