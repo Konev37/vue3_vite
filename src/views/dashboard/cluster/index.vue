@@ -174,6 +174,7 @@ import {
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
+import { migrateTask } from "../../../api/dashboard/migration";
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -209,10 +210,10 @@ getAgent().then((agents) => {
       TasksCanBeMigrated().then((res) => {
         console.log(res);
       });
-      for (let i = 0; i < agents.length; i++) {
-        // 第一次加载的时候大小都是 10
-        agents[i].symbolSize = 10;
-      }
+      // for (let i = 0; i < agents.length; i++) {
+      //   // 第一次加载的时候大小都是 10
+      //   agents[i].symbolSize = 10;
+      // }
       var option = {
         tooltip: {
           show: true,
@@ -356,7 +357,8 @@ const migrateRecord = ref([]);
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
-  postSliderVal(val).then((resMigration) => {
+  // postSliderVal(val).then((resMigration) => {
+  migrateTask(val).then((resMigration) => {
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
         allInfoIntance.setOption({

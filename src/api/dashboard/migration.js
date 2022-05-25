@@ -39,3 +39,12 @@ export function TasksCanBeMigrated() {
     method: 'get'
   })
 }
+
+// 进行任务迁移，修改迁移表
+export function migrateTask(val) {
+  return request({
+    url: '/dashboard/migration/changeVal',
+    method: 'post',
+    data: val
+  })
+}
