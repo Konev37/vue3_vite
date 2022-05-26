@@ -361,6 +361,7 @@ const onChange = (val) => {
   migrateTask(val).then((resMigration) => {
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
+        getTask().then((tasks) => {
         allInfoIntance.setOption({
           series: [{ data: agents, links: resMigration, categories: clusters }],
         });
@@ -377,6 +378,7 @@ const onChange = (val) => {
         }
         // test = val;
         // console.log(newLinks);
+      });
       });
     });
   });
