@@ -149,7 +149,7 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCluster } from "@/api/dashboard/cluster";
+import { getCluster, clusterSurvivability } from "@/api/dashboard/cluster";
 import {
   getAgent,
   getLossRatio,
@@ -204,6 +204,9 @@ getAgent().then((agents) => {
       // console.log(agents);
       // console.log(migrations);
       // console.log(clusters);
+      clusterSurvivability().then((res) => {
+        console.log(res);
+      })
       getTask().then((tasks) => {
         // console.log(tasks);
       });
@@ -362,26 +365,27 @@ const onChange = (val) => {
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
         getTask().then((tasks) => {
-        allInfoIntance.setOption({
-          series: [{ data: agents, links: resMigration, categories: clusters }],
+          allInfoIntance.setOption({
+            series: [
+              { data: agents, links: resMigration, categories: clusters },
+            ],
+          });
+          newLinks = JSON.parse(JSON.stringify(resMigration));
+          migrateRecord.value.length = 0;
+          for (let i = 0; i < newLinks.length; i++) {
+            var record = {
+              order: i + 1,
+              source: newLinks[i].source,
+              target: newLinks[i].target,
+              task: newLinks[i].taskId,
+            };
+            migrateRecord.value.push(record);
+          }
         });
-        newLinks = JSON.parse(JSON.stringify(resMigration));
-        migrateRecord.value.length = 0;
-        for (let i = 0; i < newLinks.length; i++) {
-          var record = {
-            order: i + 1,
-            source: newLinks[i].source,
-            target: newLinks[i].target,
-            task: newLinks[i].taskId,
-          };
-          migrateRecord.value.push(record);
-        }
-        // test = val;
-        // console.log(newLinks);
-      });
       });
     });
   });
+  getAllClusterInfo();
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
   // });
@@ -596,20 +600,24 @@ const allClusterInfo = ref([
     // allLoss: "30%",
   },
 ]);
-allTaskRatio().then((ratio) => {
-  allMigrationCost().then((migCost) => {
-    allTaskExecCost().then((execCost) => {
-      getLossRatio().then((lossratio) => {
-        let ACInfo = allClusterInfo.value[0];
-        ratio = (100 * ratio).toFixed(3);
-        ACInfo.allRatio = ratio + "%";
-        ACInfo.allMigrationCost = migCost;
-        ACInfo.allTaskExecCost = execCost.toFixed(3);
-        ACInfo.allLoss = lossratio * 100 + "%";
+function getAllClusterInfo() {
+  allTaskRatio().then((ratio) => {
+    allMigrationCost().then((migCost) => {
+      allTaskExecCost().then((execCost) => {
+        getLossRatio().then((lossratio) => {
+          let ACInfo = allClusterInfo.value[0];
+          ratio = (ratio * 100).toFixed(3);
+          ACInfo.allRatio = ratio + "%";
+          ACInfo.allMigrationCost = migCost;
+          ACInfo.allTaskExecCost = execCost.toFixed(3);
+          lossratio = (lossratio * 100).toFixed(3);
+          ACInfo.allLoss = lossratio + "%";
+        });
       });
     });
   });
-});
+}
+getAllClusterInfo();
 
 // console.log(migrations.length);
 // console.log(migrations[1].source);
