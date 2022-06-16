@@ -149,7 +149,7 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCluster } from "@/api/dashboard/cluster";
+import { getCluster, clusterSurvivability } from "@/api/dashboard/cluster";
 import {
   getAgent,
   getLossRatio,
@@ -174,6 +174,7 @@ import {
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
+import { migrateTask } from "../../../api/dashboard/migration";
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -203,16 +204,19 @@ getAgent().then((agents) => {
       // console.log(agents);
       // console.log(migrations);
       // console.log(clusters);
+      clusterSurvivability().then((res) => {
+        console.log(res);
+      })
       getTask().then((tasks) => {
         // console.log(tasks);
       });
       TasksCanBeMigrated().then((res) => {
         console.log(res);
       });
-      for (let i = 0; i < agents.length; i++) {
-        // 第一次加载的时候大小都是 10
-        agents[i].symbolSize = 10;
-      }
+      // for (let i = 0; i < agents.length; i++) {
+      //   // 第一次加载的时候大小都是 10
+      //   agents[i].symbolSize = 10;
+      // }
       var option = {
         tooltip: {
           show: true,
@@ -356,28 +360,32 @@ const migrateRecord = ref([]);
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
-  postSliderVal(val).then((resMigration) => {
+  // postSliderVal(val).then((resMigration) => {
+  migrateTask(val).then((resMigration) => {
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
-        allInfoIntance.setOption({
-          series: [{ data: agents, links: resMigration, categories: clusters }],
+        getTask().then((tasks) => {
+          allInfoIntance.setOption({
+            series: [
+              { data: agents, links: resMigration, categories: clusters },
+            ],
+          });
+          newLinks = JSON.parse(JSON.stringify(resMigration));
+          migrateRecord.value.length = 0;
+          for (let i = 0; i < newLinks.length; i++) {
+            var record = {
+              order: i + 1,
+              source: newLinks[i].source,
+              target: newLinks[i].target,
+              task: newLinks[i].taskId,
+            };
+            migrateRecord.value.push(record);
+          }
         });
-        newLinks = JSON.parse(JSON.stringify(resMigration));
-        migrateRecord.value.length = 0;
-        for (let i = 0; i < newLinks.length; i++) {
-          var record = {
-            order: i + 1,
-            source: newLinks[i].source,
-            target: newLinks[i].target,
-            task: newLinks[i].taskId,
-          };
-          migrateRecord.value.push(record);
-        }
-        // test = val;
-        // console.log(newLinks);
       });
     });
   });
+  getAllClusterInfo();
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
   // });
@@ -592,20 +600,24 @@ const allClusterInfo = ref([
     // allLoss: "30%",
   },
 ]);
-allTaskRatio().then((ratio) => {
-  allMigrationCost().then((migCost) => {
-    allTaskExecCost().then((execCost) => {
-      getLossRatio().then((lossratio) => {
-        let ACInfo = allClusterInfo.value[0];
-        ratio = (100 * ratio).toFixed(3);
-        ACInfo.allRatio = ratio + "%";
-        ACInfo.allMigrationCost = migCost;
-        ACInfo.allTaskExecCost = execCost.toFixed(3);
-        ACInfo.allLoss = lossratio * 100 + "%";
+function getAllClusterInfo() {
+  allTaskRatio().then((ratio) => {
+    allMigrationCost().then((migCost) => {
+      allTaskExecCost().then((execCost) => {
+        getLossRatio().then((lossratio) => {
+          let ACInfo = allClusterInfo.value[0];
+          ratio = (ratio * 100).toFixed(3);
+          ACInfo.allRatio = ratio + "%";
+          ACInfo.allMigrationCost = migCost;
+          ACInfo.allTaskExecCost = execCost.toFixed(3);
+          lossratio = (lossratio * 100).toFixed(3);
+          ACInfo.allLoss = lossratio + "%";
+        });
       });
     });
   });
-});
+}
+getAllClusterInfo();
 
 // console.log(migrations.length);
 // console.log(migrations[1].source);
