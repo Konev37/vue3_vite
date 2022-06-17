@@ -63,3 +63,11 @@ export function allAgentSurvivability() {
     method: 'get'
   })
 }
+
+// 得到所有agent的总存活率
+export function agentTaskExecutionTime() {
+  return request({
+    url: '/dashboard/agent/execution',
+    method: 'get'
+  })
+}
