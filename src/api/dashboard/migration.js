@@ -48,3 +48,11 @@ export function migrateTask(val) {
     data: val
   })
 }
+
+// 最小迁移成本
+export function getMinCost() {
+  return request({
+    url: '/dashboard/migration/mincost',
+    method: 'get'
+  })
+}
