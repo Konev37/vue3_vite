@@ -405,9 +405,12 @@ const onChange = (val) => {
             };
             migrateRecord.value.push(record);
           }
+          getMinCost().then((mincost) => {
+            console.log(mincost);
+          });
           getAllMinCost().then((mincost) => {
-        console.log(mincost);
-      });
+            console.log(mincost);
+          });
         });
       });
     });
