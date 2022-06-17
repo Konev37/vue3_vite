@@ -157,6 +157,7 @@ import {
   allTaskExecCost,
   eachTaskExecCost,
   eachExecCost,
+  agentSurvivability,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -205,6 +206,9 @@ getAgent().then((agents) => {
       // console.log(migrations);
       // console.log(clusters);
       clusterSurvivability().then((res) => {
+        console.log(res);
+      })
+      agentSurvivability().then((res) => {
         console.log(res);
       })
       getTask().then((tasks) => {

@@ -47,3 +47,11 @@ export function eachExecCost() {
     method: 'get'
   })
 }
+
+// 得到每个agent的存活率
+export function agentSurvivability() {
+  return request({
+    url: '/dashboard/agent/sur',
+    method: 'get'
+  })
+}
