@@ -159,6 +159,7 @@ import {
   eachExecCost,
   eachAgentSurvivability,
   allAgentSurvivability,
+  agentTaskExecutionTime,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -227,6 +228,10 @@ getAgent().then((agents) => {
       });
       allAgentSurvivability().then((res) => {
         console.log("allAgentSur");
+        console.log(res);
+      });
+      agentTaskExecutionTime().then((res) => {
+        console.log("executionTime");
         console.log(res);
       });
       // for (let i = 0; i < agents.length; i++) {
