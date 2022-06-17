@@ -175,6 +175,7 @@ import {
   postSliderVal,
   getMinCost,
   TasksCanBeMigrated,
+  getAllMinCost,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -212,9 +213,7 @@ getAgent().then((agents) => {
         console.log("clusterSur");
         console.log(res);
       })
-      getMinCost().then((mincost) => {
-        console.log(mincost);
-      });
+      
       eachAgentSurvivability().then((res) => {
         console.log("eachAgentSur");
         console.log(res);
@@ -401,6 +400,9 @@ const onChange = (val) => {
             };
             migrateRecord.value.push(record);
           }
+          getAllMinCost().then((mincost) => {
+        console.log(mincost);
+      });
         });
       });
     });

@@ -56,3 +56,11 @@ export function getMinCost() {
     method: 'get'
   })
 }
+
+// 最小总迁移成本
+export function getAllMinCost() {
+  return request({
+    url: '/dashboard/migration/allmincost',
+    method: 'get'
+  })
+}
