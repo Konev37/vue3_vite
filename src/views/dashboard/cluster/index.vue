@@ -161,6 +161,7 @@ import {
 } from "@/api/dashboard/agent";
 import {
   getTask,
+  getTimeTask,
   allTaskRatio,
   eachAgentProgress,
   eachClusterRatio,
@@ -215,6 +216,9 @@ getAgent().then((agents) => {
         // console.log(tasks);
       });
       TasksCanBeMigrated().then((res) => {
+        console.log(res);
+      });
+      getTimeTask(2).then((res) => {
         console.log(res);
       });
       // for (let i = 0; i < agents.length; i++) {

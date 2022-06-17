@@ -8,6 +8,15 @@ export function getTask() {
   })
 }
 
+// 获取某一个时间戳的任务列表
+export function getTimeTask(time) {
+  return request({
+    url: '/dashboard/task/timeTask',
+    method: 'post',
+    data: time
+  })
+}
+
 // 获取总任务完成进度
 export function allTaskProgress() {
   return request({
@@ -47,7 +56,6 @@ export function eachClusterRatio() {
     method: 'get'
   })
 }
-
 
 // 获取每一个 集群 的任务详情
 export function eachClusterTaskInfo() {
