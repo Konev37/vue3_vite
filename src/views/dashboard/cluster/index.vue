@@ -157,7 +157,8 @@ import {
   allTaskExecCost,
   eachTaskExecCost,
   eachExecCost,
-  agentSurvivability,
+  eachAgentSurvivability,
+  allAgentSurvivability,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -207,9 +208,11 @@ getAgent().then((agents) => {
       // console.log(migrations);
       // console.log(clusters);
       clusterSurvivability().then((res) => {
+        console.log("clusterSur");
         console.log(res);
       })
-      agentSurvivability().then((res) => {
+      eachAgentSurvivability().then((res) => {
+        console.log("eachAgentSur");
         console.log(res);
       })
       getTask().then((tasks) => {
@@ -219,6 +222,11 @@ getAgent().then((agents) => {
         console.log(res);
       });
       getTimeTask(2).then((res) => {
+        console.log("timeTask");
+        console.log(res);
+      });
+      allAgentSurvivability().then((res) => {
+        console.log("allAgentSur");
         console.log(res);
       });
       // for (let i = 0; i < agents.length; i++) {
