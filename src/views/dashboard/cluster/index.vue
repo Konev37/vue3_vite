@@ -214,29 +214,28 @@ getAgent().then((agents) => {
         console.log("clusterSur");
         console.log(res);
       })
-      
-      eachAgentSurvivability().then((res) => {
-        console.log("eachAgentSur");
-        console.log(res);
-      })
+      // eachAgentSurvivability().then((res) => {
+      //   console.log("eachAgentSur");
+      //   console.log(res);
+      // })
       getTask().then((tasks) => {
         // console.log(tasks);
       });
-      TasksCanBeMigrated().then((res) => {
-        console.log(res);
-      });
+      // TasksCanBeMigrated().then((res) => {
+      //   console.log(res);
+      // });
       getTimeTask(2).then((res) => {
         console.log("timeTask");
         console.log(res);
       });
-      allAgentSurvivability().then((res) => {
-        console.log("allAgentSur");
-        console.log(res);
-      });
-      agentTaskExecutionTime().then((res) => {
-        console.log("executionTime");
-        console.log(res);
-      });
+      // allAgentSurvivability().then((res) => {
+      //   console.log("allAgentSur");
+      //   console.log(res);
+      // });
+      // agentTaskExecutionTime().then((res) => {
+      //   console.log("executionTime");
+      //   console.log(res);
+      // });
       // for (let i = 0; i < agents.length; i++) {
       //   // 第一次加载的时候大小都是 10
       //   agents[i].symbolSize = 10;
