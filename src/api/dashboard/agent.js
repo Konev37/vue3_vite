@@ -49,9 +49,25 @@ export function eachExecCost() {
 }
 
 // 得到每个agent的存活率
-export function agentSurvivability() {
+export function eachAgentSurvivability() {
   return request({
-    url: '/dashboard/agent/sur',
+    url: '/dashboard/agent/eachSur',
+    method: 'get'
+  })
+}
+
+// 得到所有agent的总存活率
+export function allAgentSurvivability() {
+  return request({
+    url: '/dashboard/agent/allSur',
+    method: 'get'
+  })
+}
+
+// 得到所有agent的总存活率
+export function agentTaskExecutionTime() {
+  return request({
+    url: '/dashboard/agent/execution',
     method: 'get'
   })
 }

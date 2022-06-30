@@ -157,7 +157,9 @@ import {
   allTaskExecCost,
   eachTaskExecCost,
   eachExecCost,
-  agentSurvivability,
+  eachAgentSurvivability,
+  allAgentSurvivability,
+  agentTaskExecutionTime,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -172,7 +174,9 @@ import {
   allMigrationCost,
   eachMigrationCost,
   postSliderVal,
+  getMinCost,
   TasksCanBeMigrated,
+  getAllMinCost,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -207,20 +211,31 @@ getAgent().then((agents) => {
       // console.log(migrations);
       // console.log(clusters);
       clusterSurvivability().then((res) => {
+        console.log("clusterSur");
         console.log(res);
       })
-      agentSurvivability().then((res) => {
-        console.log(res);
-      })
+      // eachAgentSurvivability().then((res) => {
+      //   console.log("eachAgentSur");
+      //   console.log(res);
+      // })
       getTask().then((tasks) => {
         // console.log(tasks);
       });
-      TasksCanBeMigrated().then((res) => {
-        console.log(res);
-      });
+      // TasksCanBeMigrated().then((res) => {
+      //   console.log(res);
+      // });
       getTimeTask(2).then((res) => {
+        console.log("timeTask");
         console.log(res);
       });
+      // allAgentSurvivability().then((res) => {
+      //   console.log("allAgentSur");
+      //   console.log(res);
+      // });
+      // agentTaskExecutionTime().then((res) => {
+      //   console.log("executionTime");
+      //   console.log(res);
+      // });
       // for (let i = 0; i < agents.length; i++) {
       //   // 第一次加载的时候大小都是 10
       //   agents[i].symbolSize = 10;
@@ -389,6 +404,12 @@ const onChange = (val) => {
             };
             migrateRecord.value.push(record);
           }
+          getMinCost().then((mincost) => {
+            console.log(mincost);
+          });
+          getAllMinCost().then((mincost) => {
+            console.log(mincost);
+          });
         });
       });
     });
