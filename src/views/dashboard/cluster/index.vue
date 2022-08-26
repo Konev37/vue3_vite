@@ -12,7 +12,7 @@
             <el-col :span="12">
               <el-button
                 type="primary"
-                style="margin-left: 50px; margin-bottom: 10px"
+                style="margin-left: 50px; margin-bottom: 2px"
                 @click="showMigrate"
               >
                 展示任务迁移过程
@@ -21,7 +21,7 @@
             <el-col :span="12">
               <el-button
                 type="primary"
-                style="margin-left: 50px; margin-bottom: 10px"
+                style="margin-left: 50px; margin-bottom: 2px"
                 @click="drawerTask = true"
               >
                 任务迁移记录
@@ -71,18 +71,16 @@
               >
             </div>
           </template>
-          <el-table :data="allClusterInfo" border style="width: 100%">
-            <el-table-column prop="allRatio" label="任务完成率" width="140" />
-            <el-table-column label="总成本" width="260">
+          <el-table :data="allClusterInfo" border style="width: 100%" v-fit-columns>
+            <el-table-column prop="allRatio" label="任务完成率"/>
+            <el-table-column label="总成本">
               <el-table-column
                 prop="allMigrationCost"
                 label="迁移成本"
-                width="130"
               />
               <el-table-column
                 prop="allTaskExecCost"
                 label="任务执行成本（时间）"
-                width="130"
               />
             </el-table-column>
             <el-table-column prop="allLoss" label="Agent损失率" />
@@ -745,7 +743,7 @@ getCluster().then((clusters) => {
 
 <style scoped lang="scss">
 .el-row {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 .el-row:last-child {
   margin-bottom: 0;
