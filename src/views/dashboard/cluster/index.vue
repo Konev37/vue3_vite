@@ -1,7 +1,15 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="24">
+      <el-col :span="8">
+        <el-row>
+          <el-card class="card"> </el-card>
+        </el-row>
+        <el-row>
+          <el-card class="card"> </el-card>
+        </el-row>
+      </el-col>
+      <el-col :span="8">
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
@@ -29,6 +37,58 @@
             </el-col>
           </el-row>
         </el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-row>
+          <el-card class="card">
+            <template #header>
+              <div class="card-cluster-header">
+                <span>迁入TOP5</span>
+              </div>
+            </template>
+            <el-table
+              :data="allClusterInfo"
+              border
+              style="width: 100%; height: 300px"
+              v-fit-columns
+            >
+              <el-table-column prop="allRatio" label="任务完成率" />
+              <el-table-column label="总成本">
+                <el-table-column prop="allMigrationCost" label="迁移成本" />
+                <el-table-column
+                  prop="allTaskExecCost"
+                  label="任务执行成本（时间）"
+                />
+              </el-table-column>
+              <el-table-column prop="allLoss" label="Agent损失率" />
+            </el-table>
+          </el-card>
+        </el-row>
+        <el-row>
+          <el-card class="card">
+            <template #header>
+              <div class="card-cluster-header">
+                <span>迁出TOP5</span>
+              </div>
+            </template>
+            <el-table
+              :data="allClusterInfo"
+              border
+              style="width: 100%; height: 300px"
+              v-fit-columns
+            >
+              <el-table-column prop="allRatio" label="任务完成率" />
+              <el-table-column label="总成本">
+                <el-table-column prop="allMigrationCost" label="迁移成本" />
+                <el-table-column
+                  prop="allTaskExecCost"
+                  label="任务执行成本（时间）"
+                />
+              </el-table-column>
+              <el-table-column prop="allLoss" label="Agent损失率" />
+            </el-table>
+          </el-card>
+        </el-row>
       </el-col>
     </el-row>
     <el-row :gutter="20">
@@ -71,13 +131,15 @@
               >
             </div>
           </template>
-          <el-table :data="allClusterInfo" border style="width: 100%" v-fit-columns>
-            <el-table-column prop="allRatio" label="任务完成率"/>
+          <el-table
+            :data="allClusterInfo"
+            border
+            style="width: 100%"
+            v-fit-columns
+          >
+            <el-table-column prop="allRatio" label="任务完成率" />
             <el-table-column label="总成本">
-              <el-table-column
-                prop="allMigrationCost"
-                label="迁移成本"
-              />
+              <el-table-column prop="allMigrationCost" label="迁移成本" />
               <el-table-column
                 prop="allTaskExecCost"
                 label="任务执行成本（时间）"
@@ -211,7 +273,7 @@ getAgent().then((agents) => {
       clusterSurvivability().then((res) => {
         console.log("clusterSur");
         console.log(res);
-      })
+      });
       // eachAgentSurvivability().then((res) => {
       //   console.log("eachAgentSur");
       //   console.log(res);
