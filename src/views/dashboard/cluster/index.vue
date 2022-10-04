@@ -43,24 +43,17 @@
           <el-card class="card">
             <template #header>
               <div class="card-cluster-header">
-                <span>迁入TOP5</span>
+                <span>迁入任务总大小TOP5</span>
               </div>
             </template>
             <el-table
-              :data="allClusterInfo"
+              :data="imMigrationTop"
               border
               style="width: 100%; height: 300px"
               v-fit-columns
             >
-              <el-table-column prop="allRatio" label="任务完成率" />
-              <el-table-column label="总成本">
-                <el-table-column prop="allMigrationCost" label="迁移成本" />
-                <el-table-column
-                  prop="allTaskExecCost"
-                  label="任务执行成本（时间）"
-                />
-              </el-table-column>
-              <el-table-column prop="allLoss" label="Agent损失率" />
+              <el-table-column prop="agentId" label="agent编号" />
+              <el-table-column prop="allTaskSize" label="任务总大小" />
             </el-table>
           </el-card>
         </el-row>
@@ -68,7 +61,7 @@
           <el-card class="card">
             <template #header>
               <div class="card-cluster-header">
-                <span>迁出TOP5</span>
+                <span>迁出任务总大小TOP5</span>
               </div>
             </template>
             <el-table
@@ -237,6 +230,7 @@ import {
   getMinCost,
   TasksCanBeMigrated,
   getAllMinCost,
+  getImmigrationTop,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
@@ -271,8 +265,8 @@ getAgent().then((agents) => {
       // console.log(migrations);
       // console.log(clusters);
       clusterSurvivability().then((res) => {
-        console.log("clusterSur");
-        console.log(res);
+        // console.log("clusterSur");
+        // console.log(res);
       });
       // eachAgentSurvivability().then((res) => {
       //   console.log("eachAgentSur");
@@ -285,8 +279,8 @@ getAgent().then((agents) => {
       //   console.log(res);
       // });
       getTimeTask(2).then((res) => {
-        console.log("timeTask");
-        console.log(res);
+        // console.log("timeTask");
+        // console.log(res);
       });
       // allAgentSurvivability().then((res) => {
       //   console.log("allAgentSur");
@@ -439,7 +433,6 @@ const formatTooltip = (val) => {
 };
 var test;
 
-const migrateRecord = ref([]);
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
@@ -453,33 +446,23 @@ const onChange = (val) => {
               { data: agents, links: resMigration, categories: clusters },
             ],
           });
-          newLinks = JSON.parse(JSON.stringify(resMigration));
-          migrateRecord.value.length = 0;
-          for (let i = 0; i < newLinks.length; i++) {
-            var record = {
-              order: i + 1,
-              source: newLinks[i].source,
-              target: newLinks[i].target,
-              task: newLinks[i].taskId,
-            };
-            migrateRecord.value.push(record);
-          }
+          changeMigrateRecord(resMigration);
+          getImMigrationTopInfo();
+          getAllClusterInfo();
           getMinCost().then((mincost) => {
-            console.log(mincost);
+            // console.log(mincost);
           });
           getAllMinCost().then((mincost) => {
-            console.log(mincost);
+            // console.log(mincost);
           });
         });
       });
     });
   });
-  getAllClusterInfo();
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
   // });
   //changeAllClusterInfo(val);
-  // changeMigrateRecord();
   // changeEachClusterInfo(val);
 };
 
@@ -487,7 +470,7 @@ function changeMigrate(val, migrations) {
   newLinks = JSON.parse(JSON.stringify(migrations));
   // console.log(migrations);
   var Len = Math.floor((1.0 / 250) * Math.pow(val - 50, 2) + 1); // 新的任务迁移数
-  console.log(Len);
+  // console.log(Len);
   newLinks = newLinks.slice(0, Len);
   // console.log(newLinks);
   // for (let i = 0; i < newLinks.length; i++) {
@@ -514,26 +497,39 @@ function changeAllClusterInfo(val) {
   ACInfo.allCost = allCost + "";
   ACInfo.allLoss = allLoss + "%";
 }
-function changeMigrateRecord() {
-  migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+
+const migrateRecord = ref([]);
+function changeMigrateRecord(resMigration) {
+  newLinks = JSON.parse(JSON.stringify(resMigration));
+  migrateRecord.value.length = 0;
   for (let i = 0; i < newLinks.length; i++) {
-    // newLinks[i].value.splice(0, newLinks[i].value.length);
-    newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
-    var len = Math.floor(Math.random() * 6);
-    while (newLinks[i].value.length < len) {
-      var dat = Math.floor(Math.random() * 200) + 1;
-      if (newLinks[i].value.indexOf(dat) == -1) {
-        newLinks[i].value.push(dat);
-      }
-    }
     var record = {
       order: i + 1,
       source: newLinks[i].source,
       target: newLinks[i].target,
-      task: newLinks[i].value,
+      task: newLinks[i].taskId,
     };
     migrateRecord.value.push(record);
   }
+  // migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+  // for (let i = 0; i < newLinks.length; i++) {
+  //   // newLinks[i].value.splice(0, newLinks[i].value.length);
+  //   newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
+  //   var len = Math.floor(Math.random() * 6);
+  //   while (newLinks[i].value.length < len) {
+  //     var dat = Math.floor(Math.random() * 200) + 1;
+  //     if (newLinks[i].value.indexOf(dat) == -1) {
+  //       newLinks[i].value.push(dat);
+  //     }
+  //   }
+  //   var record = {
+  //     order: i + 1,
+  //     source: newLinks[i].source,
+  //     target: newLinks[i].target,
+  //     task: newLinks[i].value,
+  //   };
+  //   migrateRecord.value.push(record);
+  // }
 }
 function changeEachClusterInfo(val) {
   var ECInfo = eachClusterInfo.value;
@@ -681,6 +677,20 @@ const handleInnerOpen = (SCIndex) => {
     });
   });
 };
+
+const imMigrationTop = ref([]);
+function getImMigrationTopInfo() {
+  getImmigrationTop().then((res) => {
+    imMigrationTop.value.length = 0;
+    for (let i = 0; i < 5; i++) {
+      var im = {
+        agentId: res[i].targetAgentId,
+        allTaskSize: res[i].allTaskSize,
+      };
+      imMigrationTop.value.push(im);
+    }
+  });
+}
 
 const allClusterInfo = ref([
   {
