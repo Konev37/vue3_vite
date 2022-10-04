@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row>
+    <el-row :gutter="20">
       <el-col :span="8">
         <el-row>
           <el-card class="card"> </el-card>
@@ -9,7 +9,7 @@
           <el-card class="card"> </el-card>
         </el-row>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="12">
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
@@ -38,16 +38,16 @@
           </el-row>
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="4">
         <el-row>
           <el-card class="card">
             <template #header>
-              <div class="card-cluster-header">
-                <span>迁入任务总大小TOP5</span>
+              <div>
+                <span>迁出任务总大小TOP5</span>
               </div>
             </template>
             <el-table
-              :data="imMigrationTop"
+              :data="EMigrationTop"
               border
               style="width: 100%; height: 300px"
               v-fit-columns
@@ -60,25 +60,18 @@
         <el-row>
           <el-card class="card">
             <template #header>
-              <div class="card-cluster-header">
-                <span>迁出任务总大小TOP5</span>
+              <div>
+                <span>迁入任务总大小TOP5</span>
               </div>
             </template>
             <el-table
-              :data="allClusterInfo"
+              :data="imMigrationTop"
               border
               style="width: 100%; height: 300px"
               v-fit-columns
             >
-              <el-table-column prop="allRatio" label="任务完成率" />
-              <el-table-column label="总成本">
-                <el-table-column prop="allMigrationCost" label="迁移成本" />
-                <el-table-column
-                  prop="allTaskExecCost"
-                  label="任务执行成本（时间）"
-                />
-              </el-table-column>
-              <el-table-column prop="allLoss" label="Agent损失率" />
+              <el-table-column prop="agentId" label="agent编号" />
+              <el-table-column prop="allTaskSize" label="任务总大小" />
             </el-table>
           </el-card>
         </el-row>
@@ -230,6 +223,7 @@ import {
   getMinCost,
   TasksCanBeMigrated,
   getAllMinCost,
+  getEmigrationTop,
   getImmigrationTop,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
@@ -433,6 +427,7 @@ const formatTooltip = (val) => {
 };
 var test;
 
+// 修改滑块值带来的变化
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
@@ -447,6 +442,7 @@ const onChange = (val) => {
             ],
           });
           changeMigrateRecord(resMigration);
+          getEMigrationTopInfo();
           getImMigrationTopInfo();
           getAllClusterInfo();
           getMinCost().then((mincost) => {
@@ -678,6 +674,22 @@ const handleInnerOpen = (SCIndex) => {
   });
 };
 
+// 迁出top5
+const EMigrationTop = ref([]);
+function getEMigrationTopInfo() {
+  getEmigrationTop().then((res) => {
+    EMigrationTop.value.length = 0;
+    for (let i = 0; i < 5; i++) {
+      var em = {
+        agentId: res[i].sourceAgentId,
+        allTaskSize: res[i].allTaskSize,
+      };
+      EMigrationTop.value.push(em);
+    }
+  });
+}
+
+// 迁入top5
 const imMigrationTop = ref([]);
 function getImMigrationTopInfo() {
   getImmigrationTop().then((res) => {
@@ -691,6 +703,7 @@ function getImMigrationTopInfo() {
     }
   });
 }
+
 
 const allClusterInfo = ref([
   {
