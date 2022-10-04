@@ -64,3 +64,18 @@ export function getAllMinCost() {
     method: 'get'
   })
 }
+// 迁出 top5
+export function getEmigrationTop() {
+  return request({
+    url: '/dashboard/migration/EMig',
+    method: 'get'
+  })
+}
+
+// 迁入 top5
+export function getImmigrationTop() {
+  return request({
+    url: '/dashboard/migration/imMig',
+    method: 'get'
+  })
+}
