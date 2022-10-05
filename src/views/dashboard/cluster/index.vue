@@ -1,15 +1,7 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <el-row>
-          <el-card class="card"> </el-card>
-        </el-row>
-        <el-row>
-          <el-card class="card"> </el-card>
-        </el-row>
-      </el-col>
-      <el-col :span="12">
+    <el-row>
+      <el-col>
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
@@ -37,44 +29,6 @@
             </el-col>
           </el-row>
         </el-card>
-      </el-col>
-      <el-col :span="4">
-        <el-row>
-          <el-card class="card">
-            <template #header>
-              <div>
-                <span>迁出任务总大小TOP5</span>
-              </div>
-            </template>
-            <el-table
-              :data="EMigrationTop"
-              border
-              style="width: 100%; height: 300px"
-              v-fit-columns
-            >
-              <el-table-column prop="agentId" label="agent编号" />
-              <el-table-column prop="allTaskSize" label="任务总大小" />
-            </el-table>
-          </el-card>
-        </el-row>
-        <el-row>
-          <el-card class="card">
-            <template #header>
-              <div>
-                <span>迁入任务总大小TOP5</span>
-              </div>
-            </template>
-            <el-table
-              :data="imMigrationTop"
-              border
-              style="width: 100%; height: 300px"
-              v-fit-columns
-            >
-              <el-table-column prop="agentId" label="agent编号" />
-              <el-table-column prop="allTaskSize" label="任务总大小" />
-            </el-table>
-          </el-card>
-        </el-row>
       </el-col>
     </el-row>
     <el-row :gutter="20">
@@ -222,13 +176,11 @@ import {
   postSliderVal,
   getMinCost,
   TasksCanBeMigrated,
+  migrateTask,
   getAllMinCost,
-  getEmigrationTop,
-  getImmigrationTop,
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
-import { migrateTask } from "../../../api/dashboard/migration";
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -673,37 +625,6 @@ const handleInnerOpen = (SCIndex) => {
     });
   });
 };
-
-// 迁出top5
-const EMigrationTop = ref([]);
-function getEMigrationTopInfo() {
-  getEmigrationTop().then((res) => {
-    EMigrationTop.value.length = 0;
-    for (let i = 0; i < 5; i++) {
-      var em = {
-        agentId: res[i].sourceAgentId,
-        allTaskSize: res[i].allTaskSize,
-      };
-      EMigrationTop.value.push(em);
-    }
-  });
-}
-
-// 迁入top5
-const imMigrationTop = ref([]);
-function getImMigrationTopInfo() {
-  getImmigrationTop().then((res) => {
-    imMigrationTop.value.length = 0;
-    for (let i = 0; i < 5; i++) {
-      var im = {
-        agentId: res[i].targetAgentId,
-        allTaskSize: res[i].allTaskSize,
-      };
-      imMigrationTop.value.push(im);
-    }
-  });
-}
-
 
 const allClusterInfo = ref([
   {
