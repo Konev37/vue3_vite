@@ -669,7 +669,9 @@ const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
   // postSliderVal(val).then((resMigration) => {
-  migrateTask(val).then((resMigration) => {
+    console.log('1:', val)
+  migrateTask(++val).then((resMigration) => {
+    console.log('2:', val)
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
         getTask().then((tasks) => {
