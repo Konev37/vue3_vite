@@ -3,10 +3,21 @@
     <el-row :gutter="20">
       <el-col :span="8">
         <el-row>
-          <el-card class="card"> </el-card>
+          <el-card class="card">
+            <template #header><span>Agent负载</span></template>
+                <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="agentInfo" style="height: 300px" />
+            </div>
+          </el-card>
         </el-row>
         <el-row>
-          <el-card class="card"> </el-card>
+          <el-card class="card"> 
+            <template #header><span>任务完成率</span></template>
+                <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="taskInfo" style="height: 300px" />
+            </div>
+            
+          </el-card>
         </el-row>
       </el-col>
       <el-col :span="12">
@@ -229,6 +240,10 @@ import {
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
+import { getCache } from "@/api/monitor/cache";
+import _rawData from "@/assets/data/life-expectancy-table.json";
+
+import _ from "lodash";
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -236,7 +251,8 @@ function goTarget(url) {
 const drawerTask = ref(false);
 const drawerCluster = ref(false);
 const innerDrawer = ref(false);
-
+const taskInfo = ref(null);
+const agentInfo = ref(null);
 const allInfo = ref(null);
 const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
@@ -244,8 +260,193 @@ const valueOptimize = ref(0);
 // var newLinks = JSON.parse(JSON.stringify(graph.links));
 var newLinks;
 
-var allInfoIntance, singleInfoIntance;
+var allInfoIntance, singleInfoIntance, taskInfoIntance, agentInfoIntance;
 var singleClusterIndex;
+
+
+
+const countries = [
+  "Finland",
+  "France",
+  "Germany",
+  "Iceland",
+  "Norway",
+  "Poland",
+  "Russia",
+  "United Kingdom",
+];
+const datasetWithFilters = [];
+const seriesList = [];
+echarts.util.each(countries, function (country) {
+  var datasetId = "dataset_" + country;
+  datasetWithFilters.push({
+    id: datasetId,
+    fromDatasetId: "dataset_raw",
+    transform: {
+      type: "filter",
+      config: {
+        and: [
+          { dimension: "Year", gte: 1950 },
+          { dimension: "Country", "=": country },
+        ],
+      },
+    },
+  });
+  seriesList.push({
+    type: "line",
+    datasetId: datasetId,
+    showSymbol: false,
+    name: country,
+    endLabel: {
+      show: true,
+      formatter: function (params) {
+        return params.value[3] + ": " + params.value[0] / 1000 + "%";
+      },
+    },
+    labelLayout: {
+      moveOverlap: "shiftY",
+    },
+    emphasis: {
+      focus: "series",
+    },
+    encode: {
+      x: "Year",
+      y: "Income",
+      label: ["Country", "Income"],
+      itemName: "Year",
+      tooltip: ["Income"],
+    },
+  });
+});
+
+var option2 = {
+  animationDuration: 10000,
+  dataset: [
+    {
+      id: "dataset_raw",
+      source: _rawData,
+    },
+    ...datasetWithFilters,
+  ],
+  title: {
+    text: "任务完成率动态展示",
+  },
+  tooltip: {
+    order: "valueDesc",
+    trigger: "axis",
+  },
+  xAxis: {
+    type: "category",
+    nameLocation: "middle",
+  },
+  yAxis: {
+    name: "Income",
+  },
+  grid: {
+    right: 80,
+  },
+  series: seriesList,
+};
+
+
+
+var year = [
+  2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008,
+  2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995,
+  1994, 1993, 1992, 1991, 1990, 1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982,
+];
+var data = [
+  [43.1, 55.0, 87.8, 98.9, 35.1, 39.1, 50.8, 11.8],
+  [42.8, 52.1, 86.8, 95.0, 33.5, 37.7, 50.6, 11.6],
+  [42.2, 512, 867, 936, 316, 367, 502, 116],
+  [42.3, 502, 867, 936, 299, 354, 478, 115],
+  [41.1, 486, 850, 915, 300, 355, 461, 111],
+  [40.9, 478, 837, 889, 285, 370, 458, 109],
+  [40.5, 462, 828, 879, 271, 380, 443, 105],
+  [40.7, 452, 801, 872, 261, 376, 430, 102],
+  [40.0, 462, 790, 868, 253, 356, 430, 983],
+  [38.4, 454, 790, 839, 254, 346, 420, 970],
+  [37.2, 452, 770, 823, 259, 347, 394, 932],
+  [35.9, 448, 770, 802, 240, 349, 394, 923],
+  [35.7, 460, 751, 761, 230, 364, 365, 901],
+  [34.3, 444, 735, 733, 226, 353, 363, 871],
+  [33.1, 453, 722, 718, 225, 364, 339, 856],
+  [31.2, 424, 717, 702, 226, 339, 325, 837],
+  [30.7, 407, 713, 674, 220, 336, 314, 809],
+  [30.0, 409, 686, 661, 211, 308, 312, 774],
+  [29.8, 380, 664, 633, 192, 298, 309, 760],
+  [28.2, 377, 657, 621, 181, 280, 289, 721],
+  [27.9, 367, 646, 578, 178, 264, 285, 682],
+  [28.0, 361, 645, 572, 172, 278, 278, 682],
+  [27.6, 359, 641, 545, 171, 274, 278, 633],
+  [26.1, 348, 629, 527, 168, 256, 263, 590],
+  [25.8, 332, 601, 512, 156, 244, 243, 567],
+  [23.8, 313, 601, 467, 151, 225, 237, 521],
+  [22.7, 286, 594, 424, 137, 201, 237, 488],
+  [22.6, 287, 571, 411, 127, 200, 210, 486],
+  [23.0, 274, 548, 381, 120, 178, 201, 466],
+  [21.8, 262, 541, 334, 103, 188, 187, 421],
+  [20.5, 260, 525, 330, 93, 162, 187, 375],
+  [19.0, 264, 502, 295, 86, 161, 186, 330],
+  [17.3, 236, 473, 292, 76, 140, 159, 282],
+  [16.2, 215, 453, 251, 68, 113, 140, 253],
+  [15.9, 192, 444, 210, 71, 89, 134, 243],
+  [14.0, 198, 434, 206, 64, 99, 123, 196],
+  [12.0, 213, 420, 206, 52, 83, 108, 186],
+  [11.9, 192, 413, 193, 47, 90, 82, 142],
+  [12.0, 206, 392, 150, 45, 60, 80, 120],
+];
+
+var option3 = {
+  title: {
+    text: "ECharts 入门示例",
+  },
+  tooltip: { formatter: "{c}%" },
+  legend: {
+    data: ["Agent"],
+  },
+  yAxis: {
+    data: [
+      "agent1负载",
+      "agent2负载",
+      "agent3负载",
+      "agent4负载",
+      "agent5负载",
+      "agent6负载",
+      "agent7负载",
+      "agent8负载",
+    ],
+    inverse: true,
+    // max: 5,
+  },
+  xAxis: {
+    axisLabel: {
+      formatter: "{value}%",
+    },
+  },
+  series: [
+    {
+      realtimeSort: true,
+      name: "Agent",
+      showBackground: true,
+      label: {
+        show: true,
+        position: "right",
+        valueAnimation: true,
+        formatter: "{c}%",
+      },
+      stack: {},
+      type: "bar",
+      data: [12, 20.6, 39.2, 15],
+    },
+  ],
+  animationDuration: 0,
+  animationDurationUpdate: 500,
+  animationEasing: "linear",
+  animationEasingUpdate: "linear",
+};
+
+
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
@@ -253,6 +454,40 @@ getAgent().then((agents) => {
   getMigration().then((migrations) => {
     getCluster().then((clusters) => {
       allInfoIntance = echarts.init(allInfo.value, "macarons");
+      // getCache().then(() => {
+  
+
+      //   const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+      //   taskInfoIntance.setOption(option2);
+
+      //   const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
+
+      //   agentInfoIntance.setOption(option3);
+
+      //   for (let i = 0; i < data.length; i++) {
+      //     for (let j = 0; j < data[data.length - i - 1].length; j++) {
+      //     data[data.length - i - 1][j] = data[data.length - i - 1][j] / 10;
+      //     }
+      //     setTimeout(function () {
+      //     var smalloption = {
+      //       title: {
+      //         text: year[data.length - i - 1].toString() + "时刻agent负载状况",
+      //       },
+      //       series: [
+      //         {
+      //           data: data[data.length - i - 1],
+      //         },
+      //       ],
+      //     };
+      //     console.log(smalloption);
+      //     agentInfoIntance.setOption(smalloption);
+      //     }, 500 * i);
+      //   }
+  
+      // });
+      const formatTooltip = (val) => {
+        return val / 100;
+      };
       proxy.$modal.closeLoading();
       newLinks = JSON.parse(JSON.stringify(migrations));
       // console.log(agents);
@@ -288,7 +523,7 @@ getAgent().then((agents) => {
       //   // 第一次加载的时候大小都是 10
       //   agents[i].symbolSize = 10;
       // }
-      var option = {
+      var option1 = {
         tooltip: {
           show: true,
           trigger: "item",
@@ -369,7 +604,8 @@ getAgent().then((agents) => {
           },
         ],
       };
-      allInfoIntance.setOption(option);
+      allInfoIntance.setOption(option1);
+
     });
   });
 });
@@ -445,13 +681,48 @@ const onChange = (val) => {
           getEMigrationTopInfo();
           getImMigrationTopInfo();
           getAllClusterInfo();
-          getMinCost().then((mincost) => {
-            // console.log(mincost);
-          });
-          getAllMinCost().then((mincost) => {
-            // console.log(mincost);
-          });
+          // getMinCost().then((mincost) => {
+          //   // console.log(mincost);
+          // });
+          // getAllMinCost().then((mincost) => {
+          //   // console.log(mincost);
+          // });
+
+          getCache().then(() => {
+  
+            
+  const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+  taskInfoIntance.setOption(option2);
+
+  const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
+
+  agentInfoIntance.setOption(option3);
+  
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 0; j < data[data.length - i - 1].length; j++) {
+    data[data.length - i - 1][j] = data[data.length - i - 1][j] ;
+    }
+    setTimeout(function () {
+    var smalloption = {
+      title: {
+        text: year[data.length - i - 1].toString() + "时刻agent负载状况",
+      },
+      series: [
+        {
+          data: data[data.length - i - 1],
+        },
+      ],
+    };
+    console.log(smalloption);
+    agentInfoIntance.setOption(smalloption);
+    }, 500 * i);
+  }
+
+});
+
         });
+
+
       });
     });
   });
