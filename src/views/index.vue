@@ -264,7 +264,7 @@ var allInfoIntance, singleInfoIntance, taskInfoIntance, agentInfoIntance;
 var singleClusterIndex;
 
 
-
+//动态任务完成率（之后要改）
 const countries = [
   "Finland",
   "France",
@@ -349,7 +349,7 @@ var option2 = {
 };
 
 
-
+//动态agent负载（之后要改）
 var year = [
   2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008,
   2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995,
@@ -454,6 +454,7 @@ getAgent().then((agents) => {
   getMigration().then((migrations) => {
     getCluster().then((clusters) => {
       allInfoIntance = echarts.init(allInfo.value, "macarons");
+      //首页直接显示agent负载和任务完成率
       // getCache().then(() => {
   
 
@@ -688,6 +689,8 @@ const onChange = (val) => {
           //   // console.log(mincost);
           // });
 
+
+//动态agent负载和任务完成率（之后改）
           getCache().then(() => {
   
             
@@ -719,6 +722,7 @@ const onChange = (val) => {
   }
 
 });
+//
 
         });
 
