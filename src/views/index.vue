@@ -217,6 +217,9 @@ import {
   eachAgentSurvivability,
   allAgentSurvivability,
   agentTaskExecutionTime,
+  getAgentName,
+  agentLoadRate,
+  agentLoadRates,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -266,14 +269,14 @@ var singleClusterIndex;
 
 //动态任务完成率（之后要改）
 const countries = [
-  "Finland",
-  "France",
-  "Germany",
-  "Iceland",
-  "Norway",
-  "Poland",
-  "Russia",
-  "United Kingdom",
+  "任务2",
+  "任务3",
+  "任务4",
+  "任务5",
+  "任务1",
+  "任务6",
+  "任务7",
+  "任务8",
 ];
 const datasetWithFilters = [];
 const seriesList = [];
@@ -348,8 +351,11 @@ var option2 = {
   series: seriesList,
 };
 
-
+var chushi
 //动态agent负载（之后要改）
+
+      
+ 
 var year = [
   2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008,
   2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995,
@@ -399,7 +405,7 @@ var data = [
 
 var option3 = {
   title: {
-    text: "ECharts 入门示例",
+    text: "agent负载",
   },
   tooltip: { formatter: "{c}%" },
   legend: {
@@ -437,7 +443,7 @@ var option3 = {
       },
       stack: {},
       type: "bar",
-      data: [12, 20.6, 39.2, 15],
+      data: chushi,
     },
   ],
   animationDuration: 0,
@@ -451,15 +457,24 @@ var option3 = {
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
 getAgent().then((agents) => {
+  // console.log(agents);
   getMigration().then((migrations) => {
     getCluster().then((clusters) => {
       allInfoIntance = echarts.init(allInfo.value, "macarons");
+      getAgentName().then((agentname) => {
+      agentLoadRate().then((agentLoadRate) => {
       //首页直接显示agent负载和任务完成率
       // getCache().then(() => {
+        const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
+        
+        
+        // console.log("clusterSur");
+        
+      
   
 
-      //   const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
-      //   taskInfoIntance.setOption(option2);
+        const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+        taskInfoIntance.setOption(option2);
 
       //   const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
 
@@ -606,7 +621,50 @@ getAgent().then((agents) => {
         ],
       };
       allInfoIntance.setOption(option1);
+      
 
+      var option3 = {
+        title: {
+        text: "agent负载",
+        },
+        tooltip: { formatter: "{c}%" },
+        legend: {
+        data: ["Agent"],
+        },
+        yAxis: {
+        data: agentname,
+        inverse: true,
+        max: 8,
+        },
+        xAxis: {
+          axisLabel: {
+          formatter: "{value}%",
+          },
+        },
+        series: [
+        {
+          realtimeSort: true,
+          name: "Agent",
+          showBackground: true,
+          label: {
+            show: true,
+            position: "right",
+            valueAnimation: true,
+            formatter: "{c}%",
+          },
+          stack: {},
+          type: "bar",
+          data: agentLoadRate,
+        },
+        ],
+        animationDuration: 0,
+        animationDurationUpdate: 500,
+        animationEasing: "linear",
+        animationEasingUpdate: "linear",
+      };
+      agentInfoIntance.setOption(option3);
+    });
+    });
     });
   });
 });
@@ -664,39 +722,57 @@ const formatTooltip = (val) => {
 };
 var test;
 
+const AgentLoadRate = ref([]);
+function getAgentLoad(agents) {
+  loadRate = JSON.parse(JSON.stringify(agents));
+  AgentLoadRate.value.length = 0;
+  for (let i = 0; i < agents.length; i++) {
+    var loadrate = loadRate[i].value[2];
+    // /loadRate[i].value[1]
+    AgentLoadRat.value.push(loadrate);
+  }
+}
+
 // 修改滑块值带来的变化
 const onChange = (val) => {
   // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
   // newLinks = JSON.parse(JSON.stringify(migrations));
   // postSliderVal(val).then((resMigration) => {
-    console.log('1:', val)
+    // console.log('1:', val)
   migrateTask(++val).then((resMigration) => {
-    console.log('2:', val)
+    // console.log('2:', val)
     getAgent().then((agents) => {
       getCluster().then((clusters) => {
         getTask().then((tasks) => {
+          
           allInfoIntance.setOption({
             series: [
               { data: agents, links: resMigration, categories: clusters },
             ],
           });
+          
           changeMigrateRecord(resMigration);
           getEMigrationTopInfo();
           getImMigrationTopInfo();
           getAllClusterInfo();
+          agentLoadRates().then((loadrates) => {
+              console.log(loadrates)
+          });
           // getMinCost().then((mincost) => {
           //   // console.log(mincost);
           // });
           // getAllMinCost().then((mincost) => {
           //   // console.log(mincost);
           // });
-
+          // getAgentLoad(agents);
+          // console.log(AgentLoadRat);
 
 //动态agent负载和任务完成率（之后改）
           getCache().then(() => {
   
             
   const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+
   taskInfoIntance.setOption(option2);
 
   const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
@@ -704,13 +780,13 @@ const onChange = (val) => {
   agentInfoIntance.setOption(option3);
   
   for (let i = 0; i < data.length; i++) {
-    for (let j = 0; j < data[data.length - i - 1].length; j++) {
-    data[data.length - i - 1][j] = data[data.length - i - 1][j] ;
-    }
+    // for (let j = 0; j < data[data.length - i - 1].length; j++) {
+    // data[data.length - i - 1][j] = data[data.length - i - 1][j] ;
+    // }
     setTimeout(function () {
     var smalloption = {
       title: {
-        text: year[data.length - i - 1].toString() + "时刻agent负载状况",
+        text: "第"+year[data.length - i - 1].toString() + "次迁移agent负载",
       },
       series: [
         {
@@ -718,7 +794,7 @@ const onChange = (val) => {
         },
       ],
     };
-    console.log(smalloption);
+    // console.log(smalloption);
     agentInfoIntance.setOption(smalloption);
     }, 500 * i);
   }

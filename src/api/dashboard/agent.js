@@ -71,3 +71,27 @@ export function agentTaskExecutionTime() {
     method: 'get'
   })
 }
+
+// 得到当前所有agent的名字
+export function getAgentName() {
+  return request({
+    url: '/dashboard/agent/agentname',
+    method: 'get'
+  })
+}
+
+// 得到当前所有agent的负载率
+export function agentLoadRate() {
+  return request({
+    url: '/dashboard/agent/loadrate',
+    method: 'get'
+  })
+}
+
+// 得到迁移过程中所有agent的负载率
+export function agentLoadRates() {
+  return request({
+    url: '/dashboard/agent/loadrates',
+    method: 'get'
+  })
+}
