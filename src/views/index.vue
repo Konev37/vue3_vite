@@ -284,7 +284,7 @@ var option2 = {
     nameLocation: "middle",
   },
   yAxis: {
-    name: "Income",
+    name: "完成率",
   },
   grid: {
     right: 80,
@@ -361,7 +361,7 @@ getAgent().then((agents) => {
         agentLoadRate().then((agentLoadRate) => {
           //首页直接显示agent负载和任务完成率
           // getCache().then(() => {
-          const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
+          agentInfoIntance = echarts.init(agentInfo.value, "macarons");
 
 
           // console.log("clusterSur");
@@ -369,7 +369,7 @@ getAgent().then((agents) => {
 
 
 
-          const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+          taskInfoIntance = echarts.init(taskInfo.value, "macarons");
           taskInfoIntance.setOption(option2);
 
           //   const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
@@ -568,12 +568,16 @@ getAgent().then((agents) => {
   });
 });
 const showMigrate = () => {
+  taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+  taskInfoIntance.clear();
+  taskInfoIntance.resize();
+  taskInfoIntance.setOption(option2);
   getAgentName().then((agentname) => {
     getMigrationId().then((migrationid) => {
       agentLoadRates().then((loadrates) => {
         // console.log(migrationid);
 
-        showAgentLoad(agentname, migrationid, loadrates);
+        showAgentLoads(agentname, migrationid, loadrates);
       });
     });
   });
@@ -640,20 +644,115 @@ function getAgentLoad(agents) {
     AgentLoadRat.value.push(loadrate);
   }
 }
+function showAgentLoad() {
+  getAgentName().then((agentname) => {
+
+    agentLoadRate().then((agentLoadRate) => {
+      // console.log(migrationid);
+
+      var option3 = {
+        title: {
+          text: "agent负载",
+        },
+        tooltip: { formatter: "{c}%" },
+        legend: {
+          data: ["Agent"],
+        },
+        yAxis: {
+          data: agentname,
+          inverse: true,
+          max: 8,
+        },
+        xAxis: {
+          axisLabel: {
+            formatter: "{value}%",
+          },
+        },
+        series: [
+          {
+            realtimeSort: true,
+            name: "Agent",
+            showBackground: true,
+            label: {
+              show: true,
+              position: "right",
+              valueAnimation: true,
+              formatter: "{c}%",
+            },
+            stack: {},
+            type: "bar",
+            data: agentLoadRate,
+          },
+        ],
+        animationDuration: 0,
+        animationDurationUpdate: 500,
+        animationEasing: "linear",
+        animationEasingUpdate: "linear",
+      };
+
+      agentInfoIntance.setOption(option3);
+    });
+
+  });
+}
 
 // const ShowAgentLoadRate = ref([]);
-function showAgentLoad(agentname, migrationid, loadrates) {
+function showAgentLoads(agentname, migrationid, loadrates) {
   agentInfoIntance = echarts.init(agentInfo.value, "macarons");
-  agentInfoIntance.setOption(option3);
+  agentLoadRate().then((agentLoadRate) => {
+    // console.log(migrationid);
 
-  for (let i = 0; i < migrationid.length; i++) {
+    var option3 = {
+      title: {
+        text: "agent负载",
+      },
+      tooltip: { formatter: "{c}%" },
+      legend: {
+        data: ["Agent"],
+      },
+      yAxis: {
+        data: agentname,
+        inverse: true,
+        max: 8,
+      },
+      xAxis: {
+        axisLabel: {
+          formatter: "{value}%",
+        },
+      },
+      series: [
+        {
+          realtimeSort: true,
+          name: "Agent",
+          showBackground: true,
+          label: {
+            show: true,
+            position: "right",
+            valueAnimation: true,
+            formatter: "{c}%",
+          },
+          stack: {},
+          type: "bar",
+          data: agentLoadRate,
+        },
+      ],
+      animationDuration: 0,
+      animationDurationUpdate: 500,
+      animationEasing: "linear",
+      animationEasingUpdate: "linear",
+    };
+
+    agentInfoIntance.setOption(option3);
+  });
+
+  for (let i = 1; i <= migrationid.length; i++) {
     // for (let j = 0; j < data[data.length - i - 1].length; j++) {
     // data[data.length - i - 1][j] = data[data.length - i - 1][j] ;
     // }
     setTimeout(function () {
       var smalloption = {
         title: {
-          text: "第" + migrationid[i] + "次迁移agent负载",
+          text: "第" + migrationid[i - 1] + "次迁移agent负载",
         },
         yAxis: {
           data: agentname,
@@ -662,7 +761,7 @@ function showAgentLoad(agentname, migrationid, loadrates) {
         },
         series: [
           {
-            data: loadrates[i],
+            data: loadrates[i - 1],
           },
         ],
       };
@@ -694,15 +793,17 @@ const onChange = (val) => {
           getEMigrationTopInfo();
           getImMigrationTopInfo();
           getAllClusterInfo();
-          getAgentName().then((agentname) => {
-            getMigrationId().then((migrationid) => {
-              agentLoadRates().then((loadrates) => {
-                // console.log(migrationid);
+          // $("#agentInfoIntance").removeAttr("_echarts_instance_").empty();
 
-                showAgentLoad(agentname, migrationid, loadrates);
-              });
-            });
-          });
+
+          showAgentLoad();
+
+
+
+
+
+
+
           // getMinCost().then((mincost) => {
           //   // console.log(mincost);
           // });
@@ -713,16 +814,17 @@ const onChange = (val) => {
           // console.log(AgentLoadRat);
 
           //动态agent负载和任务完成率（之后改）
-          getCache().then(() => {
+          // getCache().then(() => {
 
 
-            const taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+          taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+          taskInfoIntance.clear();
+          taskInfoIntance.resize();
+          taskInfoIntance.setOption(option2);
 
-            taskInfoIntance.setOption(option2);
 
 
-
-          });
+          // });
           //
 
         });
