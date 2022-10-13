@@ -369,8 +369,8 @@ getAgent().then((agents) => {
 
 
 
-          taskInfoIntance = echarts.init(taskInfo.value, "macarons");
-          taskInfoIntance.setOption(option2);
+          // taskInfoIntance = echarts.init(taskInfo.value, "macarons");
+          // taskInfoIntance.setOption(option2);
 
           //   const agentInfoIntance = echarts.init(agentInfo.value, "macarons");
 
