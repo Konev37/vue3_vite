@@ -79,3 +79,11 @@ export function getImmigrationTop() {
     method: 'get'
   })
 }
+
+// 得到当前所有migration的编号
+export function getMigrationId() {
+  return request({
+    url: '/dashboard/migration/migrationid',
+    method: 'get'
+  })
+}
