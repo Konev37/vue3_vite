@@ -1,3 +1,5 @@
+[![OSCS Status](https://www.oscs1024.com/platform/badge/Konev37/vue3_vite.svg?size=large)](https://www.oscs1024.com/project/Konev37/vue3_vite?ref=badge_large)
+
 2022年3月7日开始进行项目移植
 
 ## 前端运行
