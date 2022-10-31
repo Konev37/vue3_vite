@@ -26,7 +26,7 @@ const colAgent = ref(null);
 
 var danAgentsInst, colAgentInst;
 
-proxy.$modal.loading("正在加载Agent数据，请稍候！");
+proxy.$modal.loading("正在加载态势数据，请稍候！");
 
 getAgent().then((res) => {
   danAgentsInst = echarts.init(danAgents.value, "macarons");
