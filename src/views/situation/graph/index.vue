@@ -33,7 +33,10 @@ getAgent().then(() => {
       layout: 'none',
       roam: true,
       label: {
-        show: true
+        show: true,
+        textStyle: {
+          fontSize: 20
+        },
       },
       data: [
         {

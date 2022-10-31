@@ -38,7 +38,7 @@ const regionalEnv = ref(null);
 
 var geoEnvInst, naturalEnvInst, elecEnvInst, regionalEnvInst;
 
-proxy.$modal.loading("正在加载Agent数据，请稍候！");
+proxy.$modal.loading("正在加载态势数据，请稍候！");
 
 getAgent().then(() => {
   geoEnvInst = echarts.init(geoEnv.value, "macarons");
