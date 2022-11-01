@@ -108,6 +108,34 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'mode/human',
+        component: () => import('@/views/multi/mode/human'),
+        name: 'human',
+        meta: { title: '人机协作模式', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'mode',
+        component: () => import('@/views/multi/mode'),
+        name: 'mode',
+        meta: { title: '多模式切换', icon: 'user' }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
