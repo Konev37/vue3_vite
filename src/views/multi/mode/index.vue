@@ -1,8 +1,9 @@
 <template>
   <div class="app-container">
-    多模式切换
+    多模式
   </div>
 </template>
 
-<script setup name="Mode">
+<script lang="ts" setup name="Mode">
+
 </script>
