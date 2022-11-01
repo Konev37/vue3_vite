@@ -1,0 +1,113 @@
+<template>
+  <div class="app-container">
+    <el-card>
+      <h1 class="header">协同agent调度</h1>
+      <br/>
+      <el-row justify="center" class="content">
+        <el-col :span="18">
+          <el-table
+            :data="collaborativeData"
+            border
+            height="600"
+            v-fit-columns
+            style="width: 100%"
+          >
+            <el-table-column prop="task" label="协同任务" />
+            <el-table-column prop="mode" label="协同方式"> </el-table-column>
+            <el-table-column prop="range" label="协同范围"> </el-table-column>
+            <el-table-column prop="ctrl" label="协同agent控制">
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row justify="space-evenly">
+        <el-col :span="12">
+          <el-switch
+            v-model="value1"
+            class="mb-2"
+            inactive-text="被动模式"
+            active-text="主动模式"
+            @change="change1"
+          />
+        </el-col>
+        <el-col :span="12">
+          <el-switch
+            v-model="value2"
+            class="mb-2"
+            inactive-text="机器模式"
+            active-text="人机协作模式"
+            @change="change2"
+          />
+        </el-col>
+      </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script setup name="Human">
+import { ref } from "vue";
+import { ElNotification } from "element-plus";
+import { useRouter } from "vue-router";
+
+const value1 = ref(false);
+const value2 = ref(true);
+
+const router = useRouter();
+
+const collaborativeData = [
+  {
+    task: "任务1",
+  },
+  {
+    task: "任务2",
+  },
+  {
+    task: "任务3",
+  },
+  {
+    task: "任务4",
+  },
+  {
+    task: "任务5",
+  },
+];
+
+const change1 = (val) => {
+  if (val == true) {
+    ElNotification({
+      // title: 'Custom Position',
+      message: "已切换至主动模式",
+      position: "bottom-left",
+      duration: 2000, // 2s 后自动关闭
+    });
+  } else {
+    ElNotification({
+      // title: 'Custom Position',
+      message: "已切换至被动模式",
+      position: "bottom-left",
+      duration: 2000,
+    });
+  }
+};
+const change2 = (val) => {
+  if (val == false) {
+    router.push("/multi/mode");
+  }
+};
+</script>
+
+<style scoped lang="scss">
+.header {
+  text-align: center;
+}
+.content {
+  margin-top: 20px;
+}
+.mb-2 {
+  // --el-switch-off-color: #13ce66;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
