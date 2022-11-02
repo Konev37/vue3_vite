@@ -362,13 +362,7 @@ getAgent().then((agents) => {
           //首页直接显示agent负载和任务完成率
           // getCache().then(() => {
           agentInfoIntance = echarts.init(agentInfo.value, "macarons");
-
-
           // console.log("clusterSur");
-
-
-
-
           // taskInfoIntance = echarts.init(taskInfo.value, "macarons");
           // taskInfoIntance.setOption(option2);
 
@@ -395,7 +389,6 @@ getAgent().then((agents) => {
           //     agentInfoIntance.setOption(smalloption);
           //     }, 500 * i);
           //   }
-
           // });
           const formatTooltip = (val) => {
             return val / 100;

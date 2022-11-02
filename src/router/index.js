@@ -80,6 +80,62 @@ export const constantRoutes = [
   //   ]
   // },
   {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'granularity/setGranularity',
+        component: () => import('@/views/multi/granularity/setGranularity'),
+        name: 'setGranularity',
+        meta: { title: '设置粒度', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'granularity',
+        component: () => import('@/views/multi/granularity'),
+        name: 'granularity',
+        meta: { title: '多粒度决策', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'mode/human',
+        component: () => import('@/views/multi/mode/human'),
+        name: 'human',
+        meta: { title: '人机协作模式', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/multi',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'mode',
+        component: () => import('@/views/multi/mode'),
+        name: 'mode',
+        meta: { title: '多模式切换', icon: 'user' }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
