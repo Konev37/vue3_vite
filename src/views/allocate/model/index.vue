@@ -23,27 +23,18 @@
 
               </el-form-item>
               <el-form-item label="资源调配任务指标参数1">
-                <el-select v-model="form.region" placeholder="请设置参数">
-
-                </el-select>
-
+                <el-input v-model="form.parameter1" style="width:220px;"/>
               </el-form-item>
               <el-form-item label="资源调配任务指标参数2">
-                <el-select v-model="form.region" placeholder="请设置参数">
-
-                </el-select>
+                <el-input v-model="form.parameter2" style="width:220px;"/>
 
               </el-form-item>
               <el-form-item label="资源调配任务指标参数3">
-                <el-select v-model="form.region" placeholder="请设置参数">
-
-                </el-select>
+                <el-input v-model="form.parameter3" style="width:220px;"/>
 
               </el-form-item>
               <el-form-item label="资源调配任务指标参数4">
-                <el-select v-model="form.region" placeholder="请设置参数">
-
-                </el-select>
+                <el-input v-model="form.parameter4" style="width:220px;"/>
 
               </el-form-item>
             </el-form>
@@ -123,13 +114,17 @@ const formatTooltip = (val) => {
 // do not use same name with ref
 const form = reactive({
   name: '',
-  region: '',
+  region: '1',
   date1: '',
   date2: '',
   delivery: false,
   type: [],
   resource: '',
   desc: '',
+  parameter1: '200',
+  parameter2: '50',
+  parameter3: '40',
+  parameter4: '120'
 })
 
 const onSubmit = () => {
