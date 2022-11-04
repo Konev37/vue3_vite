@@ -35,7 +35,7 @@
                   <el-input v-model="space_coord[scope.$index]" />
                 </template>
               </el-table-column>
-              <el-table-column prop="range" label="范围">
+              <el-table-column prop="range" label="范围（半径/m）">
                 <template #default="scope">
                   <el-input v-model="space_range[scope.$index]" />
                 </template>
@@ -109,10 +109,10 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event);
 };
 const input = ref("");
-const space_coord = ref(["坐标1", "坐标2", "坐标3", "坐标4", "坐标5"]);
-const space_range = ref(["范围1", "范围2", "范围3", "范围4", "范围5"]);
-const time_time = ref(["时间1", "时间2", "时间3", "时间4", "时间5"]);
-const time_rate = ref(["比率1", "比率2", "比率3", "比率4", "比率5"]);
+const space_coord = ref(["(10,21)", "(3,98)", "(52,34)", "(74,69)", "(23,83)"]);
+const space_range = ref(["129", "321", "672", "47", "297"]);
+const time_time = ref(["1h 4min", "56min", "36min", "2h 49min", "43min"]);
+const time_rate = ref(["3 %", "17 %", "5 %", "2 %", "9 %"]);
 const src_source = ref(["有源", "有源", "无源", "有源", "无源"]);
 const src_recycle = ref(["可回收", "不可回收", "不可回收", "可回收", "不可回收"]);
 

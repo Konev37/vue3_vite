@@ -9,7 +9,7 @@
             :data="collaborativeData"
             class="content"
             border
-            height="600"
+            max-height="600"
             v-fit-columns
             style="width: 100%"
           >
@@ -24,28 +24,13 @@
 </template>
 
 <script setup name="Lib">
-const collaborativeData = [
-  {
-    sit: "态势1",
-    strategy: "策略1",
-  },
-  {
-    sit: "态势2",
-    strategy: "策略2",
-  },
-  {
-    sit: "态势3",
-    strategy: "策略3",
-  },
-  {
-    sit: "态势4",
-    strategy: "策略4",
-  },
-  {
-    sit: "态势5",
-    strategy: "策略5",
-  },
-];
+const collaborativeData = [];
+for (let i = 1; i <= 10; i++) {
+  var sit = "态势" + i;
+  var strategy = '策略' + i;
+  var data = {sit: sit, strategy: strategy};
+  collaborativeData.push(data);
+}
 </script>
 
 <style scoped lang="scss">

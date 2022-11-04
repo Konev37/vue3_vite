@@ -80,7 +80,7 @@
   </div>
 </template>
 
-<script script lang="ts" setup name="Assess">
+<script script setup name="Assess">
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
 import { getCache } from "@/api/monitor/cache";
@@ -92,15 +92,14 @@ import _ from "lodash";
 
 import { reactive } from 'vue'
 import { ref } from 'vue'
-// import type { TabsPaneContext } from 'element-plus'
-import type { TabsPaneContext } from "element-plus";
+// import type { TabsPaneContext } from "element-plus";
 
 
 const activeName = ref('red')
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event);
-};
+// const handleClick = (tab: TabsPaneContext, event: Event) => {
+//   console.log(tab, event);
+// };
 
 //红方
 const { proxy } = getCurrentInstance();

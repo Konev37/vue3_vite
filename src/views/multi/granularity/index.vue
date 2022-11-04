@@ -67,7 +67,7 @@
               <el-table-column prop="task" label="协同任务" />
               <el-table-column label="空间粒度">
                 <el-table-column prop="coord" label="坐标" />
-                <el-table-column prop="range" label="范围"> </el-table-column>
+                <el-table-column prop="range" label="范围（半径/m）"> </el-table-column>
               </el-table-column>
               <el-table-column label="时间粒度">
                 <el-table-column prop="time" label="持续时间" />
@@ -99,7 +99,7 @@
             >
               <el-table-column prop="task" label="协同任务" />
               <el-table-column prop="mode" label="协同方式"> </el-table-column>
-              <el-table-column prop="range" label="协同范围"> </el-table-column>
+              <el-table-column prop="range" label="范围（半径/m）"> </el-table-column>
               <el-table-column prop="ctrl" label="协同agent控制">
               </el-table-column>
             </el-table>
@@ -209,52 +209,112 @@ const options = Array.from({ length: 10 }).map((_, idx) => ({
 const granularityData = [
   {
     task: "任务1",
+    coord: "(10,21)",
+    range: "129",
+    time: "1h 4min",
+    rate: "3 %",
+    src: "有源",
+    recycle: "可回收",
   },
   {
     task: "任务2",
+    coord: "(3,98)",
+    range: "321",
+    time: "56min",
+    rate: "17 %",
+    src: "有源",
+    recycle: "不可回收",
   },
   {
     task: "任务3",
+    coord: "(52,34)",
+    range: "672",
+    time: "36min",
+    rate: "5 %",
+    src: "无源",
+    recycle: "不可回收",
   },
   {
     task: "任务4",
+    coord: "(74,69)",
+    range: "47",
+    time: "2h 49min",
+    rate: "2 %",
+    src: "有源",
+    recycle: "可回收",
   },
   {
     task: "任务5",
+    coord: "(23,83)",
+    range: "297",
+    time: "43min",
+    rate: "9 %",
+    src: "无源",
+    recycle: "不可回收",
   },
 ];
 const collaborativeData = [
   {
     task: "任务1",
+    mode: "方式1",
+    range: "21",
+    ctrl: "控制1",
   },
   {
     task: "任务2",
+    mode: "方式2",
+    range: "92",
+    ctrl: "控制2",
   },
   {
     task: "任务3",
+    mode: "方式3",
+    range: "46",
+    ctrl: "控制3",
   },
   {
     task: "任务4",
+    mode: "方式4",
+    range: "103",
+    ctrl: "控制4",
   },
   {
     task: "任务5",
+    mode: "方式5",
+    range: "64",
+    ctrl: "控制5",
   },
 ];
 const rewardData = [
   {
     task: "任务1",
+    time: "19s",
+    success: "82 %",
+    cost: "45",
   },
   {
     task: "任务2",
+    time: "5s",
+    success: "94 %",
+    cost: "31",
   },
   {
     task: "任务3",
+    time: "17s",
+    success: "88 %",
+    cost: "29",
   },
   {
     task: "任务4",
+    time: "21s",
+    success: "80 %",
+    cost: "73",
   },
   {
     task: "任务5",
+    time: "3s",
+    success: "98 %",
+    cost: "56",
   },
 ];
 </script>

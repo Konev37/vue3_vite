@@ -18,7 +18,7 @@
                 <el-input v-model="mode[scope.$index]" />
               </template>
             </el-table-column>
-            <el-table-column prop="range" label="协同范围">
+            <el-table-column prop="range" label="协同范围（半径/m）">
               <template #default="scope">
                 <el-input v-model="range[scope.$index]" />
               </template>
@@ -66,7 +66,7 @@ const value2 = ref(true);
 const router = useRouter();
 
 const mode = ref(["方式1", "方式2", "方式3", "方式4", "方式5"]);
-const range = ref(["范围1", "范围2", "范围3", "范围4", "范围5"]);
+const range = ref(["129", "321", "672", "47", "297"]);
 const ctrl = ref(["控制1", "控制2", "控制3", "控制4", "控制5"]);
 
 const collaborativeData = [
