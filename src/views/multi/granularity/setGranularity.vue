@@ -15,25 +15,84 @@
         placeholder="请输入任务名称 / 编号"
       />
       <el-tab-pane label="空间粒度" name="first">
-        <el-table :data="spaceData" class="table" border v-fit-columns>
-          <el-table-column prop="task" label="协同任务" />
-          <el-table-column prop="coord" label="坐标" />
-          <el-table-column prop="address" label="范围" />
-        </el-table>
+        <el-row justify="center">
+          <el-col :span="18">
+            <el-table
+              :data="spaceData"
+              class="table"
+              max-height="600"
+              border
+              v-fit-columns
+            >
+              <el-table-column prop="task" label="协同任务" />
+              <el-table-column prop="coord" label="坐标">
+                <template #default="scope">
+                  <!-- <el-tag
+                    :type="scope.row.tag === 'Home' ? '' : 'success'"
+                    disable-transitions
+                    >{{ scope.row.tag }}</el-tag
+                  > -->
+                  <el-input v-model="space_coord[scope.$index]" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="range" label="范围">
+                <template #default="scope">
+                  <el-input v-model="space_range[scope.$index]" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
       </el-tab-pane>
       <el-tab-pane label="时间粒度" name="second">
-        <el-table :data="timeData" class="table" border v-fit-columns>
-          <el-table-column prop="task" label="协同任务" />
-          <el-table-column prop="time" label="持续时间" />
-          <el-table-column prop="rate" label="误判率" />
-        </el-table>
+        <el-row justify="center">
+          <el-col :span="18">
+            <el-table
+              :data="timeData"
+              class="table"
+              max-height="600"
+              border
+              v-fit-columns
+            >
+              <el-table-column prop="task" label="协同任务" />
+              <el-table-column prop="time" label="持续时间">
+                <template #default="scope">
+                  <el-input v-model="time_time[scope.$index]" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="rate" label="误判率">
+                <template #default="scope">
+                  <el-input v-model="time_rate[scope.$index]" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
       </el-tab-pane>
-      <el-tab-pane label="资源粒度" class="table" name="third">
-        <el-table :data="srcData" border v-fit-columns>
-          <el-table-column prop="task" label="协同任务" />
-          <el-table-column prop="source" label="有源/无源" />
-          <el-table-column prop="recycle" label="可回收/不可回收" />
-        </el-table>
+      <el-tab-pane label="资源粒度" name="third">
+        <el-row justify="center">
+          <el-col :span="18">
+            <el-table
+              :data="srcData"
+              class="table"
+              max-height="600"
+              border
+              v-fit-columns
+            >
+              <el-table-column prop="task" label="协同任务" />
+              <el-table-column prop="source" label="有源/无源">
+                <template #default="scope">
+                  <el-input v-model="src_source[scope.$index]" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="recycle" label="可回收/不可回收">
+                <template #default="scope">
+                  <el-input v-model="src_recycle[scope.$index]" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -50,6 +109,12 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event);
 };
 const input = ref("");
+const space_coord = ref(["坐标1", "坐标2", "坐标3", "坐标4", "坐标5"]);
+const space_range = ref(["范围1", "范围2", "范围3", "范围4", "范围5"]);
+const time_time = ref(["时间1", "时间2", "时间3", "时间4", "时间5"]);
+const time_rate = ref(["比率1", "比率2", "比率3", "比率4", "比率5"]);
+const src_source = ref(["有源", "有源", "无源", "有源", "无源"]);
+const src_recycle = ref(["可回收", "不可回收", "不可回收", "可回收", "不可回收"]);
 
 const spaceData = [
   {
