@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <h1 class="header">协同agent调度</h1>
-      <br/>
+      <br />
       <el-row justify="center" class="content">
         <el-col :span="18">
           <el-table
@@ -13,9 +13,20 @@
             style="width: 100%"
           >
             <el-table-column prop="task" label="协同任务" />
-            <el-table-column prop="mode" label="协同方式"> </el-table-column>
-            <el-table-column prop="range" label="协同范围"> </el-table-column>
+            <el-table-column prop="mode" label="协同方式">
+              <template #default="scope">
+                <el-input v-model="mode[scope.$index]" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="range" label="协同范围">
+              <template #default="scope">
+                <el-input v-model="range[scope.$index]" />
+              </template>
+            </el-table-column>
             <el-table-column prop="ctrl" label="协同agent控制">
+              <template #default="scope">
+                <el-input v-model="ctrl[scope.$index]" />
+              </template>
             </el-table-column>
           </el-table>
         </el-col>
@@ -53,6 +64,10 @@ const value1 = ref(false);
 const value2 = ref(true);
 
 const router = useRouter();
+
+const mode = ref(["方式1", "方式2", "方式3", "方式4", "方式5"]);
+const range = ref(["范围1", "范围2", "范围3", "范围4", "范围5"]);
+const ctrl = ref(["控制1", "控制2", "控制3", "控制4", "控制5"]);
 
 const collaborativeData = [
   {
