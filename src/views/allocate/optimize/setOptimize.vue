@@ -12,33 +12,28 @@
             <el-tab-pane label="约束条件设置" name="first">
                 <el-form :model="form" label-width="750px">
                     <el-form-item label="约束条件1">
-                        <el-select v-model="form.region" placeholder="请设置条件">
+                        <el-input v-model="form.condition1" style="width:220px;"/>
 
-                        </el-select>
 
                     </el-form-item>
                     <el-form-item label="约束条件2">
-                        <el-select v-model="form.region" placeholder="请设置条件">
+                        <el-input v-model="form.condition2" style="width:220px;"/>
 
-                        </el-select>
 
                     </el-form-item>
                     <el-form-item label="约束条件3">
-                        <el-select v-model="form.region" placeholder="请设置条件">
+                        <el-input v-model="form.condition3" style="width:220px;"/>
 
-                        </el-select>
 
                     </el-form-item>
                     <el-form-item label="约束条件4">
-                        <el-select v-model="form.region" placeholder="请设置条件">
+                        <el-input v-model="form.condition4" style="width:220px;"/>
 
-                        </el-select>
 
                     </el-form-item>
                     <el-form-item label="约束条件5">
-                        <el-select v-model="form.region" placeholder="请设置条件">
+                        <el-input v-model="form.condition5" style="width:220px;"/>
 
-                        </el-select>
 
                     </el-form-item>
                 </el-form>
@@ -52,33 +47,22 @@
             <el-tab-pane label="决策变量设置" name="second">
                 <el-form :model="form" label-width="750px">
                     <el-form-item label="决策变量1">
-                        <el-select v-model="form.region" placeholder="请设置变量">
-
-                        </el-select>
+                        <el-input v-model="form.variable1" style="width:220px;"/>
 
                     </el-form-item>
                     <el-form-item label="决策变量2">
-                        <el-select v-model="form.region" placeholder="请设置变量">
-
-                        </el-select>
-
+                        <el-input v-model="form.variable2" style="width:220px;"/>
                     </el-form-item>
                     <el-form-item label="决策变量3">
-                        <el-select v-model="form.region" placeholder="请设置变量">
-
-                        </el-select>
+                        <el-input v-model="form.variable3" style="width:220px;"/>
 
                     </el-form-item>
                     <el-form-item label="决策变量4">
-                        <el-select v-model="form.region" placeholder="请设置变量">
-
-                        </el-select>
+                        <el-input v-model="form.variable4" style="width:220px;"/>
 
                     </el-form-item>
                     <el-form-item label="决策变量5">
-                        <el-select v-model="form.region" placeholder="请设置变量">
-
-                        </el-select>
+                        <el-input v-model="form.variable5" style="width:220px;"/>
 
                     </el-form-item>
                 </el-form>
@@ -101,18 +85,28 @@ const activeName = ref("first");
 const handleClick = (tab: TabsPaneContext, event: Event) => {
     console.log(tab, event);
 };
-
-
 const form = reactive({
-    name: '',
-    region: '',
-    date1: '',
-    date2: '',
-    delivery: false,
-    type: [],
-    resource: '',
-    desc: '',
+  name: '',
+  region: '1',
+  date1: '',
+  date2: '',
+  delivery: false,
+  type: [],
+  resource: '',
+  desc: '',
+  condition1: '200',
+  condition2: '50',
+  condition3: '40',
+  condition4: '120',
+  condition5: '1',
+  variable1: '200',
+  variable2: '50',
+  variable3: '40',
+  variable4: '120',
+  variable5: '1',
 })
+
+
 
 
 </script>
