@@ -9,16 +9,17 @@
       <router-link to="/multi/granularity">
         <el-button :icon="ArrowLeft" type="primary">返回</el-button>
       </router-link>
-      <el-input
+      <!-- <el-input
         v-model="input"
         style="width: 300px; margin-left: 38%"
         placeholder="请输入任务名称 / 编号"
-      />
+        @change="onChange"
+      /> -->
       <el-tab-pane label="空间粒度" name="first">
         <el-row justify="center">
           <el-col :span="18">
             <el-table
-              :data="spaceData"
+              :data="space"
               class="table"
               max-height="600"
               border
@@ -32,12 +33,12 @@
                     disable-transitions
                     >{{ scope.row.tag }}</el-tag
                   > -->
-                  <el-input v-model="space_coord[scope.$index]" />
+                  <el-input v-model="s_coord[scope.$index]" />
                 </template>
               </el-table-column>
               <el-table-column prop="range" label="范围（半径/m）">
                 <template #default="scope">
-                  <el-input v-model="space_range[scope.$index]" />
+                  <el-input v-model="s_range[scope.$index]" />
                 </template>
               </el-table-column>
             </el-table>
@@ -48,7 +49,7 @@
         <el-row justify="center">
           <el-col :span="18">
             <el-table
-              :data="timeData"
+              :data="time"
               class="table"
               max-height="600"
               border
@@ -57,12 +58,12 @@
               <el-table-column prop="task" label="协同任务" />
               <el-table-column prop="time" label="持续时间">
                 <template #default="scope">
-                  <el-input v-model="time_time[scope.$index]" />
+                  <el-input v-model="t_time[scope.$index]" />
                 </template>
               </el-table-column>
               <el-table-column prop="rate" label="误判率">
                 <template #default="scope">
-                  <el-input v-model="time_rate[scope.$index]" />
+                  <el-input v-model="t_rate[scope.$index]" />
                 </template>
               </el-table-column>
             </el-table>
@@ -73,7 +74,7 @@
         <el-row justify="center">
           <el-col :span="18">
             <el-table
-              :data="srcData"
+              :data="src"
               class="table"
               max-height="600"
               border
@@ -82,12 +83,12 @@
               <el-table-column prop="task" label="协同任务" />
               <el-table-column prop="source" label="有源/无源">
                 <template #default="scope">
-                  <el-input v-model="src_source[scope.$index]" />
+                  <el-input v-model="s_source[scope.$index]" />
                 </template>
               </el-table-column>
               <el-table-column prop="recycle" label="可回收/不可回收">
                 <template #default="scope">
-                  <el-input v-model="src_recycle[scope.$index]" />
+                  <el-input v-model="s_recycle[scope.$index]" />
                 </template>
               </el-table-column>
             </el-table>
@@ -167,6 +168,40 @@ const srcData = [
     task: "任务5",
   },
 ];
+
+function deepClone(obj) {
+  var _obj = JSON.stringify(obj) //  对象转成字符串
+  var objClone = JSON.parse(_obj) //  字符串转成对象
+  return objClone
+}
+var space = deepClone(spaceData);
+var s_coord = ref(["(10,21)", "(3,98)", "(52,34)", "(74,69)", "(23,83)"]);
+var s_range = ref(["129", "321", "672", "47", "297"]);
+var time = deepClone(timeData);
+var t_time = ref(["1h 4min", "56min", "36min", "2h 49min", "43min"]);
+var t_rate = ref(["3 %", "17 %", "5 %", "2 %", "9 %"]);
+var src = deepClone(srcData);
+var s_source = ref(["有源", "有源", "无源", "有源", "无源"]);
+var s_recycle = ref(["可回收", "不可回收", "不可回收", "可回收", "不可回收"]);
+
+const onChange = (val) => {
+  var index = parseInt(val.slice(-1)) - 1;
+  // space = [spaceData[index]];
+  // s_coord = ref(["1"]);
+  // s_range = ref(["1"]);
+  // time = [timeData[index]];
+  // t_time = ref(["1"]);
+  // t_rate = ref(["1"]);
+  // src = [srcData[index]];
+  // s_source = ref(["1"]);
+  // s_recycle = ref(["1"]);
+  // space.value.length = 0;
+  // var s = {task:'ss'};
+  // space.value.push(s);
+  // console.log(spaceData);
+  // console.log(space);
+  // console.log(s_coord)
+}
 </script>
 
 <style scoped lang="scss">

@@ -88,6 +88,44 @@ var strategy1Inst, strategy2Inst, strategy3Inst, strategy4Inst;
 
 proxy.$modal.loading("正在加载模式数据，请稍候！");
 
+const sttg1Data = [150, 180, 120, 90, 130, 170, 210, 180, 100, 190];
+const sttg2Data = [
+  { value: 978, name: "因素1" },
+  { value: 865, name: "因素2" },
+  { value: 630, name: "因素3" },
+  { value: 520, name: "因素4" },
+  { value: 200, name: "因素5" },
+  { value: 520, name: "因素1" },
+  { value: 200, name: "因素2" },
+  { value: 630, name: "因素3" },
+  { value: 978, name: "因素4" },
+  { value: 865, name: "因素5" },
+];
+const sttg3Data = [
+  {
+    value: [60, 50, 280, 100, 250, 90],
+    name: "因素1",
+  },
+  {
+    value: [30, 100, 220, 210, 480, 240],
+    name: "因素2",
+  },
+  {
+    value: [60, 100, 295, 150, 350, 130],
+    name: "因素1",
+  },
+  {
+    value: [64, 140, 270, 300, 515, 245],
+    name: "因素2",
+  },
+];
+//prettier-ignore
+const sttg4Data = [
+  [9.0, 23.0, 21.0, 12.0, 13.2, 10.1, 13.4, 12.0, 30.0, 29.0, 18.0, 19.0, 15.0, 21.0],
+  [23.4, 29.0, 33.0, 31.0, 22.0, 18.2, 19.1, 30.0, 40.0, 42.0, 43.0, 28.0, 25.0, 29.0],
+  [19.0, 33.0, 41.0, 15.0, 23.2, 20.1, 15.4, 25.0, 40.0, 49.0, 18.0, 25.0, 27.0, 21.0],
+];
+
 getAgent().then(() => {
   sit1Inst = echarts.init(sit1.value, "macarons");
   sit2Inst = echarts.init(sit2.value, "macarons");
@@ -233,6 +271,9 @@ getAgent().then(() => {
   };
 
   var strategy1Opt = {
+    tooltip: {
+      trigger: "axis",
+    },
     xAxis: {
       type: "category",
       data: ["因素1", "因素2", "因素3", "因素4", "因素5"],
@@ -242,7 +283,7 @@ getAgent().then(() => {
     },
     series: [
       {
-        data: [150, 180, 120, 90, 130],
+        data: sttg1Data.slice(0, 5),
         type: "bar",
       },
     ],
@@ -265,13 +306,7 @@ getAgent().then(() => {
         // name: 'Access From',
         type: "pie",
         radius: "50%", //半径
-        data: [
-          { value: 978, name: "因素1" },
-          { value: 865, name: "因素2" },
-          { value: 630, name: "因素3" },
-          { value: 520, name: "因素4" },
-          { value: 200, name: "因素5" },
-        ],
+        data: sttg2Data.slice(0, 5),
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -307,16 +342,7 @@ getAgent().then(() => {
       {
         name: "Budget vs spending",
         type: "radar",
-        data: [
-          {
-            value: [60, 50, 280, 100, 250, 90],
-            name: "因素1",
-          },
-          {
-            value: [30, 100, 220, 210, 480, 240],
-            name: "因素2",
-          },
-        ],
+        data: sttg3Data.slice(0, 2),
       },
     ],
   };
@@ -348,19 +374,19 @@ getAgent().then(() => {
         name: "因素1",
         type: "line",
         // stack: "Total",
-        data: [9.0, 23.0, 21.0, 12.0, 13.2, 10.1, 13.4],
+        data: sttg4Data[0].slice(0, 7),
       },
       {
         name: "因素2",
         type: "line",
         // stack: "Total",
-        data: [23.4, 29.0, 33.0, 31.0, 22.0, 18.2, 19.1],
+        data: sttg4Data[1].slice(0, 7),
       },
       {
         name: "因素3",
         type: "line",
         // stack: "Total",
-        data: [19.0, 33.0, 41.0, 15.0, 23.2, 20.1, 15.4],
+        data: sttg4Data[2].slice(0, 7),
       },
     ],
   };
@@ -377,18 +403,38 @@ getAgent().then(() => {
 });
 const change1 = (val) => {
   if (val == true) {
+    strategy1Inst.setOption({ series: [{ data: sttg1Data.slice(5, 10) }] });
+    strategy2Inst.setOption({ series: [{ data: sttg2Data.slice(5, 10) }] });
+    strategy3Inst.setOption({ series: [{ data: sttg3Data.slice(2, 4) }] });
+    strategy4Inst.setOption({
+      series: [
+        { data: sttg4Data[0].slice(7, 14) },
+        { data: sttg4Data[1].slice(7, 14) },
+        { data: sttg4Data[2].slice(7, 14) },
+      ],
+    });
     ElNotification({
       // title: 'Custom Position',
       message: "已切换至主动模式",
       position: "bottom-left",
-      duration: 2000, // 2s 后自动关闭
+      duration: 3000, // 3s 后自动关闭
     });
   } else {
+    strategy1Inst.setOption({ series: [{ data: sttg1Data.slice(0, 5) }] });
+    strategy2Inst.setOption({ series: [{ data: sttg2Data.slice(0, 5) }] });
+    strategy3Inst.setOption({ series: [{ data: sttg3Data.slice(0, 2) }] });
+    strategy4Inst.setOption({
+      series: [
+        { data: sttg4Data[0].slice(0, 7) },
+        { data: sttg4Data[1].slice(0, 7) },
+        { data: sttg4Data[2].slice(0, 7) },
+      ],
+    });
     ElNotification({
       // title: 'Custom Position',
       message: "已切换至被动模式",
       position: "bottom-left",
-      duration: 2000,
+      duration: 3000,
     });
   }
 };
