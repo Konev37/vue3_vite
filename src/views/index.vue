@@ -16,7 +16,6 @@
             <div class="el-table el-table--enable-row-hover el-table--medium">
               <div ref="taskInfo" style="height: 300px" />
             </div>
-
           </el-card>
         </el-row>
       </el-col>
@@ -29,12 +28,20 @@
           <el-divider />
           <el-row>
             <el-col :span="12">
-              <el-button type="primary" style="margin-left: 50px; margin-bottom: 2px" @click="showMigrate">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 2px"
+                @click="showMigrate"
+              >
                 展示任务迁移过程
               </el-button>
             </el-col>
             <el-col :span="12">
-              <el-button type="primary" style="margin-left: 50px; margin-bottom: 2px" @click="drawerTask = true">
+              <el-button
+                type="primary"
+                style="margin-left: 50px; margin-bottom: 2px"
+                @click="drawerTask = true"
+              >
                 任务迁移记录
               </el-button>
             </el-col>
@@ -49,7 +56,12 @@
                 <span>迁出任务总大小TOP5</span>
               </div>
             </template>
-            <el-table :data="EMigrationTop" border style="width: 100%; height: 300px" v-fit-columns>
+            <el-table
+              :data="EMigrationTop"
+              border
+              style="width: 100%; height: 300px"
+              v-fit-columns
+            >
               <el-table-column prop="agentId" label="agent编号" />
               <el-table-column prop="allTaskSize" label="任务总大小" />
             </el-table>
@@ -62,7 +74,12 @@
                 <span>迁入任务总大小TOP5</span>
               </div>
             </template>
-            <el-table :data="imMigrationTop" border style="width: 100%; height: 300px" v-fit-columns>
+            <el-table
+              :data="imMigrationTop"
+              border
+              style="width: 100%; height: 300px"
+              v-fit-columns
+            >
               <el-table-column prop="agentId" label="agent编号" />
               <el-table-column prop="allTaskSize" label="任务总大小" />
             </el-table>
@@ -80,11 +97,20 @@
           </template>
           <div class="slider-demo-block">
             <!-- <span class="slide-text">任务完成<br />成本</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
-            <el-slider class="el-slider" v-model="valueOptimize" :format-tooltip="formatTooltip" :marks="marks"
-              @change="onChange" />
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
+            <el-slider
+              class="el-slider"
+              v-model="valueOptimize"
+              :format-tooltip="formatTooltip"
+              :marks="marks"
+              @change="onChange"
+            />
             <!-- <span class="slide-text">任务完成<br />比例</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
         </el-card>
       </el-col>
@@ -93,21 +119,39 @@
           <template #header>
             <div class="card-cluster-header">
               <span>全部集群总状态</span>
-              <el-button type="text" style="margin-left: 32px" @click="drawerCluster = true">各集群详细信息</el-button>
+              <el-button
+                type="text"
+                style="margin-left: 32px"
+                @click="drawerCluster = true"
+                >各集群详细信息</el-button
+              >
             </div>
           </template>
-          <el-table :data="allClusterInfo" border style="width: 100%" v-fit-columns>
+          <el-table
+            :data="allClusterInfo"
+            border
+            style="width: 100%"
+            v-fit-columns
+          >
             <el-table-column prop="allRatio" label="任务完成率" />
             <el-table-column label="总成本">
               <el-table-column prop="allMigrationCost" label="迁移成本" />
-              <el-table-column prop="allTaskExecCost" label="任务执行成本（时间）" />
+              <el-table-column
+                prop="allTaskExecCost"
+                label="任务执行成本（时间）"
+              />
             </el-table-column>
             <el-table-column prop="allLoss" label="Agent损失率" />
           </el-table>
         </el-card>
       </el-col>
     </el-row>
-    <el-drawer v-model="drawerTask" title="任务迁移记录" direction="rtl" size="40%">
+    <el-drawer
+      v-model="drawerTask"
+      title="任务迁移记录"
+      direction="rtl"
+      size="40%"
+    >
       <el-table :data="migrateRecord" stripe border>
         <el-table-column prop="order" label="迁移顺序" />
         <el-table-column label="迁移方向">
@@ -117,7 +161,12 @@
         <el-table-column prop="task" label="迁移任务编号" />
       </el-table>
     </el-drawer>
-    <el-drawer v-model="drawerCluster" title="各集群详细信息" direction="rtl" size="40%">
+    <el-drawer
+      v-model="drawerCluster"
+      title="各集群详细信息"
+      direction="rtl"
+      size="40%"
+    >
       <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
@@ -128,15 +177,25 @@
         <el-table-column prop="eachLoss" label="Agent损失率" />
         <el-table-column label="详细信息" width="100">
           <template #default="scope">
-            <el-button type="text" @click.prevent="
-              getRow(scope.$index);
-              innerDrawer = true;
-            ">进入</el-button>
+            <el-button
+              type="text"
+              @click.prevent="
+                getRow(scope.$index);
+                innerDrawer = true;
+              "
+              >进入</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
-      <el-drawer v-model="innerDrawer" title="集群详细信息" direction="rtl" size="50%" :append-to-body="true"
-        @open="handleInnerOpen">
+      <el-drawer
+        v-model="innerDrawer"
+        title="集群详细信息"
+        direction="rtl"
+        size="50%"
+        :append-to-body="true"
+        @open="handleInnerOpen"
+      >
         <!-- <p>_(:зゝ∠)_</p> -->
         <div ref="singleInfo" style="height: 600px" />
       </el-drawer>
@@ -207,7 +266,6 @@ var newLinks;
 var allInfoIntance, singleInfoIntance, taskInfoIntance, agentInfoIntance;
 var singleClusterIndex;
 
-
 //动态任务完成率（之后要改）
 const countries = [
   "任务2",
@@ -272,9 +330,9 @@ var option2 = {
     },
     ...datasetWithFilters,
   ],
-  title: {
-    text: "任务完成率动态展示",
-  },
+  // title: {
+  //   text: "任务完成率动态展示",
+  // },
   tooltip: {
     order: "valueDesc",
     trigger: "axis",
@@ -292,21 +350,17 @@ var option2 = {
   series: seriesList,
 };
 
-var chushi
+var chushi;
 //动态agent负载（之后要改）
 
-
-
-
-
 var option3 = {
-  title: {
-    text: "agent负载",
-  },
+  // title: {
+  //   text: "agent负载",
+  // },
   tooltip: { formatter: "{c}%" },
-  legend: {
-    data: ["Agent"],
-  },
+  // legend: {
+  //   data: ["Agent"],
+  // },
   yAxis: {
     data: [
       "agent1负载",
@@ -347,8 +401,6 @@ var option3 = {
   animationEasing: "linear",
   animationEasingUpdate: "linear",
 };
-
-
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
@@ -464,6 +516,9 @@ getAgent().then((agents) => {
                 data: clusters.map(function (a) {
                   return a.name;
                 }),
+                textStyle: {
+                  fontSize: 18,
+                },
               },
             ],
             series: [
@@ -481,6 +536,9 @@ getAgent().then((agents) => {
                 edgeSymbol: ["circle", "arrow"],
                 label: {
                   show: true,
+                  textStyle: {
+                    fontSize: 18,
+                  },
                   position: "right",
                   formatter: function (params) {
                     return params.data.id + ", " + params.name;
@@ -511,15 +569,14 @@ getAgent().then((agents) => {
           };
           allInfoIntance.setOption(option1);
 
-
           var option3 = {
-            title: {
-              text: "agent负载",
-            },
+            // title: {
+            //   text: "agent负载",
+            // },
             tooltip: { formatter: "{c}%" },
-            legend: {
-              data: ["Agent"],
-            },
+            // legend: {
+            //   data: ["Agent"],
+            // },
             yAxis: {
               data: agentname,
               inverse: true,
@@ -639,18 +696,17 @@ function getAgentLoad(agents) {
 }
 function showAgentLoad() {
   getAgentName().then((agentname) => {
-
     agentLoadRate().then((agentLoadRate) => {
       // console.log(migrationid);
 
       var option3 = {
-        title: {
-          text: "agent负载",
-        },
+        // title: {
+        //   text: "agent负载",
+        // },
         tooltip: { formatter: "{c}%" },
-        legend: {
-          data: ["Agent"],
-        },
+        // legend: {
+        //   data: ["Agent"],
+        // },
         yAxis: {
           data: agentname,
           inverse: true,
@@ -685,7 +741,6 @@ function showAgentLoad() {
 
       agentInfoIntance.setOption(option3);
     });
-
   });
 }
 
@@ -696,13 +751,13 @@ function showAgentLoads(agentname, migrationid, loadrates) {
     // console.log(migrationid);
 
     var option3 = {
-      title: {
-        text: "agent负载",
-      },
+      // title: {
+      //   text: "agent负载",
+      // },
       tooltip: { formatter: "{c}%" },
-      legend: {
-        data: ["Agent"],
-      },
+      // legend: {
+      //   data: ["Agent"],
+      // },
       yAxis: {
         data: agentname,
         inverse: true,
@@ -775,7 +830,6 @@ const onChange = (val) => {
 
     getCluster().then((clusters) => {
       getTask().then((tasks) => {
-
         getAgent().then((agents) => {
           allInfoIntance.setOption({
             series: [
@@ -788,14 +842,7 @@ const onChange = (val) => {
           getAllClusterInfo();
           // $("#agentInfoIntance").removeAttr("_echarts_instance_").empty();
 
-
           showAgentLoad();
-
-
-
-
-
-
 
           // getMinCost().then((mincost) => {
           //   // console.log(mincost);
@@ -809,22 +856,16 @@ const onChange = (val) => {
           //动态agent负载和任务完成率（之后改）
           // getCache().then(() => {
 
-
           taskInfoIntance = echarts.init(taskInfo.value, "macarons");
           taskInfoIntance.clear();
           taskInfoIntance.resize();
           taskInfoIntance.setOption(option2);
 
-
-
           // });
           //
-
         });
       });
-
     });
-
   });
   // getMigration().then((migrations) => {
   //   changeMigrate(val, migrations);
@@ -1268,7 +1309,7 @@ getCluster().then((clusters) => {
   margin-bottom: 10px;
 }
 
-.slider-demo-block .slide-text+.el-slider {
+.slider-demo-block .slide-text + .el-slider {
   flex: 0 0 70%;
 }
 </style>

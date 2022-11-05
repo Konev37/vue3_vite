@@ -48,9 +48,19 @@ getAgent().then(() => {
   var sit1Opt = {
     xAxis: {
       type: "category",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
       data: ["因素1", "因素2", "因素3", "因素4", "因素5"],
     },
     yAxis: {
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
       type: "value",
     },
     series: [
@@ -90,6 +100,11 @@ getAgent().then(() => {
             shadowBlur: 10,
             shadowOffsetX: 0,
             shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+        label: {
+          textStyle: {
+            fontSize: 18,
           },
         },
       },
@@ -150,11 +165,21 @@ getAgent().then(() => {
       name: "时间",
       type: "category",
       boundaryGap: false,
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
       data: ["1", "2", "3", "4", "5"],
     },
     yAxis: {
       name: "影响度",
       type: "value",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     series: [
       {
@@ -176,7 +201,7 @@ getAgent().then(() => {
         data: [15.0, 23.2, 20.1, 15.4, 19.0, 33.0, 41.0],
       },
     ],
-  }
+  };
   sit1Inst.setOption(sit1Opt);
   sit2Inst.setOption(sit2Opt);
   sit3Inst.setOption(sit3Opt);

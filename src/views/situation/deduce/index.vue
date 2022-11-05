@@ -48,6 +48,9 @@ getAgent().then(() => {
     },
     legend: {
       data: ["因素1", "因素2", "因素3", "因素4", "因素5"],
+      textStyle: {
+        fontSize: 18,
+      },
     },
     // toolbox: {
     //   feature: {
@@ -66,12 +69,22 @@ getAgent().then(() => {
         type: "category",
         boundaryGap: false,
         data: ["1", "2", "3", "4", "5", "6", "7"],
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
+        },
       },
     ],
     yAxis: [
       {
         name: "影响度",
         type: "value",
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
+        },
       },
     ],
     series: [
@@ -146,6 +159,9 @@ getAgent().then(() => {
     },
     legend: {
       data: ["因素1", "因素2", "因素3", "因素4", "因素5"],
+      textStyle: {
+        fontSize: 18,
+      },
     },
     // toolbox: {
     //   feature: {
@@ -164,12 +180,22 @@ getAgent().then(() => {
         type: "category",
         boundaryGap: false,
         data: ["1", "2", "3", "4", "5", "6", "7"],
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
+        },
       },
     ],
     yAxis: [
       {
         name: "影响度",
         type: "value",
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
+        },
       },
     ],
     series: [

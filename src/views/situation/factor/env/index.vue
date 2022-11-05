@@ -81,9 +81,19 @@ getAgent().then(() => {
     },
     xAxis: {
       name: "影响度",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     yAxis: {
       type: "category",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
   };
@@ -111,11 +121,21 @@ getAgent().then(() => {
     xAxis: {
       type: "category",
       boundaryGap: false,
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
       data: ["因素1", "因素2", "因素3", "因素4", "因素5", "因素6", "因素7"],
     },
     yAxis: {
       name: "影响度",
       type: "value",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     series: [
       {
@@ -160,11 +180,21 @@ getAgent().then(() => {
     xAxis: {
       type: "category",
       boundaryGap: false,
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
       data: ["因素1", "因素2", "因素3", "因素4", "因素5", "因素6", "因素7"],
     },
     yAxis: {
       name: "影响度",
       type: "value",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     series: [
       {
@@ -227,9 +257,19 @@ getAgent().then(() => {
     },
     xAxis: {
       name: "影响度",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     yAxis: {
       type: "category",
+      axisLabel: {
+        textStyle: {
+          fontSize: 18,
+        },
+      },
     },
     series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
   };

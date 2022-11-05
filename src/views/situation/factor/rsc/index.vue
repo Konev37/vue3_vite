@@ -3,12 +3,12 @@
     <el-card>
       <el-row>
         <el-col :span="12">
-          <h1 class="header">危险agent</h1>
-          <div ref="danAgents" class="content" />
-        </el-col>
-        <el-col :span="12">
           <h1 class="header">协同agent</h1>
           <div ref="colAgent" class="content" />
+        </el-col>
+        <el-col :span="12">
+          <h1 class="header">危险agent</h1>
+          <div ref="danAgents" class="content" />
         </el-col>
       </el-row>
     </el-card>
@@ -26,93 +26,133 @@ const colAgent = ref(null);
 
 var danAgentsInst, colAgentInst;
 
+var CdataAxis = [];
+for (let i = 0; i < 23; i++) {
+  CdataAxis.push(i + 1);
+}
+var DdataAxis = [];
+for (let i = 0; i < 23; i++) {
+  DdataAxis.push(i + 1);
+}
+//prettier-ignore
+var Cdata = [72.4, 53.9, 39.1, 83.1, 73.4, 55.1, 43.3, 85.8, 93.7, 86.4, 65.2, 82.5, 73.6, 22.1, 98.5, 37.4, 52.8, 11.0, 64.7, 83.1, 43.6, 13.1, 57.2];
+//prettier-ignore
+var Ddata = [64.7, 83.1, 43.6, 13.1, 93.7, 86.4, 65.2, 98.5, 37.4, 52.8, 57.2, 72.4, 53.9, 82.5, 73.6, 22.1, 11.0, 39.1, 83.1, 73.4, 55.1, 43.3, 85.8];
+
 proxy.$modal.loading("正在加载态势数据，请稍候！");
 
 getAgent().then((res) => {
   danAgentsInst = echarts.init(danAgents.value, "macarons");
   colAgentInst = echarts.init(colAgent.value, "macarons");
   proxy.$modal.closeLoading();
+
   // console.log(res);
   var DAoption = {
-    // legend: {},
-    tooltip: {},
-    dataset: {
-      dimensions: ["value", "危险类别1", "危险类别2", "危险类别3"],
-      source: [
-        {
-          value: "危险agent1",
-          危险类别1: 43.3,
-          危险类别2: 85.8,
-          危险类别3: 93.7,
-        },
-        {
-          value: "危险agent2",
-          危险类别1: 83.1,
-          危险类别2: 73.4,
-          危险类别3: 55.1,
-        },
-        {
-          value: "危险agent3",
-          危险类别1: 86.4,
-          危险类别2: 65.2,
-          危险类别3: 82.5,
-        },
-        {
-          value: "危险agent4",
-          危险类别1: 72.4,
-          危险类别2: 53.9,
-          危险类别3: 39.1,
-        },
-      ],
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
     },
-    xAxis: { type: "category" },
+    xAxis: {
+      name: "agent编号",
+      data: DdataAxis,
+      axisTick: {
+        show: false,
+      },
+      axisLine: {
+        show: false,
+      },
+      z: 10,
+    },
     yAxis: {
       name: "危险度",
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
+      },
     },
-    // Declare several bar series, each will be mapped
-    // to a column of dataset.source by default.
-    series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
+    dataZoom: [{}],
+    series: [
+      {
+        type: "bar",
+        showBackground: true,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: "#FFCCAA" },
+            { offset: 0.5, color: "#FFCC00" },
+            { offset: 1, color: "#FF9900" },
+          ]),
+        },
+        emphasis: {
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "#FF6600" },
+              { offset: 0.7, color: "#FFCC00" },
+              { offset: 1, color: "#FFCCAA" },
+            ]),
+          },
+        },
+        data: Ddata,
+      },
+    ],
   };
+
   var CAoption = {
-    // legend: {},
-    tooltip: {},
-    dataset: {
-      dimensions: ["value", "协同类别1", "协同类别2", "协同类别3"],
-      source: [
-        {
-          value: "协同agent1",
-          协同类别1: 72.4,
-          协同类别2: 53.9,
-          协同类别3: 39.1,
-        },
-        {
-          value: "协同agent2",
-          协同类别1: 83.1,
-          协同类别2: 73.4,
-          协同类别3: 55.1,
-        },
-        {
-          value: "协同agent3",
-          协同类别1: 43.3,
-          协同类别2: 85.8,
-          协同类别3: 93.7,
-        },
-        {
-          value: "协同agent4",
-          协同类别1: 86.4,
-          协同类别2: 65.2,
-          协同类别3: 82.5,
-        },
-      ],
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
     },
-    xAxis: { type: "category" },
+    xAxis: {
+      name: "agent编号",
+      data: CdataAxis,
+      axisTick: {
+        show: false,
+      },
+      axisLine: {
+        show: false,
+      },
+      z: 10,
+    },
     yAxis: {
       name: "协同度",
+      axisLine: {
+        show: false,
+      },
+      axisTick: {
+        show: false,
+      },
     },
-    // Declare several bar series, each will be mapped
-    // to a column of dataset.source by default.
-    series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
+    dataZoom: [{}],
+    series: [
+      {
+        type: "bar",
+        showBackground: true,
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: "#83bff6" },
+            { offset: 0.5, color: "#188df0" },
+            { offset: 1, color: "#188df0" },
+          ]),
+        },
+        emphasis: {
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "#2378f7" },
+              { offset: 0.7, color: "#2378f7" },
+              { offset: 1, color: "#83bff6" },
+            ]),
+          },
+        },
+        data: Cdata,
+      },
+    ],
   };
+
   danAgentsInst.setOption(DAoption);
   colAgentInst.setOption(CAoption);
 });

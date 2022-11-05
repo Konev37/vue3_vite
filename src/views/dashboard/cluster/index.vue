@@ -276,6 +276,9 @@ getAgent().then((agents) => {
             data: clusters.map(function (a) {
               return a.name;
             }),
+            textStyle: {
+              fontSize: 20,
+            },
           },
         ],
         series: [
@@ -293,6 +296,9 @@ getAgent().then((agents) => {
             edgeSymbol: ["circle", "arrow"],
             label: {
               show: true,
+              textStyle: {
+                fontSize: 20,
+              },
               position: "right",
               formatter: function (params) {
                 return params.data.id + ", " + params.name;

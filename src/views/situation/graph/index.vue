@@ -15,7 +15,7 @@ const { proxy } = getCurrentInstance();
 const graph = ref(null);
 
 var graphInst;
-proxy.$modal.loading("正在加载Agent数据，请稍候！");
+proxy.$modal.loading("正在加载态势数据，请稍候！");
 
 getAgent().then(() => {
   graphInst = echarts.init(graph.value, "macarons");
@@ -80,7 +80,21 @@ getAgent().then(() => {
           symbolSize: 200,
           x: 500,
           y: 200
-        }
+        },
+        {
+          id: 6,
+          name: '自然环境',
+          symbolSize: 100,
+          x: 600,
+          y: 100
+        },
+        {
+          id: 7,
+          name: '区域环境',
+          symbolSize: 100,
+          x: 600,
+          y: 300
+        },
       ],
       links: [
         {
@@ -102,7 +116,15 @@ getAgent().then(() => {
         {
           source: 4,
           target: 5
-        }
+        },
+        {
+          source: 5,
+          target: 6
+        },
+        {
+          source: 5,
+          target: 7
+        },
       ],
       lineStyle: {
         opacity: 0.9,
