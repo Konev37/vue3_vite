@@ -102,11 +102,11 @@ import _ from "lodash";
 import { reactive } from 'vue'
 import { ref } from 'vue'
 
-const value1 = ref(0)
-const value2 = ref(0)
-const value3 = ref(0)
-const value4 = ref(0)
-const value5 = ref(0)
+const value1 = ref(100)
+const value2 = ref(100)
+const value3 = ref(50)
+const value4 = ref(80)
+const value5 = ref(100)
 
 const formatTooltip = (val) => {
   return val +'%'
@@ -371,20 +371,102 @@ var option2 = {
         },
         {
           source: '任务 1',
-          target: '任务 3'
+          target: '任务 3',
+          lineStyle: {
+            curveness: 0.2
+          }
         },
         {
           source: '任务 2',
-          target: '任务 3'
+          target: '任务 3',
+          lineStyle: {
+            curveness: 0.2
+          }
         },
         {
           source: '任务 2',
-          target: '任务 4'
+          target: '任务 4',
+          lineStyle: {
+            curveness: 0.2
+          }
         },
         {
           source: '任务 1',
-          target: '任务 4'
-        }
+          target: '任务 4',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 3',
+          target: '任务 5',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 6',
+          target: '任务 4',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 5',
+          target: '任务 10',
+          lineStyle: {
+            curveness: 0.2
+          } 
+        },
+        {
+          source: '任务 8',
+          target: '任务 10',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 12',
+          target: '任务 14',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 11',
+          target: '任务 15',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 13',
+          target: '任务 17',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 18',
+          target: '任务 16',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 16',
+          target: '任务 19',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
+        {
+          source: '任务 7',
+          target: '任务 16',
+          lineStyle: {
+            curveness: 0.2
+          }
+        },
       ],
       lineStyle: {
         opacity: 0.9,
