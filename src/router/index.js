@@ -142,6 +142,76 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
+        path: 'model/setTask',
+        component: () => import('@/views/allocate/model/setTask'),
+        name: 'setTask',
+        meta: { title: '设置协同任务', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/allocate',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'model/setAgent',
+        component: () => import('@/views/allocate/model/setAgent'),
+        name: 'setAgent',
+        meta: { title: '设置协同资源', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/allocate',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'model/setConstraint',
+        component: () => import('@/views/allocate/model/setConstraint'),
+        name: 'setConstraint',
+        meta: { title: '设置约束条件', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/allocate',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'model',
+        component: () => import('@/views/allocate/model'),
+        name: 'model',
+        meta: { title: '模型设置', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/allocate',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'model/setDecision',
+        component: () => import('@/views/allocate/model/setDecision'),
+        name: 'setDecision',
+        meta: { title: '设置决策变量', icon: 'user' }
+      }
+    ]
+  },
+  {
+    path: '/allocate',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
         path: 'optimize/setOptimize',
         component: () => import('@/views/allocate/optimize/setOptimize'),
         name: 'setOptimize',

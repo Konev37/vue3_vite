@@ -22,21 +22,15 @@
                 </el-select>
 
               </el-form-item>
-              <el-form-item label="资源调配任务指标参数1">
-                <el-input v-model="form.parameter1" style="width:220px;"/>
-              </el-form-item>
-              <el-form-item label="资源调配任务指标参数2">
-                <el-input v-model="form.parameter2" style="width:220px;"/>
+              
+              
+              
+              <el-row justify="center" style="margin-top: 20px">
+                <router-link to="/allocate/model/setTask">
+                  <el-button type="primary" size="large">设置协同任务</el-button>
+                </router-link>
+              </el-row>
 
-              </el-form-item>
-              <el-form-item label="资源调配任务指标参数3">
-                <el-input v-model="form.parameter3" style="width:220px;"/>
-
-              </el-form-item>
-              <el-form-item label="资源调配任务指标参数4">
-                <el-input v-model="form.parameter4" style="width:220px;"/>
-
-              </el-form-item>
             </el-form>
 
             <div class="el-table el-table--enable-row-hover el-table--medium">
@@ -58,30 +52,28 @@
         </el-row>
         <el-row>
           <el-card class="card">
-            <template #header><span>Agent资源库设置</span></template>
+            <template #header><span>Agent协同资源库设置</span></template>
             <div class="el-table el-table--enable-row-hover el-table--medium">
               <div ref="Info" style="width:700px; height: 350p" />
             </div>
             <div class="slider-demo-block">
-              <span class="demonstration">Agent资源组1</span>
-              <el-slider v-model="value1" :format-tooltip="formatTooltip" show-input/>
+              <span class="demonstration">参与协同最大范围</span>
+              <el-slider v-model="value1" :format-tooltip="formatTooltip" show-input />
             </div>
             <div class="slider-demo-block">
-              <span class="demonstration">Agent资源组2</span>
-              <el-slider v-model="value2" :format-tooltip="formatTooltip" show-input/>
+              <span class="demonstration">协同成本</span>
+              <el-slider v-model="value2" :format-tooltip="formatTooltip" show-input />
             </div>
             <div class="slider-demo-block">
-              <span class="demonstration">Agent资源组3</span>
-              <el-slider v-model="value3" :format-tooltip="formatTooltip" show-input/>
+              <span class="demonstration">投入协同的最大资源</span>
+              <el-slider v-model="value3" :format-tooltip="formatTooltip" show-input />
             </div>
-            <div class="slider-demo-block">
-              <span class="demonstration">Agent资源组4</span>
-              <el-slider v-model="value4" :format-tooltip="formatTooltip" show-input/>
-            </div>
-            <div class="slider-demo-block">
-              <span class="demonstration">Agent资源组5</span>
-              <el-slider v-model="value5" :format-tooltip="formatTooltip" show-input/>
-            </div> 
+            
+            <el-row justify="center" style="margin-top: 20px">
+                <router-link to="/allocate/model/setAgent">
+                  <el-button type="primary" size="large">设置协同资源</el-button>
+                </router-link>
+              </el-row>
           </el-card>
         </el-row>
       </el-col>
@@ -105,11 +97,10 @@ import { ref } from 'vue'
 const value1 = ref(100)
 const value2 = ref(100)
 const value3 = ref(50)
-const value4 = ref(80)
-const value5 = ref(100)
+
 
 const formatTooltip = (val) => {
-  return val +'%'
+  return val + '%'
 }
 // do not use same name with ref
 const form = reactive({
@@ -331,12 +322,12 @@ var option2 = {
         },
         {
           name: '任务 16',
-          x: 200, 
+          x: 200,
           y: 450
         },
         {
           name: '任务 17',
-          x: 800, 
+          x: 800,
           y: 400
         },
         {
@@ -416,7 +407,7 @@ var option2 = {
           target: '任务 10',
           lineStyle: {
             curveness: 0.2
-          } 
+          }
         },
         {
           source: '任务 8',
@@ -510,10 +501,12 @@ getCache().then(() => {
   display: flex;
   align-items: center;
 }
+
 .slider-demo-block .el-slider {
   margin-top: 0;
   margin-left: 12px;
 }
+
 .slider-demo-block .demonstration {
   font-size: 14px;
   color: var(--el-text-color-secondary);
@@ -524,7 +517,8 @@ getCache().then(() => {
   white-space: nowrap;
   margin-bottom: 0;
 }
-.slider-demo-block .demonstration + .el-slider {
+
+.slider-demo-block .demonstration+.el-slider {
   flex: 0 0 70%;
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <el-row>
-        <el-col :span="24">
-          <el-card class="card">
-                <!-- 这个写在card下才能有效果 -->
-                <template #header><span>优化侧重点与效果</span></template>
-                <div class="el-table el-table--enable-row-hover el-table--medium">
+      <el-col :span="24">
+        <el-card class="card">
+          <!-- 这个写在card下才能有效果 -->
+          <template #header><span>优化侧重点与效果</span></template>
+          <div class="el-table el-table--enable-row-hover el-table--medium">
             <div ref="optimize" style="height: 600px" />
-            </div>
-          </el-card>
-        </el-col>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="15">
@@ -21,20 +21,11 @@
           </template>
           <div class="slider-demo-block">
             <!-- <span class="slide-text">任务完成<br />成本</span> -->
-            <el-tag class="tag-text" size="large" effect="plain"
-              >任务完成<br />成本</el-tag
-            >
-            <el-slider
-              class="el-slider"
-              v-model="valueOptimize"
-              :format-tooltip="formatTooltip"
-              :marks="marks"
-              @change="onChange"
-            />
+            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
+            <el-slider class="el-slider" v-model="valueOptimize" :format-tooltip="formatTooltip" :marks="marks"
+              @change="onChange" />
             <!-- <span class="slide-text">任务完成<br />比例</span> -->
-            <el-tag class="tag-text" size="large" effect="plain"
-              >任务完成<br />比例</el-tag
-            >
+            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
           </div>
         </el-card>
       </el-col>
@@ -43,14 +34,21 @@
           <template #header>
             <div class="card-cluster-header">
               <span>优化模型设置</span>
-              
+
             </div>
           </template>
           <el-row justify="center" style="margin-top: 20px">
-          <router-link to="/allocate/optimize/setOptimize">
-            <el-button type="primary" size="large">详细设置</el-button>
-          </router-link>
-        </el-row>
+            <el-col :span="8">
+            <router-link to="/allocate/model/setConstraint">
+              <el-button type="primary" size="large">约束条件设置</el-button>
+            </router-link>
+          </el-col>
+          <el-col :span="8">
+            <router-link to="/allocate/model/setDecision">
+              <el-button type="primary" size="large">决策变量设置</el-button>
+            </router-link>
+          </el-col>
+          </el-row>
         </el-card>
       </el-col>
     </el-row>
@@ -133,7 +131,7 @@ getCache().then(() => {
   }
   optimizeInst.setOption(optimizeOpt);
 
-  
+
 });
 
 // for (var i = 1; i < 13; i++) {
@@ -209,6 +207,7 @@ const tableData = [
 .card {
   margin: 0px;
 }
+
 .card-block {
   text-align: center;
   border-right: solid 1px var(--el-border-color);
@@ -217,17 +216,21 @@ const tableData = [
   box-sizing: border-box;
   vertical-align: top;
 }
+
 .card-block:last-child {
   border-right: none;
 }
+
 .slider-demo-block {
   display: flex;
   align-items: center;
 }
+
 .el-slider {
   margin-left: 5px;
   margin-right: 5px;
 }
+
 .slider-demo-block .slide-text {
   font-size: 14px;
   color: var(--el-text-color-secondary);
@@ -238,7 +241,8 @@ const tableData = [
   white-space: normal; //文本换行属性
   margin-bottom: 0;
 }
-.slider-demo-block .slide-text + .el-slider {
+
+.slider-demo-block .slide-text+.el-slider {
   flex: 0 0 70%;
 }
 </style>
