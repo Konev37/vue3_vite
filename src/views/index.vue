@@ -384,7 +384,7 @@ var option3 = {
     {
       realtimeSort: true,
       name: "Agent",
-      showBackground: true,
+      showBackground: false,
       label: {
         show: true,
         position: "right",
@@ -591,7 +591,7 @@ getAgent().then((agents) => {
               {
                 realtimeSort: true,
                 name: "Agent",
-                showBackground: true,
+                showBackground: false,
                 label: {
                   show: true,
                   position: "right",
@@ -721,7 +721,7 @@ function showAgentLoad() {
           {
             realtimeSort: true,
             name: "Agent",
-            showBackground: true,
+            showBackground: false,
             label: {
               show: true,
               position: "right",
@@ -772,7 +772,7 @@ function showAgentLoads(agentname, migrationid, loadrates) {
         {
           realtimeSort: true,
           name: "Agent",
-          showBackground: true,
+          showBackground: false,
           label: {
             show: true,
             position: "right",
