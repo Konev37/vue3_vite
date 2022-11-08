@@ -6,7 +6,7 @@
           <el-card class="card">
             <template #header><span>Agent负载</span></template>
             <div class="el-table el-table--enable-row-hover el-table--medium">
-              <div ref="agentInfo" style="height: 300px;" />
+              <div ref="agentInfo" style="height: 300px" />
             </div>
           </el-card>
         </el-row>
@@ -582,10 +582,20 @@ getAgent().then((agents) => {
               data: agentname,
               inverse: true,
               max: 8,
+              axisLabel: {
+                textStyle: {
+                  fontSize: 18,
+                },
+              },
             },
             xAxis: {
               axisLabel: {
                 formatter: "{value}%",
+              },
+              axisLabel: {
+                textStyle: {
+                  fontSize: 18,
+                },
               },
             },
             series: [
@@ -598,6 +608,9 @@ getAgent().then((agents) => {
                   position: "right",
                   valueAnimation: true,
                   formatter: "{c}%",
+                  textStyle: {
+                    fontSize: 18,
+                  },
                 },
                 stack: {},
                 type: "bar",
@@ -628,7 +641,6 @@ const showMigrate = () => {
       agentLoadRates().then((loadrates) => {
         // console.log(migrationid);
 
-        
         showAgentLoads(agentname, migrationid, loadrates);
       });
     });
@@ -713,10 +725,20 @@ function showAgentLoad() {
           data: agentname,
           inverse: true,
           max: 8,
+          axisLabel: {
+            textStyle: {
+              fontSize: 18,
+            },
+          },
         },
         xAxis: {
           axisLabel: {
             formatter: "{value}%",
+          },
+          axisLabel: {
+            textStyle: {
+              fontSize: 18,
+            },
           },
         },
         series: [
@@ -729,6 +751,9 @@ function showAgentLoad() {
               position: "right",
               valueAnimation: true,
               formatter: "{c}%",
+              textStyle: {
+                fontSize: 18,
+              },
             },
             stack: {},
             type: "bar",
@@ -764,10 +789,20 @@ function showAgentLoads(agentname, migrationid, loadrates) {
         data: agentname,
         inverse: true,
         max: 8,
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
+        },
       },
       xAxis: {
         axisLabel: {
           formatter: "{value}%",
+        },
+        axisLabel: {
+          textStyle: {
+            fontSize: 18,
+          },
         },
       },
       series: [
@@ -780,6 +815,9 @@ function showAgentLoads(agentname, migrationid, loadrates) {
             position: "right",
             valueAnimation: true,
             formatter: "{c}%",
+            textStyle: {
+              fontSize: 18,
+            },
           },
           stack: {},
           type: "bar",
