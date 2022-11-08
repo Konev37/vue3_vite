@@ -4,7 +4,7 @@
       <router-link to="/allocate/model">
                 <el-button :icon="ArrowLeft" type="primary">返回</el-button>
             </router-link>
-      <el-tab-pane label="协同资源输入" name="first">
+      <!-- <el-tab-pane label="协同资源输入" name="first">
         <el-row justify="center" class="tab-row">
           <el-col :span="12" :offset="6">
             <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="120px" class="demo-ruleForm"
@@ -29,8 +29,8 @@
             </el-form>
           </el-col>
         </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="协同资源信息" name="second">
+      </el-tab-pane> -->
+      <el-tab-pane label="协同资源信息" name="first">
         <el-row justify="center" class="tab-row">
           <el-col :span="18">
             <el-table :data="decisionData" border max-height="400" v-fit-columns style="width: 100%">

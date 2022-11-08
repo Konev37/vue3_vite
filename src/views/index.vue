@@ -6,7 +6,7 @@
           <el-card class="card">
             <template #header><span>Agent负载</span></template>
             <div class="el-table el-table--enable-row-hover el-table--medium">
-              <div ref="agentInfo" style="height: 300px" />
+              <div ref="agentInfo" style="height: 300px;" />
             </div>
           </el-card>
         </el-row>
@@ -219,6 +219,7 @@ import {
   getAgentName,
   agentLoadRate,
   agentLoadRates,
+  getAgentId,
 } from "@/api/dashboard/agent";
 import {
   getTask,
@@ -409,7 +410,7 @@ getAgent().then((agents) => {
   getMigration().then((migrations) => {
     getCluster().then((clusters) => {
       allInfoIntance = echarts.init(allInfo.value, "macarons");
-      getAgentName().then((agentname) => {
+      getAgentId().then((agentname) => {
         agentLoadRate().then((agentLoadRate) => {
           //首页直接显示agent负载和任务完成率
           // getCache().then(() => {
@@ -622,11 +623,12 @@ const showMigrate = () => {
   taskInfoIntance.clear();
   taskInfoIntance.resize();
   taskInfoIntance.setOption(option2);
-  getAgentName().then((agentname) => {
+  getAgentId().then((agentname) => {
     getMigrationId().then((migrationid) => {
       agentLoadRates().then((loadrates) => {
         // console.log(migrationid);
 
+        
         showAgentLoads(agentname, migrationid, loadrates);
       });
     });
@@ -695,7 +697,7 @@ function getAgentLoad(agents) {
   }
 }
 function showAgentLoad() {
-  getAgentName().then((agentname) => {
+  getAgentId().then((agentname) => {
     agentLoadRate().then((agentLoadRate) => {
       // console.log(migrationid);
 
