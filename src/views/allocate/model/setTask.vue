@@ -84,7 +84,7 @@ const ruleForm = reactive({
 const rules = reactive<FormRules>({
     name: [
         { required: true, message: "请输入任务名称", trigger: "blur" },
-        { min: 4, max: 8, message: "名称长度应该在 4 到 8 之间", trigger: "blur" },
+        { min: 3, max: 8, message: "名称长度应该在 3 到 8 之间", trigger: "blur" },
     ],
 
     location: [
