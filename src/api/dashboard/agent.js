@@ -95,3 +95,11 @@ export function agentLoadRates() {
     method: 'get'
   })
 }
+
+// 得到当前所有agent的ID
+export function getAgentId() {
+  return request({
+    url: '/dashboard/agent/agentid',
+    method: 'get'
+  })
+}
