@@ -205,20 +205,20 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/allocate',
-    component: Layout,
-    hidden: true,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'optimize/setOptimize',
-        component: () => import('@/views/allocate/optimize/setOptimize'),
-        name: 'setOptimize',
-        meta: { title: '优化模型详细设置', icon: 'user' }
-      }
-    ]
-  },
+  // {
+  //   path: '/allocate',
+  //   component: Layout,
+  //   hidden: true,
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: 'optimize/setOptimize',
+  //       component: () => import('@/views/allocate/optimize/setOptimize'),
+  //       name: 'setOptimize',
+  //       meta: { title: '优化模型详细设置', icon: 'user' }
+  //     }
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,
