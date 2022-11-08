@@ -6,7 +6,7 @@
       stretch="True"
       @tab-click="handleClick"
     >
-      <el-tab-pane label="任务输入" name="first">
+      <!-- <el-tab-pane label="任务输入" name="first">
         <el-row justify="center" class="tab-row">
           <el-col :span="12" :offset="6">
             <el-form
@@ -53,7 +53,7 @@
             </el-form>
           </el-col>
         </el-row>
-      </el-tab-pane>
+      </el-tab-pane> -->
       <el-tab-pane label="粒度信息" name="second">
         <el-row justify="center" class="tab-row">
           <el-col :span="18">
@@ -139,7 +139,7 @@ import type {
 } from "element-plus";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-const activeName = ref("first");
+const activeName = ref("second");
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event);
