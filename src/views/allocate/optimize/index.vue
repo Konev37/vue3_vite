@@ -72,7 +72,7 @@ const allInfo = ref(null);
 const { proxy } = getCurrentInstance();
 const value4 = ref(50);
 const optimize = ref(null);
-
+const valueOptimize = ref(0);
 var optimizeInst;
 
 
@@ -175,8 +175,77 @@ const marks = {
   100: "1",
 };
 
+//生成从minNum到maxNum的随机数
+function randomNum(minNum,maxNum){ 
+    switch(arguments.length){ 
+        case 1: 
+            return parseInt(Math.random()*minNum+1,10); 
+        break; 
+        case 2: 
+            return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
+        break; 
+            default: 
+                return 0; 
+            break; 
+    } 
+} 
+
 const onChange = (val) => {
-  console.log(val / 100);
+  var optimize1 = [];
+  var optimize2 = [];
+  var optimize3 = [];
+  for(let i = 0; i<5; i++){
+    optimize1.push(randomNum(100,200));
+    optimize2.push(randomNum(100,200));
+    optimize3.push(randomNum(100,200));
+  }
+  optimizeInst = echarts.init(optimize.value, "macarons");
+  var optimizeOpt = {
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["优化算法1", "优化算法2", "优化算法3"],
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "3%",
+      containLabel: true,
+    },
+    xAxis: {
+      name: "侧重点",
+      type: "category",
+      boundaryGap: false,
+      data: ["优化目标1", "优化目标2", "优化目标3", "优化目标4", "优化目标5"],
+    },
+    yAxis: {
+      name: "效果",
+      type: "value",
+    },
+    series: [
+      {
+        name: "优化算法1",
+        type: "line",
+        // stack: "Total",
+        data: optimize1,
+      },
+      {
+        name: "优化算法2",
+        type: "line",
+        // stack: "Total",
+        data: optimize2,
+      },
+      {
+        name: "优化算法3",
+        type: "line",
+        // stack: "Total",
+        data: optimize3,
+      },
+    ],
+  }
+  optimizeInst.setOption(optimizeOpt);
+
 };
 
 const tableData = [
