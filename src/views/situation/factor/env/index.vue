@@ -7,14 +7,14 @@
           <div ref="geoEnv" class="content" />
         </el-col>
         <el-col :span="12">
-          <h1 class="header">自然环境</h1>
-          <div ref="naturalEnv" class="content" />
+          <h1 class="header">大气环境</h1>
+          <div ref="atmosphereEnv" class="content" />
         </el-col>
       </el-row>
       <el-row :gutter="20">
         <el-col :span="12">
-          <h1 class="header">电磁环境</h1>
-          <div ref="elecEnv" class="content" />
+          <h1 class="header">目标环境</h1>
+          <div ref="targetEnv" class="content" />
         </el-col>
         <el-col :span="12">
           <h1 class="header">区域环境</h1>
@@ -32,18 +32,18 @@ import { getAgent } from "@/api/dashboard/agent";
 
 const { proxy } = getCurrentInstance();
 const geoEnv = ref(null);
-const naturalEnv = ref(null);
-const elecEnv = ref(null);
+const atmosphereEnv = ref(null);
+const targetEnv = ref(null);
 const regionalEnv = ref(null);
 
-var geoEnvInst, naturalEnvInst, elecEnvInst, regionalEnvInst;
+var geoEnvInst, atmosphereEnvInst, targetEnvInst, regionalEnvInst;
 
 proxy.$modal.loading("正在加载态势数据，请稍候！");
 
 getAgent().then(() => {
   geoEnvInst = echarts.init(geoEnv.value, "macarons");
-  naturalEnvInst = echarts.init(naturalEnv.value, "macarons");
-  elecEnvInst = echarts.init(elecEnv.value, "macarons");
+  atmosphereEnvInst = echarts.init(atmosphereEnv.value, "macarons");
+  targetEnvInst = echarts.init(targetEnv.value, "macarons");
   regionalEnvInst = echarts.init(regionalEnv.value, "macarons");
   proxy.$modal.closeLoading();
 
@@ -97,7 +97,7 @@ getAgent().then(() => {
     },
     series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
   };
-  var naturalEnvOpt = {
+  var atmosphereEnvOpt = {
     // title: {
     //   text: "Stacked Line",
     // },
@@ -105,7 +105,7 @@ getAgent().then(() => {
       trigger: "axis",
     },
     legend: {
-      data: ["环境1", "环境2", "环境3", "环境4"],
+      data: ["大气1", "大气2", "大气3", "大气4"],
     },
     grid: {
       left: "3%",
@@ -139,37 +139,37 @@ getAgent().then(() => {
     },
     series: [
       {
-        name: "环境1",
+        name: "大气1",
         type: "line",
         // stack: "Total",
         data: [12.0, 13.2, 10.1, 13.4, 9.0, 23.0, 21.0],
       },
       {
-        name: "环境2",
+        name: "大气2",
         type: "line",
         // stack: "Total",
         data: [22.0, 18.2, 19.1, 23.4, 29.0, 33.0, 31.0],
       },
       {
-        name: "环境3",
+        name: "大气3",
         type: "line",
         // stack: "Total",
         data: [15.0, 23.2, 20.1, 15.4, 19.0, 33.0, 41.0],
       },
       {
-        name: "环境4",
+        name: "大气4",
         type: "line",
         // stack: "Total",
         data: [32.0, 33.2, 30.1, 33.4, 39.0, 33.0, 32.0],
       },
     ],
   };
-  var elecEnvOpt = {
+  var targetEnvOpt = {
     tooltip: {
       trigger: "axis",
     },
     legend: {
-      data: ["环境1", "环境2", "环境3", "环境4"],
+      data: ["目标1", "目标2", "目标3", "目标4"],
     },
     grid: {
       left: "3%",
@@ -198,25 +198,25 @@ getAgent().then(() => {
     },
     series: [
       {
-        name: "环境1",
+        name: "目标1",
         type: "line",
         smooth: true,
         data: [22.0, 18.2, 19.1, 23.4, 29.0, 33.0, 31.0],
       },
       {
-        name: "环境2",
+        name: "目标2",
         type: "line",
         smooth: true,
         data: [32.0, 33.2, 30.1, 33.4, 39.0, 33.0, 32.0],
       },
       {
-        name: "环境3",
+        name: "目标3",
         type: "line",
         smooth: true,
         data: [12.0, 13.2, 10.1, 13.4, 9.0, 23.0, 21.0],
       },
       {
-        name: "环境4",
+        name: "目标4",
         type: "line",
         smooth: true,
         data: [15.0, 23.2, 20.1, 15.4, 19.0, 33.0, 41.0],
@@ -274,8 +274,8 @@ getAgent().then(() => {
     series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
   };
   geoEnvInst.setOption(geoEnvOpt);
-  naturalEnvInst.setOption(naturalEnvOpt);
-  elecEnvInst.setOption(elecEnvOpt);
+  atmosphereEnvInst.setOption(atmosphereEnvOpt);
+  targetEnvInst.setOption(targetEnvOpt);
   regionalEnvInst.setOption(regionalEnvOpt);
 });
 </script>
