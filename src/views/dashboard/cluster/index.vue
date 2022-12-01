@@ -181,6 +181,7 @@ import {
 } from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
+import taiwan from "@/assets/images/1669800505208.png"
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -326,6 +327,20 @@ getAgent().then((agents) => {
             // },
           },
         ],
+        graphic: {
+          elements: [
+            {
+              type: "image",
+              style: {
+                image: taiwan,
+                width: 1100,
+                height: 620,
+              },
+              left: "center",
+              top: "5%",
+            },
+          ],
+        },
       };
       allInfoIntance.setOption(option);
     });
