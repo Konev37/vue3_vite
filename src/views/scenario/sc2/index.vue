@@ -66,9 +66,12 @@ getEntity().then((res) => {
 
   entityInst.setOption(option);
 });
-const execTask = async () => {
+const execTask = async() => {    // 因为延时函数，所以这里要加async
   ets = deepClone(originEts);
-  // 因为延时函数，所以这里要加async
+  entityInst.setOption({
+    animationDurationUpdate: 0,
+    series: [{ data: ets }],
+  });
   ets[0].x = ets[9].x - 50;
   ets[0].y = ets[9].y;
   ets[1].x = ets[4].x - 50;
@@ -113,6 +116,7 @@ const execTask = async () => {
   });
 
   await sleep(1000);
+  ets[8].symbolSize = 0;  // 擦屁股
   ets[1].x = ets[3].x + 50;
   ets[1].y = ets[3].y;
   ets[5].symbolSize -= 30;
