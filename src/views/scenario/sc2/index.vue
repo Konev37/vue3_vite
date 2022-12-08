@@ -46,10 +46,10 @@ getEntity().then((entities) => {
     // targetAssignment().then((res) => {
     //   console.log(res);
     // })
-    targetExecution().then((res) => {
-      console.log(res);
-    })
-    // console.log(tables[0]);
+    console.log(tables[0]);
+    // targetExecution().then((res) => {
+    //   console.log(res);
+    // })
     timeTables = tables;
     ets = deepClone(entities);
     originEts = deepClone(entities);
@@ -182,7 +182,7 @@ const execTask = async () => {
 const reset = () => {
   entityInst.setOption({
     animationDurationUpdate: 0,
-    series: [{ data: originEts }],
+    series: [{ data: timeTables[0] }],
   });
 };
 
