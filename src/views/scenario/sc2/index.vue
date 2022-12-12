@@ -82,6 +82,7 @@ getEntity().then((entities) => {
           bottom: "0%",
           z: 0,
           bounding: "all",
+          draggable: true,
           style: {
             image: png,
             width: 1800,
