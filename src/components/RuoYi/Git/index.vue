@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-const url = ref('https://github.com/Konev37/vue3_vite');
+const url = ref('https://github.com/Konev37/vue3_vite.git');
 
 function goto() {
   window.open(url.value)
