@@ -23,3 +23,19 @@ export function getEntityTables() {
     method: 'get'
   })
 }
+
+// 得到很多前端 geo 的 entity 表
+export function getGeoEntityTables() {
+  return request({
+    url: '/scenario/robot/geoTables',
+    method: 'get'
+  })
+}
+
+// 获取任务完成时间
+export function getMaxTime() {
+  return request({
+    url: '/scenario/robot/maxTime',
+    method: 'get'
+  })
+}
