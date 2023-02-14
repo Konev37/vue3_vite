@@ -25,7 +25,7 @@ import elementIcons from '@/components/SvgIcon/svgicon'
 import './permission' // permission control
 
 import { useDict } from '@/utils/dict'
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel } from '@/utils/ruoyi'
+import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
 
 // 分页组件
 import Pagination from '@/components/Pagination'
@@ -42,8 +42,6 @@ import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
 
-import tablePlugin from 'v-fit-columns';
-
 const app = createApp(App)
 
 // 全局方法挂载
@@ -54,6 +52,7 @@ app.config.globalProperties.resetForm = resetForm
 app.config.globalProperties.handleTree = handleTree
 app.config.globalProperties.addDateRange = addDateRange
 app.config.globalProperties.selectDictLabel = selectDictLabel
+app.config.globalProperties.selectDictLabels = selectDictLabels
 
 // 全局组件挂载
 app.component('DictTag', DictTag)
@@ -68,7 +67,6 @@ app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
-app.use(tablePlugin)
 app.component('svg-icon', SvgIcon)
 
 directive(app)
