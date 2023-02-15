@@ -38,6 +38,7 @@ const entity = ref(null);
 
 var entityInst, ets, originEts;
 var timeTables;
+
 proxy.$modal.loading("正在加载数据，请稍候！");
 
 getEntity().then((entities) => {
