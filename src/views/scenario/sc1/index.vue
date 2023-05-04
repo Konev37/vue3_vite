@@ -1,400 +1,579 @@
 <template>
-  <div class="app-container">
-    <el-card>
-      <div ref="uav" class="content" />
-      <el-row>
-        <el-col :span="12">
-          <el-button
-            type="primary"
-            style="margin-left: 50px; margin-bottom: 2px"
-            @click="execTask"
-          >
-            开始执行任务
-          </el-button>
-        </el-col>
-        <el-col :span="12">
-          <el-button
-            type="primary"
-            style="margin-left: 50px; margin-bottom: 2px"
-            @click="reset"
-          >
-            重置
-          </el-button>
-        </el-col>
-      </el-row>
-    </el-card>
+  <div class="app-front">
+    <el-row :gutter="8">
+      <el-col :span="11">
+        <el-row>
+          <el-card class="card-1">
+            <el-carousel height="720px" interval="5000" pause-on-hover="true">
+              <el-carousel-item>
+                <div demo-bg>
+                  <dv-border-box1 ref="borderRef">
+                    <div
+                      :style="`width: 100%`"
+                      h18rem
+                      color-white
+                      flex
+                      justify-center
+                      items-center
+                    >
+                      <env></env>
+                    </div>
+                  </dv-border-box1>
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div demo-bg>
+                  <dv-border-box1 ref="borderRef">
+                    <div>
+                      <rsc></rsc>
+                    </div>
+                  </dv-border-box1>
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div>
+                  <red></red>
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div>
+                  <blue></blue>
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </el-card>
+        </el-row>
+      </el-col>
+      <el-col :span="13">
+        <el-card class="card-1">
+          <!-- <template #header><span>战场场景演示</span></template> -->
+          <div class="el-table el-table--enable-row-hover el-table--medium">
+            <iframe
+              id="iframe"
+              src="../../../../WebGL/index.html"
+              ref="iframe"
+              frameborder="10"
+              scrolling="yes"
+              width="980px"
+              height="600px"
+              style="border: 0"
+              webkitallowfullscreen="true" 
+              mozallowfullscreen="true" 
+              allowfullscreen="true"
+            ></iframe>
+            <!-- <video class="my-video" ref="videoPlayer" :autoplay="autoplay" @play="onPlay" @pause="onPause" 
+              @ended="onEnded">
+              <source src="@/assets/video/test.mp4" type="video/mp4">
+            </video> -->
+          </div>
+
+          <!-- <el-divider /> -->
+          <div class="show-button">
+            <el-button @click="play" type="primary">开始演示</el-button>
+            <el-button @click="pause" type="primary">暂停演示</el-button>
+            <el-button @click="replay" type="primary">重置场景</el-button>
+            <el-button @click="fullscreen" type="primary">全屏</el-button>
+            <el-button type="primary">人机协作模式</el-button>
+          </div>
+          <!-- <el-button @click="ClickBeginning" type="success" :loading="loading" class="me-button">开始演示</el-button>
+                <el-button @click="ClickPause" type="info" class="me-button">暂停演示</el-button>
+                <el-button @click="ClickStop" type="danger" class="me-button">停止演示</el-button>
+                <el-button @click="SelectConfig" type="warning" class="me-button">配置按钮</el-button> -->
+        </el-card>
+      </el-col>
+    </el-row>
+    <!-- 第二行 -->
+    <el-row :gutter="8">
+      <el-col :span="17">
+        <el-row>
+          <el-card class="card-2">
+            <el-carousel height="450px" interval="8000" pause-on-hover="true">
+              <el-carousel-item>
+                <div>
+                  <handled></handled>
+                </div>
+              </el-carousel-item>
+              <el-carousel-item>
+                <div>
+                  <deduce></deduce>
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </el-card>
+        </el-row>
+      </el-col>
+
+      <el-col :span="7">
+        <el-card class="card-2">
+          <template #header>
+            <span style="color: #ffffff">战场信息</span>
+          </template>
+          <dv-border-box11 ref="borderRef">
+            <div demo-bg>
+              <dv-scroll-board
+                :config="config"
+                style="width: 100%; height: 330px"
+                @mouseover="mouseoverHandler"
+                @click="clickHandler"
+              />
+            </div>
+          </dv-border-box11>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-drawer v-model="drawerRsc" title="资源" direction="rtl" size="80%">
+      <div>
+        <rsc></rsc>
+      </div>
+    </el-drawer>
+    <el-drawer v-model="drawerEnv" title="环境" direction="rtl" size="80%">
+      <div>
+        <env></env>
+      </div>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerHandled"
+      title="处理后态势"
+      direction="rtl"
+      size="80%"
+    >
+      <div>
+        <handled></handled>
+      </div>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerRed"
+      title="红方态势评估"
+      direction="rtl"
+      size="80%"
+    >
+      <div>
+        <red></red>
+      </div>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerBlue"
+      title="蓝方态势评估"
+      direction="rtl"
+      size="80%"
+    >
+      <div>
+        <blue></blue>
+      </div>
+    </el-drawer>
+    <el-drawer
+      v-model="drawerDeduce"
+      title="态势推演"
+      direction="rtl"
+      size="80%"
+    >
+      <div>
+        <deduce></deduce>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
-<script setup name="SC1">
-import { ref } from "vue";
-import * as echarts from "echarts";
-import { getEntity } from "@/api/scenario/entity";
-import { getUav } from "@/api/scenario/uav";
-import taiwan from "@/assets/images/1669800505208.png"
+<script lang="ts" setup>
+  import { defineComponent, reactive, ref, onMounted } from "vue";
+  import type {
+    TabsPaneContext,
+    FormInstance,
+    FormRules,
+    Action,
+  } from "element-plus";
+  import { ElMessage, ElMessageBox } from "element-plus";
+  import rsc from "@/views/scenario/sc1/rsc.vue";
+  import env from "@/views/scenario/sc1/env.vue";
+  import handled from "@/views/scenario/sc1/handled.vue";
+  import red from "@/views/scenario/sc1/red.vue";
+  import blue from "@/views/scenario/sc1/blue.vue";
+  import deduce from "@/views/scenario/sc1/deduce.vue";
 
+  const Env = env;
+  const activeName1 = ref("first");
+  const activeName2 = ref("first");
+  const drawerTask = ref(false);
+  const drawerRsc = ref(false);
+  const drawerEnv = ref(false);
+  const drawerHandled = ref(false);
+  const drawerRed = ref(false);
+  const drawerBlue = ref(false);
+  const drawerDeduce = ref(false);
 
-const { proxy } = getCurrentInstance();
-const entity = ref(null);
-const uav = ref(null);
-var uavInst, uavs, originUavs;
-var entityInst, ets, originEts;
-proxy.$modal.loading("正在加载数据，请稍候！");
+  window.addEventListener('event1', mouseEvent, false)
+  window.addEventListener('taskAssignment', unityEvent, false)
+  window.addEventListener('onTankDestroy', tankEvent, false)
+  window.addEventListener('onH20Destroy', unityEvent, false)
+  window.addEventListener('onMissileLauncherDestroy', unityEvent, false)
+  window.addEventListener('onFighterDestroy', unityEvent, false)
+  window.addEventListener('onShipDestroy', unityEvent, false)
 
-// getEntity().then((res) => {
-//   console.log(res);
-//   ets = deepClone(res);
-//   originEts = deepClone(res);
-//   entityInst = echarts.init(entity.value, "macarons");
-//   proxy.$modal.closeLoading();
-//   var option = {
-//     // title: {
-//     //   text: "Basic Graph",
-//     // },
-//     tooltip: {},
-//     animationDurationUpdate: 1500,
-//     animationEasingUpdate: "linear",
-//     series: [
-//       {
-//         type: "graph",
-//         layout: "none",
-//         roam: true, //是否开启鼠标缩放和平移漫游
-//         nodeScaleRatio: 1, //鼠标漫游缩放时节点的相应缩放比例
-//         label: {
-//           show: true,
-//         },
-//         data: ets,
-//       },
-//     ],
-//     graphic: {
-//           elements: [
-//             {
-//               type: "image",
-//               style: {
-//                 image: taiwan,
-//                 width: 1100,
-//                 height: 620,
-//               },
-//               left: "center",
-//               top: "5%",
-//             },
-//           ],
-//         },
-//   };
+  const iframe = ref(null);
+  // onMounted(()=>{
+  //   const iframeValue = iframe.value;
+  //   iframeValue.onload = () => {
+  //     const contentWindow = iframeValue.contentWindow
+  //     // console.log(contentWindow);
+  //     contentWindow.message('Sphere', 'SetToken', 'vue to unity');
+  //   }
+  //   // console.log(iframe.value);
+  // })
 
-//   entityInst.setOption(option);
-// });
+  function mouseEvent(res) {
+    console.log(res.detail.arr);
+  }
+  function tankEvent(res) {
+    console.log(res.detail.arr);
+  }
+  function unityEvent(res) {
+    console.log('unityEvent');
+  }
 
-getUav().then((res) => {
-  console.log(res);
-  uavs = deepClone(res);
-  console.log(uavs);
-  uavs[9].symbolSize = 0;
-  uavs[8].symbolSize = 0;
-  // console.log(uavs[0].itemStyle);
-  // console.log(uavs[1].itemStyle);
-  
-  // console.log(uavs[8].itemStyle);
-  // console.log(uavs[9].itemStyle);
-  // uavs[9].itemStyle= {borderColor: null, color: 'rgb(255, 153, 18)'}
-  originUavs = deepClone(res);
-  originUavs[9].symbolSize = 0;
-  originUavs[8].symbolSize = 0;
-  uavInst = echarts.init(uav.value, "macarons");
-  proxy.$modal.closeLoading();
-  var option = {
-    // title: {
-    //   text: "Basic Graph",
-    // },
-    tooltip: {},
-    animationDurationUpdate: 1500,
-    animationEasingUpdate: "linear",
-    series: [
+  const handleClick = (tab: TabsPaneContext, event: Event) => {
+    setTimeout(() => {
+      console.log(activeName1, activeName2);
+    }, 500);
+  };
+
+  const formSize = ref("default");
+  const ruleFormRef = ref<FormInstance>();
+  const ruleForm = reactive({
+    name: "",
+    types: "",
+    attr: "",
+  });
+
+  const rules = reactive<FormRules>({
+    name: [
+      { required: true, message: "请输入任务名称", trigger: "blur" },
+      { min: 4, max: 8, message: "名称长度应该在 4 到 8 之间", trigger: "blur" },
+    ],
+    types: [
       {
-        type: "graph",
-        layout: "none",
-        roam: true, //是否开启鼠标缩放和平移漫游
-        nodeScaleRatio: 1, //鼠标漫游缩放时节点的相应缩放比例
-        label: {
-          show: true,
-        },
-        data: uavs,
+        required: true,
+        message: "请选择任务种类",
+        trigger: "change",
       },
     ],
-    graphic: {
-          elements: [
-            {
-              type: "image",
-              style: {
-                image: taiwan,
-                width: 1260,
-                height: 780,
-              },
-              left: "center",
-              top: "0%",
-            },
-          ],
-        },
-  }; 
-
-  uavInst.setOption(option);
-});
-// const execTask = async () => {
-//   ets = deepClone(originEts);
-//   // 因为延时函数，所以这里要加async
-//   ets[0].x = ets[9].x - 50;
-//   ets[0].y = ets[9].y;
-//   ets[1].x = ets[4].x - 50;
-//   ets[1].y = ets[4].y;
-//   ets[2].x = 700 - 50;
-//   ets[2].y = 800;
-//   entityInst.setOption({
-//     animationDurationUpdate: 1500,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(1500);
-//   ets[9].symbolSize -= 25;
-//   ets[4].symbolSize = 0;
-//   ets[2].x = ets[7].x - 50;
-//   ets[2].y = ets[7].y;
-//   entityInst.setOption({
-//     animationDurationUpdate: 1000,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(1000);
-//   ets[9].symbolSize -= 25;
-//   ets[7].symbolSize -= 50;
-//   ets[1].x = ets[6].x - 50;
-//   ets[1].y = ets[6].y;
-//   entityInst.setOption({
-//     animationDurationUpdate: 1000,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(1000);
-//   ets[8].itemStyle.borderColor = "rgba(255, 153, 18, 0)"
-//   ets[0].x = ets[5].x - 50;
-//   ets[0].y = ets[5].y;
-//   ets[6].symbolSize -= 50;
-//   // ets[2].x = 800;
-//   // ets[2].y = 650;
-//   entityInst.setOption({
-//     animationDurationUpdate: 1000,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(1000);
-//   ets[1].x = ets[3].x + 50;
-//   ets[1].y = ets[3].y;
-//   ets[5].symbolSize -= 30;
-//   entityInst.setOption({
-//     animationDurationUpdate: 600,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(600);
-//   ets[5].symbolSize -= 20;
-//   ets[3].symbolSize -= 20;
-//   entityInst.setOption({
-//     animationDurationUpdate: 400,
-//     series: [{ data: ets }],
-//   });
-
-//   await sleep(400);
-//   ets[3].symbolSize -= 30;
-//   entityInst.setOption({
-//     animationDurationUpdate: 600,
-//     series: [{ data: ets }],
-//   });
-// };
-const execTask = async () => {
-  uavs = deepClone(originUavs);
-  // 因为延时函数，所以这里要加async
-  uavs[1].x = uavs[1].x + 110;
-  uavs[1].y = uavs[1].y + 50;
-  uavs[20].x = uavs[20].x + 110;
-  uavs[20].y = uavs[20].y + 50;
-  uavs[2].x = uavs[2].x + 290;
-  uavs[2].y = uavs[2].y + 60;
-  uavs[21].x = uavs[21].x + 290;
-  uavs[21].y = uavs[21].y + 60;
-  uavs[11].x = uavs[11].x + 260;
-  uavs[11].y = uavs[11].y + 70;
-  uavs[28].x = uavs[28].x + 260;
-  uavs[28].y = uavs[28].y + 70;
-  uavs[16].x = uavs[16].x + 100;  
-  uavs[16].y = uavs[16].y - 40;
-  uavs[33].x = uavs[33].x + 100;  
-  uavs[33].y = uavs[33].y - 40;
-  uavs[17].x = uavs[17].x + 90;
-  uavs[17].y = uavs[17].y - 60;
-  uavs[34].x = uavs[34].x + 90;
-  uavs[34].y = uavs[34].y - 60;
-  uavs[18].x = uavs[18].x + 70;
-  uavs[35].x = uavs[35].x + 70;
-  uavs[15].x = uavs[15].x + 50;
-  uavs[15].y = uavs[15].y + 60;
-  uavs[32].x = uavs[32].x + 50;
-  uavs[32].y = uavs[32].y + 60;
-  uavs[10].x = uavs[10].x + 50;
-  uavs[10].y = uavs[10].y + 50;
-  uavs[27].x = uavs[27].x + 50;
-  uavs[27].y = uavs[27].y + 50;
-  uavs[3].x = uavs[3].x - 40;
-  uavs[3].y = uavs[3].y - 150;
-  uavs[22].x = uavs[22].x - 40;
-  uavs[22].y = uavs[22].y - 150;
-  uavs[4].x = uavs[4].x - 50;
-  uavs[4].y = uavs[4].y - 180;
-  uavs[23].x = uavs[23].x - 50;
-  uavs[23].y = uavs[23].y - 180;
-  uavs[12].x = uavs[12].x + 90;
-  uavs[12].y = uavs[12].y - 60;
-  uavs[29].x = uavs[29].x + 90;
-  uavs[29].y = uavs[29].y - 60;
-  uavs[13].x = uavs[13].x + 70;
-  uavs[13].y = uavs[13].y - 60;
-  uavs[30].x = uavs[30].x + 70;
-  uavs[30].y = uavs[30].y - 60;
-  uavs[14].x = uavs[14].x + 50;
-  uavs[14].y = uavs[14].y - 50;
-  uavs[31].x = uavs[31].x + 50;
-  uavs[31].y = uavs[31].y - 50;
-  uavs[5].x = uavs[5].x - 70;
-  uavs[5].y = uavs[5].y - 60;
-  uavs[24].x = uavs[24].x - 70;
-  uavs[24].y = uavs[24].y - 60;
-  uavs[6].x = uavs[6].x - 50;
-  uavs[6].y = uavs[6].y + 50;
-  uavs[25].x = uavs[25].x - 50;
-  uavs[25].y = uavs[25].y + 50;
-  
-  // ets[0].x = ets[9].x - 50;
-  // ets[0].y = ets[9].y;
-  // ets[1].x = ets[4].x - 50;
-  // ets[1].y = ets[4].y;
-  // ets[2].x = 700 - 50;
-  // ets[2].y = 800;
-  uavInst.setOption({
-    animationDurationUpdate: 1500,
-    series: [{ data: uavs }],
+    attr: [
+      {
+        required: true,
+        message: "请选择任务属性",
+        trigger: "change",
+      },
+    ],
   });
 
-  await sleep(1500);
-  uavs[9].symbolSize += 50;
-  uavs[8].symbolSize += 50;
-  
-  uavInst.setOption({
-    animationDurationUpdate: 1000,
-    series: [{ data: uavs }],
+  const config = reactive({
+    header: ["时间", "资源", "目标"],
+    data: [
+      ["14：08", "无人轰炸机1舱内炸弹A</span>", "敌方坦克1</span>"],
+      ["14：08", "无人轰炸机1舱内炸弹B</span>", "敌方坦克4</span>"],
+      ["14：08", "无人轰炸机3舱内炸弹A</span>", "敌方坦克2</span>"],
+      ["14：08", "无人轰炸机2舱内炸弹B</span>", "敌方坦克6</span>"],
+      ["14：08", "无人轰炸机1舱内炸弹D</span>", "敌方坦克28</span>"],
+      ["14：08", "无人轰炸机2舱内炸弹A</span>", "敌方坦克3</span>"],
+      ["14：08", "无人轰炸机3舱内炸弹B</span>", "敌方坦克8</span>"],
+      ["14：08", "无人轰炸机1舱内炸弹C</span>", "敌方坦克5</span>"],
+      ["14：08", "无人轰炸机6舱内炸弹A</span>", "敌方坦克9</span>"],
+      ["14：08", "无人轰炸机8舱内炸弹B</span>", "敌方坦克12</span>"],
+      ["14：08", "无人轰炸机6舱内炸弹B</span>", "敌方坦克11</span>"],
+      ["14：08", "无人轰炸机7舱内炸弹A</span>", "敌方坦克15</span>"],
+      ["14：08", "无人轰炸机9舱内炸弹A</span>", "敌方坦克14</span>"],
+      ["14：08", "无人轰炸机2舱内炸弹D</span>", "敌方坦克34</span>"],
+      ["14：08", "无人轰炸机15舱内炸弹B</span>", "敌方坦克19</span>"],
+      ["14：08", "无人轰炸机10舱内炸弹A</span>", "敌方坦克14</span>"],
+      ["14：08", "无人轰炸机13舱内炸弹A</span>", "敌方坦克18</span>"],
+      ["14：08", "无人轰炸机2舱内炸弹C</span>", "敌方坦克21</span>"],
+      [
+        '<span style="color:#ff0000;">14：08</span>',
+        '<span style="color:#ff0000;">敌方导弹发射台1导弹A</span>',
+        '<span style="color:#ff0000;">无人轰炸机2</span>',
+      ],
+      ["14：08", "无人轰炸机16舱内炸弹B</span>", "敌方坦克16</span>"],
+      ["14：08", "无人轰炸机11舱内炸弹A</span>", "敌方坦克21</span>"],
+      ["14：08", "无人轰炸机20舱内炸弹A</span>", "敌方坦克25</span>"],
+      ["14：08", "无人轰炸机19舱内炸弹A</span>", "敌方坦克17</span>"],
+      ["14：08", "无人轰炸机13舱内炸弹B</span>", "敌方坦克13</span>"],
+      ["14：08", "无人轰炸机18舱内炸弹A</span>", "敌方坦克20</span>"],
+      ["14：08", "无人轰炸机17舱内炸弹A</span>", "敌方坦克24</span>"],
+      ["14：08", "无人轰炸机24舱内炸弹A</span>", "敌方坦克29</span>"],
+      ["14：08", "无人轰炸机22舱内炸弹B</span>", "敌方坦克27</span>"],
+      ["14：08", "无人轰炸机26舱内炸弹A</span>", "敌方坦克30</span>"],
+      ["14：08", "无人轰炸机19舱内炸弹B</span>", "敌方坦克22</span>"],
+      ["14：08", "无人轰炸机23舱内炸弹A</span>", "敌方坦克33</span>"],
+    ],
+    waitTime: 3000,
+    // columnWidth: [50],
+    align: ["center"],
+    hoverPause: false,
+    // headerBGC: '#B3C0D1', //表头
+    // oddRowBGC: '#F7F7F7', //奇数行
+    // evenRowBGC: '#FFFFFF', //偶数行
   });
 
-  await sleep(1500);
-  uavs[2].x = uavs[2].x + 60;
-  uavs[2].y = uavs[2].y - 40;
-  uavs[21].x = uavs[21].x + 60;
-  uavs[21].y = uavs[21].y - 40;
-  uavs[16].x = uavs[16].x + 100;
-  uavs[16].y = uavs[16].y + 175;
-  uavs[33].x = uavs[33].x + 100;
-  uavs[33].y = uavs[33].y + 175;
-  uavs[4].x = uavs[4].x - 70;
-  uavs[4].y = uavs[4].y + 145;
-  uavs[23].x = uavs[23].x - 70;
-  uavs[23].y = uavs[23].y + 145;
-  uavs[14].x = uavs[14].x - 215;
-  uavs[14].y = uavs[14].y + 85;
-  uavs[31].x = uavs[31].x - 215;
-  uavs[31].y = uavs[31].y + 85;
-  uavs[11].itemStyle= {borderColor: null, color: 'rgb(0, 0, 0)'};
-  uavs[2].itemStyle= {borderColor: null, color: 'rgb(0, 0, 0)'};
-  uavs[16].itemStyle= {borderColor: null, color: 'rgb(0, 0, 0)'};
-  uavs[4].itemStyle= {borderColor: null, color: 'rgb(0, 0, 0)'};
-  uavs[14].itemStyle= {borderColor: null, color: 'rgb(0, 0, 0)'};
-  uavs[31].itemStyle= {borderColor: 'rgb(0 ,0 ,0)', color: 'rgba(0, 0, 0 ,0)'};
-  uavs[28].itemStyle= {borderColor: 'rgb(0 ,0 ,0)', color: 'rgba(0, 0, 0 ,0)'};
-  uavs[21].itemStyle= {borderColor: 'rgb(0 ,0 ,0)', color: 'rgba(0, 0, 0 ,0)'};
-  uavs[33].itemStyle= {borderColor: 'rgb(0 ,0 ,0)', color: 'rgba(0, 0, 0 ,0)'};
-  uavs[23].itemStyle= {borderColor: 'rgb(0 ,0 ,0)', color: 'rgba(0, 0, 0 ,0)'};
-  
-  uavInst.setOption({
-    animationDurationUpdate: 1000,
-    series: [{ data: uavs }],
-  });
+  const mouseoverHandler = (e: any) => {
+    console.log(e);
+  };
 
-  await sleep(1000);
-  uavs[9].symbolSize -= 50;
-  uavs[8].symbolSize -= 50;
-  
-  uavInst.setOption({
-    animationDurationUpdate: 1000,
-    series: [{ data: uavs }],
-  });
+  const clickHandler = (e: any) => {
+    console.log(e);
+  };
 
-  await sleep(1000);
-  ets[8].itemStyle.borderColor = "rgba(255, 153, 18, 0)"
-  ets[0].x = ets[5].x - 50;
-  ets[0].y = ets[5].y;
-  ets[6].symbolSize -= 50;
-  // ets[2].x = 800;
-  // ets[2].y = 650;
-  entityInst.setOption({
-    animationDurationUpdate: 1000,
-    series: [{ data: ets }],
-  });
+  const submitForm = async (formEl: FormInstance | undefined) => {
+    if (!formEl) return;
+    await formEl.validate((valid, fields) => {
+      if (valid) {
+        console.log("submit!");
+        ElMessageBox.alert("任务创建成功", "消息", {
+          // if you want to disable its autofocus
+          // autofocus: false,
+          confirmButtonText: "完成",
+          // callback: (action: Action) => {
+          //   ElMessage({
+          //     type: "info",
+          //     message: `action: ${action}`,
+          //   });
+          // },
+        });
+      } else {
+        console.log("error submit!", fields);
+      }
+    });
+  };
 
-  await sleep(1000);
-  ets[1].x = ets[3].x + 50;
-  ets[1].y = ets[3].y;
-  ets[5].symbolSize -= 30;
-  entityInst.setOption({
-    animationDurationUpdate: 600,
-    series: [{ data: ets }],
-  });
+  const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return;
+    formEl.resetFields();
+  };
 
-  await sleep(600);
-  ets[5].symbolSize -= 20;
-  ets[3].symbolSize -= 20;
-  entityInst.setOption({
-    animationDurationUpdate: 400,
-    series: [{ data: ets }],
-  });
+  const options = Array.from({ length: 10 }).map((_, idx) => ({
+    value: `${idx + 1}`,
+    label: `属性${idx + 1}`,
+  }));
 
-  await sleep(400);
-  ets[3].symbolSize -= 30;
-  entityInst.setOption({
-    animationDurationUpdate: 600,
-    series: [{ data: ets }],
-  });
-};
-const reset = () => {
-  uavInst.setOption({
-    animationDurationUpdate: 0,
-    series: [{ data: originUavs }],
-  });
-};
+  const videoPlayer = ref(null);
+  const autoplay = false;
+  const volume = ref(0.5);
 
-function deepClone(obj) {
-  var _obj = JSON.stringify(obj); //  对象转成字符串
-  var objClone = JSON.parse(_obj); //  字符串转成对象
-  return objClone;
-}
-const sleep = (timeout) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, timeout);
-  });
-};
+  const play = () => {
+    // videoPlayer.value.play();
+    // const contentWindow = iframe.value.contentWindow
+    // contentWindow.message('Sphere', 'SetToken', 'vue to unity');
+    iframe.value.contentWindow.message('Camera', 'setPlayProp', '1');  //开始
+  };
+  const pause = () => {
+    // videoPlayer.value.pause();
+    iframe.value.contentWindow.message('Camera', 'setPlayProp', '2');  //暂停
+  };
+  const replay = () => {
+    // videoPlayer.value.currentTime = 0;
+    // videoPlayer.value.play();
+    iframe.value.contentWindow.message('Camera', 'setPlayProp', '0');  //重置
+  };
+  const fullscreen = () => {
+    // videoPlayer.value.requestFullscreen();
+  };
+  const onPlay = () => {
+    // 视频播放时触发
+  };
+  const onPause = () => {
+    // 视频暂停时触发
+  };
+  const onEnded = () => {
+    // 视频播放结束时触发
+  };
+
+  const granularityData = [
+    {
+      task: "任务1",
+      coord: "(10,21)",
+      range: "129",
+      time: "1h 4min",
+      rate: "3 %",
+      src: "有源",
+      recycle: "可回收",
+    },
+    {
+      task: "任务2",
+      coord: "(3,98)",
+      range: "321",
+      time: "56min",
+      rate: "17 %",
+      src: "有源",
+      recycle: "不可回收",
+    },
+    {
+      task: "任务3",
+      coord: "(52,34)",
+      range: "672",
+      time: "36min",
+      rate: "5 %",
+      src: "无源",
+      recycle: "不可回收",
+    },
+    {
+      task: "任务4",
+      coord: "(74,69)",
+      range: "47",
+      time: "2h 49min",
+      rate: "2 %",
+      src: "有源",
+      recycle: "可回收",
+    },
+    {
+      task: "任务5",
+      coord: "(23,83)",
+      range: "297",
+      time: "43min",
+      rate: "9 %",
+      src: "无源",
+      recycle: "不可回收",
+    },
+  ];
+  const collaborativeData = [
+    {
+      task: "任务1",
+      mode: "方式1",
+      range: "21",
+      ctrl: "控制1",
+    },
+    {
+      task: "任务2",
+      mode: "方式2",
+      range: "92",
+      ctrl: "控制2",
+    },
+    {
+      task: "任务3",
+      mode: "方式3",
+      range: "46",
+      ctrl: "控制3",
+    },
+    {
+      task: "任务4",
+      mode: "方式4",
+      range: "103",
+      ctrl: "控制4",
+    },
+    {
+      task: "任务5",
+      mode: "方式5",
+      range: "64",
+      ctrl: "控制5",
+    },
+  ];
+  const rewardData = [
+    {
+      task: "任务1",
+      time: "19s",
+      success: "82 %",
+      cost: "45",
+    },
+    {
+      task: "任务2",
+      time: "5s",
+      success: "94 %",
+      cost: "31",
+    },
+    {
+      task: "任务3",
+      time: "17s",
+      success: "88 %",
+      cost: "29",
+    },
+    {
+      task: "任务4",
+      time: "21s",
+      success: "80 %",
+      cost: "73",
+    },
+    {
+      task: "任务5",
+      time: "3s",
+      success: "98 %",
+      cost: "56",
+    },
+  ];
+  // return{
+  //   activeName,
+  //   drawerTask,
+  // }
 </script>
 
-<style scoped lang="scss">
-.header {
-  text-align: center;
-}
-.content {
-  height: 800px;
-}
+<style>
+  .app-front {
+    background: url("@/assets/images/pageBg.png");
+
+    background-size: 100% 100%;
+  }
+
+  .Simulation-div {
+    margin: 10px;
+  }
+
+  .show-button {
+    text-align: left;
+    padding-left: 250px;
+  }
+
+  .me-button-1 {
+    width: 150px;
+    height: 55px;
+    font-size: 25px;
+  }
+
+  .me-button-2 {
+    width: 300px;
+    height: 55px;
+    font-size: 25px;
+  }
+
+  .el-col {
+    border-radius: 4px;
+  }
+
+  .card-1 {
+    margin: 0px;
+    text-align: center;
+    border-right: solid 1px var(--el-border-color);
+    display: inline-block;
+    width: 100%;
+    height: 720px;
+    box-sizing: border-box;
+    vertical-align: top;
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .card-2 {
+    margin: 0px;
+    text-align: center;
+    border-right: solid 1px var(--el-border-color);
+    display: inline-block;
+    width: 100%;
+    height: 450px;
+    box-sizing: border-box;
+    vertical-align: top;
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .dv-scr-board {
+    width: 2400px;
+    height: 440px;
+  }
+
+  .tabs {
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .my-video {
+    width: 100%;
+    height: 94%;
+    object-fit: cover;
+  }
+  /* .card{
+    background-color: #3f5c6d2c;
+  } */
 </style>

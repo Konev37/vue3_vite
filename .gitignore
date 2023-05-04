@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 dist/
+WebGL/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -21,3 +22,4 @@ selenium-debug.log
 
 package-lock.json
 yarn.lock
+archive.zip

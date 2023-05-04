@@ -41,6 +41,8 @@ import ImagePreview from "@/components/ImagePreview"
 import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
+//Datav组件
+import DataVVue3 from '@kjgl77/datav-vue3'
 
 const app = createApp(App)
 
@@ -68,6 +70,7 @@ app.use(store)
 app.use(plugins)
 app.use(elementIcons)
 app.component('svg-icon', SvgIcon)
+app.use(DataVVue3)
 
 directive(app)
 
