@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="card">
       <template #header>
-        <span style="color:#FFFFFF;">环境态势&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        
         <span style="color:#409EFF;">资源态势&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="color:#FFFFFF;">红方态势评估&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <span style="color:#FFFFFF;">蓝方态势评估</span>
