@@ -49,7 +49,17 @@
           style="width:100%;"
           @click.prevent="handleLogin"
         >
-          <span v-if="!loading">登 录</span>
+          <span v-if="!loading">开 发 者 登 录</span>
+          <span v-else>登 录 中...</span>
+        </el-button>
+        <el-button
+          :userLoading="userLoading"
+          size="large"
+          type="primary"
+          style="width:100%; margin-left: 0px; margin-top: 10px;"
+          @click.prevent="userLogin"
+        >
+          <span v-if="!userLoading">战 场 指 挥 员 登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
         <div style="float: right;" v-if="register">
@@ -59,7 +69,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2022 SEU.ISSC All Rights Reserved.</span>
+      <span>Copyright © 2018-2023 SEU.ISSC All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -90,6 +100,7 @@ const loginRules = {
 
 const codeUrl = ref("");
 const loading = ref(false);
+const userLoading = ref(false);
 // 验证码开关
 const captchaEnabled = ref(true);
 // 注册开关
@@ -116,6 +127,35 @@ function handleLogin() {
         router.push({ path: redirect.value || "/" });
       }).catch(() => {
         loading.value = false;
+        // 重新获取验证码
+        if (captchaEnabled.value) {
+          getCode();
+        }
+      });
+    }
+  });
+}
+
+function userLogin() {
+  proxy.$refs.loginRef.validate(valid => {
+    if (valid) {
+      userLoading.value = true;
+      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+      if (loginForm.value.rememberMe) {
+        Cookies.set("username", loginForm.value.username, { expires: 30 });
+        Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 });
+        Cookies.set("rememberMe", loginForm.value.rememberMe, { expires: 30 });
+      } else {
+        // 否则移除
+        Cookies.remove("username");
+        Cookies.remove("password");
+        Cookies.remove("rememberMe");
+      }
+      // 调用action的登录方法
+      userStore.login(loginForm.value).then(() => {
+        router.push({ path: redirect.value || "/userIndex" });
+      }).catch(() => {
+        userLoading.value = false;
         // 重新获取验证码
         if (captchaEnabled.value) {
           getCode();

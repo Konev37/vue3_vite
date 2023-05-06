@@ -74,6 +74,7 @@
             <el-button @click="replay" type="primary">重置场景</el-button>
             <el-button @click="fullscreen" type="primary">全屏</el-button>
             <el-button type="primary">人机协作模式</el-button>
+            <el-button @click="logout" type="primary">退出登陆</el-button>
           </div>
           <!-- <el-button @click="ClickBeginning" type="success" :loading="loading" class="me-button">开始演示</el-button>
                 <el-button @click="ClickPause" type="info" class="me-button">暂停演示</el-button>
@@ -177,6 +178,7 @@
 
 <script lang="ts" setup>
   import { defineComponent, reactive, ref, onMounted } from "vue";
+  import useUserStore from '@/store/modules/user'
   import type {
     TabsPaneContext,
     FormInstance,
@@ -184,12 +186,12 @@
     Action,
   } from "element-plus";
   import { ElMessage, ElMessageBox } from "element-plus";
-  import rsc from "@/views/scenario/sc1/rsc.vue";
-  import env from "@/views/scenario/sc1/env.vue";
-  import handled from "@/views/scenario/sc1/handled.vue";
-  import red from "@/views/scenario/sc1/red.vue";
-  import blue from "@/views/scenario/sc1/blue.vue";
-  import deduce from "@/views/scenario/sc1/deduce.vue";
+  import rsc from "@/views/userIndex/rsc.vue";
+  import env from "@/views/userIndex/env.vue";
+  import handled from "@/views/userIndex/handled.vue";
+  import red from "@/views/userIndex/red.vue";
+  import blue from "@/views/userIndex/blue.vue";
+  import deduce from "@/views/userIndex/deduce.vue";
 
   const Env = env;
   const activeName1 = ref("first");
@@ -201,6 +203,8 @@
   const drawerRed = ref(false);
   const drawerBlue = ref(false);
   const drawerDeduce = ref(false);
+  
+  const userStore = useUserStore();
 
   window.addEventListener('event1', mouseEvent, false)
   window.addEventListener('taskAssignment', unityEvent, false)
@@ -501,6 +505,17 @@
   //   activeName,
   //   drawerTask,
   // }
+  function logout() {
+    ElMessageBox.confirm('确定注销并退出系统吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      userStore.logOut().then(() => {
+        location.href = '/';
+      })
+    }).catch(() => { });
+  }
 </script>
 
 <style>
