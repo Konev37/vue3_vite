@@ -3,17 +3,17 @@
 
         <el-card class="card">
             <template #header>
-                <span style="color:#FFFFFF;">环境态势&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <!-- <span style="color:#FFFFFF;">环境态势&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> -->
                 <span style="color:#FFFFFF;">资源态势&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 <span style="color:#FFFFFF;">红方态势评估&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 <span style="color:#409EFF;">蓝方态势评估</span>
             </template>
-            <el-row :gutter="5">
-                <el-col :span="10">
+            <el-row :gutter="24">
+                <el-col :span="12">
                     <h1 class="header">敌方部署威胁等级</h1>
                     <div ref="danger2" class="content" />
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="12">
                     <h1 class="header">我方协同资源使用率</h1>
                     <div ref="agent2" class="content" />
                 </el-col>
@@ -21,22 +21,22 @@
             </el-row>
             <el-row :gutter="24">
 
-                <el-col :span="6">
-                    <h1 class="header">设施被打击概率</h1>
+                <el-col :span="8">
+                    <h1 class="header">我方资源被打击概率</h1>
                     <div ref="dangerRate2" class="content" />
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8">
                     <h1 class="header">协同任务完成度</h1>
                     <div ref="taskRate2" class="content" />
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="8">
                     <h1 class="header">全区域安全系数</h1>
                     <div ref="safeRate2" class="content" />
                 </el-col>
-                <el-col :span="6">
+                <!-- <el-col :span="6">
                     <h1 class="header">实时态势安全评价</h1>
                     <div ref="safe2" class="content" />
-                </el-col>
+                </el-col> -->
             </el-row>
 
         </el-card>
@@ -85,7 +85,7 @@ var dangerOpt = {
                 color: '#ffffff'
             },
         },
-        data: ['威胁源1', '威胁源2', '威胁源3', '威胁源4', '威胁源5', '威胁源6', '威胁源7']
+        data: ['轰炸机', '战斗机', '航母', '导弹']
     },
     yAxis: {
         type: 'value',
@@ -97,7 +97,7 @@ var dangerOpt = {
     },
     series: [
         {
-            data: [3, 1, 5, 2, 1, 2, 4],
+            data: [3, 1, 5, 2],
             type: 'bar',
             showBackground: true,
             backgroundStyle: {
@@ -127,12 +127,12 @@ var agentOpt = {
     },
     radiusAxis: {
         type: 'category',
-        data: ['a', 'b', 'c', 'd']
+        data: ['坦克', '雷达', '导弹塔', '战斗机', '驱逐舰']
     },
     tooltip: {},
     series: {
         type: 'bar',
-        data: [66, 39, 10, 80],
+        data: [66, 39, 10, 80, 44],
         coordinateSystem: 'polar',
         label: {
             show: true,
@@ -146,31 +146,43 @@ var dangerRateOpt = {
     // legend: {},
     tooltip: {},
     dataset: {
-        dimensions: ["value", "危险类别1", "危险类别2", "危险类别3"],
+        dimensions: ["value", "轰炸机", "战斗机", "航母导弹"],
         source: [
             {
-                value: "设施1",
-                危险类别1: 53.3,
-                危险类别2: 25.8,
-                危险类别3: 63.7,
+                value: "坦克",
+                轰炸机: 53.3,
+                战斗机: 25.8,
+                航母导弹: 63.7,
             },
             {
-                value: "设施2",
-                危险类别1: 33.1,
-                危险类别2: 63.4,
-                危险类别3: 85.1,
+                value: "雷达",
+                轰炸机: 33.1,
+                战斗机: 63.4,
+                航母导弹: 85.1,
             },
             {
-                value: "设施3",
-                危险类别1: 36.4,
-                危险类别2: 55.2,
-                危险类别3: 62.5,
+                value: "导弹塔",
+                轰炸机: 36.4,
+                战斗机: 55.2,
+                航母导弹: 62.5,
             },
             {
-                value: "设施4",
-                危险类别1: 22.4,
-                危险类别2: 53.9,
-                危险类别3: 79.1,
+                value: "战斗机",
+                轰炸机: 22.4,
+                战斗机: 53.9,
+                航母导弹: 79.1,
+            },
+            {
+                value: "驱逐舰",
+                轰炸机: 22.4,
+                战斗机: 53.9,
+                航母导弹: 79.1,
+            },
+            {
+                value: "航母",
+                轰炸机: 22.4,
+                战斗机: 53.9,
+                航母导弹: 79.1,
             },
         ],
     },
@@ -301,7 +313,7 @@ var safeRateOpt = {
         trigger: "axis",
     },
     legend: {
-        data: ["因素1", "因素2", "因素3"],
+        data: ["轰炸机", "战斗机", "航母导弹"],
         textStyle: {
         fontSize: 17,
         color: "#ffffff"
@@ -322,7 +334,7 @@ var safeRateOpt = {
             },
         },
         boundaryGap: false,
-        data: ["区域1", "区域2", "区域3", "区域4", "区域5"],
+        data: ["海域", "城市", "山地", "空域"],
     },
     yAxis: {
         name: "安全度",
@@ -335,22 +347,22 @@ var safeRateOpt = {
     },
     series: [
         {
-            name: "因素1",
+            name: "轰炸机",
             type: "line",
             // stack: "Total",
-            data: [32.0, 23.2, 16.1, 18.4, 4.0, 13.0, 14.0],
+            data: [32.0, 23.2, 16.1, 18.4, 4.0],
         },
         {
-            name: "因素2",
+            name: "战斗机",
             type: "line",
             // stack: "Total",
-            data: [12.0, 28.2, 29.1, 13.4, 19.0, 23.0, 11.0],
+            data: [12.0, 28.2, 29.1, 13.4, 19.0, 23.0],
         },
         {
-            name: "因素3",
+            name: "航母导弹",
             type: "line",
             // stack: "Total",
-            data: [25.0, 13.2, 10.1, 25.4, 9.0, 23.0, 17.0],
+            data: [25.0, 13.2, 10.1, 25.4, 9.0, 23.0],
         },
     ],
 };
@@ -401,7 +413,7 @@ getCache().then(() => {
     dangerRate2Inst = echarts.init(dangerRate2.value, "macarons");
     taskRate2Inst = echarts.init(taskRate2.value, "macarons");
     safeRate2Inst = echarts.init(safeRate2.value, "macarons");
-    safe2Inst = echarts.init(safe2.value, "macarons");
+    // safe2Inst = echarts.init(safe2.value, "macarons");
     proxy.$modal.closeLoading();
 
 
@@ -432,7 +444,7 @@ getCache().then(() => {
         }, 500 * i);
     }
     safeRate2Inst.setOption(safeRateOpt);
-    safe2Inst.setOption(safeOpt);
+    // safe2Inst.setOption(safeOpt);
 
 });
 

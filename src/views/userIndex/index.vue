@@ -4,23 +4,7 @@
       <el-col :span="11">
         <el-row>
           <el-card class="card-1">
-            <el-carousel height="720px" interval="5000" pause-on-hover="true">
-              <el-carousel-item>
-                <div demo-bg>
-                  <dv-border-box1 ref="borderRef">
-                    <div
-                      :style="`width: 100%`"
-                      h18rem
-                      color-white
-                      flex
-                      justify-center
-                      items-center
-                    >
-                      <env></env>
-                    </div>
-                  </dv-border-box1>
-                </div>
-              </el-carousel-item>
+            <el-carousel height="720px" interval="5000" pause-on-hover="false">
               <el-carousel-item>
                 <div demo-bg>
                   <dv-border-box1 ref="borderRef">
@@ -47,24 +31,10 @@
       <el-col :span="13">
         <el-card class="card-1">
           <!-- <template #header><span>战场场景演示</span></template> -->
-          <div class="el-table el-table--enable-row-hover el-table--medium">
-            <iframe
-              id="iframe"
-              src="../../../../WebGL/index.html"
-              ref="iframe"
-              frameborder="10"
-              scrolling="yes"
-              width="980px"
-              height="600px"
-              style="border: 0"
-              webkitallowfullscreen="true" 
-              mozallowfullscreen="true" 
-              allowfullscreen="true"
-            ></iframe>
-            <!-- <video class="my-video" ref="videoPlayer" :autoplay="autoplay" @play="onPlay" @pause="onPause" 
-              @ended="onEnded">
-              <source src="@/assets/video/test.mp4" type="video/mp4">
-            </video> -->
+          <div ref="fullScreenDiv" >
+            <iframe id="iframe" src="../../../../WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
+              width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
+              allowfullscreen="true"></iframe>
           </div>
 
           <!-- <el-divider /> -->
@@ -72,7 +42,7 @@
             <el-button @click="play" type="primary">开始演示</el-button>
             <el-button @click="pause" type="primary">暂停演示</el-button>
             <el-button @click="replay" type="primary">重置场景</el-button>
-            <el-button @click="fullscreen" type="primary">全屏</el-button>
+            <button @click="toggleFullScreen" :key="Math.random()">全屏</button>
             <el-button type="primary">人机协作模式</el-button>
             <el-button @click="logout" type="primary">退出登陆</el-button>
           </div>
@@ -88,7 +58,7 @@
       <el-col :span="17">
         <el-row>
           <el-card class="card-2">
-            <el-carousel height="450px" interval="8000" pause-on-hover="true">
+            <el-carousel height="450px" interval="8000" pause-on-hover="false">
               <el-carousel-item>
                 <div>
                   <handled></handled>
@@ -111,12 +81,8 @@
           </template>
           <dv-border-box11 ref="borderRef">
             <div demo-bg>
-              <dv-scroll-board
-                :config="config"
-                style="width: 100%; height: 330px"
-                @mouseover="mouseoverHandler"
-                @click="clickHandler"
-              />
+              <dv-scroll-board :config="config" style="width: 100%; height: 330px" @mouseover="mouseoverHandler"
+                @click="clickHandler" />
             </div>
           </dv-border-box11>
         </el-card>
@@ -133,42 +99,22 @@
         <env></env>
       </div>
     </el-drawer>
-    <el-drawer
-      v-model="drawerHandled"
-      title="处理后态势"
-      direction="rtl"
-      size="80%"
-    >
+    <el-drawer v-model="drawerHandled" title="处理后态势" direction="rtl" size="80%">
       <div>
         <handled></handled>
       </div>
     </el-drawer>
-    <el-drawer
-      v-model="drawerRed"
-      title="红方态势评估"
-      direction="rtl"
-      size="80%"
-    >
+    <el-drawer v-model="drawerRed" title="红方态势评估" direction="rtl" size="80%">
       <div>
         <red></red>
       </div>
     </el-drawer>
-    <el-drawer
-      v-model="drawerBlue"
-      title="蓝方态势评估"
-      direction="rtl"
-      size="80%"
-    >
+    <el-drawer v-model="drawerBlue" title="蓝方态势评估" direction="rtl" size="80%">
       <div>
         <blue></blue>
       </div>
     </el-drawer>
-    <el-drawer
-      v-model="drawerDeduce"
-      title="态势推演"
-      direction="rtl"
-      size="80%"
-    >
+    <el-drawer v-model="drawerDeduce" title="态势推演" direction="rtl" size="80%">
       <div>
         <deduce></deduce>
       </div>
@@ -377,9 +323,34 @@
     // videoPlayer.value.play();
     iframe.value.contentWindow.message('Camera', 'setPlayProp', '0');  //重置
   };
-  const fullscreen = () => {
-    // videoPlayer.value.requestFullscreen();
+
+  //unity全屏
+  const fullScreenDiv = ref<HTMLElement | null>();
+  const toggleFullScreen  = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      fullScreenDiv.value?.requestFullscreen();
+    }
   };
+
+  const onFullScreenChange = () => {
+    if (document.fullscreenElement === fullScreenDiv.value) {
+      console.log('全屏');
+    } else {
+      console.log('退出全屏');
+    }
+  };
+
+  onMounted(() => {
+    fullScreenDiv.value = document.querySelector('[ref="fullScreenDiv"]');
+    console.log(fullScreenDiv.value);
+    document.addEventListener('fullscreenchange', onFullScreenChange);
+  });
+  onBeforeUnmount(() => {
+    document.removeEventListener('fullscreenchange', onFullScreenChange);
+  });
+
   const onPlay = () => {
     // 视频播放时触发
   };
