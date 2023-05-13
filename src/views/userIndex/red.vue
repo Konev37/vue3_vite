@@ -125,7 +125,7 @@ var agentOpt = {
     },
     radiusAxis: {
         type: 'category',
-        data: ['轰炸机', '战斗机', '航母导弹']
+        data: ['轰炸机', '舰载机', '舰载导弹']
     },
     tooltip: {},
     series: {
@@ -153,7 +153,7 @@ var dangerRateOpt = {
                 战斗机: 93.7,
             },
             {
-                value: "战斗机",
+                value: "舰载机",
                 坦克: 83.1,
                 导弹塔: 73.4,
                 战斗机: 55.1,
@@ -252,10 +252,10 @@ var taskRateOpt = {
             },
         },
         data: [
-            "t1",
-            "t2",
-            "t3",
-            "t4",
+            "坦克",
+            "导弹塔",
+            "战斗机",
+            "驱逐舰",
             "t5",
             "t6",
             "t7",

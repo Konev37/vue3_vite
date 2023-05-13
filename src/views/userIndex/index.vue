@@ -1,7 +1,7 @@
 <template>
   <div class="app-front">
     <el-row :gutter="8">
-      <el-col :span="11">
+      <el-col :span="13">
         <el-row>
           <el-card class="card-1">
             <el-carousel height="720px" interval="5000" pause-on-hover="false">
@@ -28,7 +28,7 @@
           </el-card>
         </el-row>
       </el-col>
-      <el-col :span="13">
+      <el-col :span="11">
         <el-card class="card-1">
           <!-- <template #header><span>战场场景演示</span></template> -->
           <div ref="fullScreenDiv" >
@@ -265,7 +265,7 @@
   });
 
   const mouseoverHandler = (e: any) => {
-    console.log(e);
+    // console.log(e);
   };
 
   const clickHandler = (e: any) => {
@@ -527,7 +527,7 @@
     border-right: solid 1px var(--el-border-color);
     display: inline-block;
     width: 100%;
-    height: 720px;
+    height: 740px;
     box-sizing: border-box;
     vertical-align: top;
     background-color: rgba(255, 255, 255, 0);
