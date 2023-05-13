@@ -35,13 +35,16 @@
             <iframe id="iframe" src="../../../../WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
               width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
               allowfullscreen="true"></iframe>
+              <!-- <iframe id="iframe" src="D:/WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
+              width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
+              allowfullscreen="true"></iframe> -->
           </div>
 
           <!-- <el-divider /> -->
           <div class="show-button">
-            <el-button @click="play" type="primary">开始演示</el-button>
-            <el-button @click="pause" type="primary">暂停演示</el-button>
-            <el-button @click="replay" type="primary">重置场景</el-button>
+            <el-button @click="play" type="primary">开始/暂停演示</el-button>
+            <el-button @click="taskAction" type="primary">开始分配任务</el-button>
+            <!-- <el-button @click="replay" type="primary">重置场景</el-button> -->
             <button @click="toggleFullScreen" :key="Math.random()">全屏</button>
             <el-button type="primary">人机协作模式</el-button>
             <el-button @click="logout" type="primary">退出登陆</el-button>
@@ -152,13 +155,25 @@
   
   const userStore = useUserStore();
 
-  window.addEventListener('event1', mouseEvent, false)
-  window.addEventListener('taskAssignment', unityEvent, false)
-  window.addEventListener('onTankDestroy', tankEvent, false)
-  window.addEventListener('onH20Destroy', unityEvent, false)
-  window.addEventListener('onMissileLauncherDestroy', unityEvent, false)
-  window.addEventListener('onFighterDestroy', unityEvent, false)
-  window.addEventListener('onShipDestroy', unityEvent, false)
+  window.addEventListener('Start', Start, false)
+  window.addEventListener('taskAssignment', taskAssignment, false)
+  window.addEventListener('Bombing', Bombing, false)
+  window.addEventListener('destroyedTank', destroyedTank, false)
+  window.addEventListener('tankNum', tankNum, false)
+  window.addEventListener('launchingSurfaceToAirMissile', launchingSurfaceToAirMissile, false)
+  window.addEventListener('onH20Destroy', onH20Destroy, false)
+  window.addEventListener('redJetCounterAttack', redJetCounterAttack, false)
+  window.addEventListener('redJetReturn', redJetReturn, false)
+  window.addEventListener('onMissileLauncherDestroy', onMissileLauncherDestroy, false)
+  window.addEventListener('H20Return', H20Return, false)
+  window.addEventListener('blueFighterStrike', blueFighterStrike, false)
+  window.addEventListener('redAircraftTakeoff', redAircraftTakeoff, false)
+  window.addEventListener('redAircraftReturn', redAircraftReturn, false)
+  window.addEventListener('onFighterDestroy', onFighterDestroy, false)
+  window.addEventListener('collaboration', collaboration, false)
+  window.addEventListener('carrierMissile', carrierMissile, false)
+  window.addEventListener('cruiserDestroy', cruiserDestroy, false)
+  window.addEventListener('battleshipInterception', battleshipInterception, false)
 
   const iframe = ref(null);
   // onMounted(()=>{
@@ -171,14 +186,66 @@
   //   // console.log(iframe.value);
   // })
 
-  function mouseEvent(res) {
-    console.log(res.detail.arr);
-  }
-  function tankEvent(res) {
-    console.log(res.detail.arr);
-  }
   function unityEvent(res) {
-    console.log('unityEvent');
+    //打印返回值的具体信息
+    console.log(res.detail.arr);
+  }
+  function Start(res) {   //"场景加载成功"（这个函数可能会被调用多次）
+    console.log(res.detail.arr);
+  }
+  function taskAssignment(res) {  // "任务分配完毕"
+    console.log(res.detail.arr);
+  }
+  function Bombing(res) {
+    console.log("轰炸机 " + res.detail.arr + " 投弹");
+  }
+  function destroyedTank(res) {
+    console.log("坦克 " + res.detail.arr + " 已被摧毁");
+  }
+  function tankNum(res) {
+    console.log("剩余 " + res.detail.arr + " 辆坦克");
+  }
+  function launchingSurfaceToAirMissile(res) {  // "导弹塔发射导弹"
+    console.log(res.detail.arr);
+  }
+  function onH20Destroy(res) {
+    console.log("红方轰炸机 " + res.detail.arr + " 已被摧毁");
+  }
+  function redJetCounterAttack(res) {   // "红方战斗机出动"
+    console.log(res.detail.arr);
+  }
+  function redJetReturn(res) {    // "红方战斗机返航"
+    console.log(res.detail.arr);
+  }
+  function onMissileLauncherDestroy(res) {  // "地对空导弹 xxx 已被摧毁"
+    console.log(res.detail.arr);
+  }
+  function H20Return(res) {
+    console.log("红方轰炸机 " + res.detail.arr + " 返航");
+  }
+  function blueFighterStrike(res) {
+    console.log("蓝方战斗机 " + res.detail.arr + " 出击");
+  }
+  function redAircraftTakeoff(res) {
+    console.log("红方舰载机 " + res.detail.arr + " 出动");
+  }
+  function redAircraftReturn(res) {
+    console.log("红方舰载机 " + res.detail.arr + " 发射2枚导弹并返航");
+  }
+  function onFighterDestroy(res) {
+    console.log("蓝方战斗机 " + res.detail.arr + " 被摧毁");
+  }
+  function collaboration(res) {   // "启动人机协作模式"
+    console.log(res.detail.arr);
+  }
+  function carrierMissile(res) {  // "航母发射导弹"
+    console.log(res.detail.arr);
+  }
+  function cruiserDestroy(res) {
+    console.log("蓝方巡洋舰 " + res.detail.arr + " 被摧毁");
+  }
+  function battleshipInterception(res) {  // "战列舰拦截导弹"
+    console.log(res.detail.arr);
   }
 
   const handleClick = (tab: TabsPaneContext, event: Event) => {
@@ -307,16 +374,33 @@
   const videoPlayer = ref(null);
   const autoplay = false;
   const volume = ref(0.5);
+  var playProp = "0";
 
   const play = () => {
     // videoPlayer.value.play();
     // const contentWindow = iframe.value.contentWindow
     // contentWindow.message('Sphere', 'SetToken', 'vue to unity');
-    iframe.value.contentWindow.message('Camera', 'setPlayProp', '1');  //开始
+    if (playProp == "0") {
+      playProp = "1";   // 开始
+    } else if (playProp == "1") {
+      playProp = "2";   // 暂停
+    }
+    else if (playProp == "2") {
+      playProp = "1";   // 开始
+    }
+    iframe.value.contentWindow.message('Camera', 'setPlayProp', playProp);
   };
-  const pause = () => {
+  const taskAction = () => {
     // videoPlayer.value.pause();
-    iframe.value.contentWindow.message('Camera', 'setPlayProp', '2');  //暂停
+    let name = '';
+    for (let i = 0; i <= 23; i++) {   //依次给24个agent发消息
+      name = i.toString();
+      iframe.value.contentWindow.message(name, 'taskAction', '1');  //红方agent开始计时
+    }
+    for (let i = 0; i <= 7; i++) {
+      name = i.toString().padStart(3, '0'); // 使用 padStart() 方法在数字前补零，确保为三位数
+      iframe.value.contentWindow.message(name, 'taskAction', '1');  //蓝方战斗机开始计时
+    }
   };
   const replay = () => {
     // videoPlayer.value.currentTime = 0;
