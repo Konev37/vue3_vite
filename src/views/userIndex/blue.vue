@@ -143,69 +143,39 @@ var agentOpt = {
 };
 
 var dangerRateOpt = {
-    // legend: {},
-    tooltip: {},
-    dataset: {
-        dimensions: ["value", "轰炸机", "舰载机", "舰载导弹"],
-        source: [
-            {
-                value: "坦克",
-                轰炸机: 53.3,
-                舰载机: 25.8,
-                舰载导弹: 63.7,
+            // legend: {},
+            tooltip: {},
+            dataset: {
+                dimensions: ["value", "坦克", "导弹塔", "战斗机"],
+                source: [
+                    [
+                        ["轰炸机",43.3, 85.8, 93.7],
+                        ["舰载机", 83.1, 73.4, 55.1],
+                        ["导弹", 86.4, 65.2, 82.5],
+                        ["航母", 72.4, 53.9, 39.1],
+                    ],
+                ],
             },
-            {
-                value: "雷达",
-                轰炸机: 33.1,
-                舰载机: 63.4,
-                舰载导弹: 85.1,
+            xAxis: {
+                type: "category",
+                axisLabel: {
+                    textStyle: {
+                        color: '#ffffff'
+                    },
+                },
             },
-            {
-                value: "导弹塔",
-                轰炸机: 36.4,
-                舰载机: 55.2,
-                舰载导弹: 62.5,
+            yAxis: {
+                name: "  被打击概率",
+                axisLabel: {
+                    textStyle: {
+                        color: '#ffffff'
+                    },
+                },
             },
-            {
-                value: "战斗机",
-                轰炸机: 22.4,
-                舰载机: 53.9,
-                舰载导弹: 79.1,
-            },
-            {
-                value: "驱逐舰",
-                轰炸机: 22.4,
-                舰载机: 53.9,
-                舰载导弹: 79.1,
-            },
-            {
-                value: "航母",
-                轰炸机: 22.4,
-                舰载机: 53.9,
-                舰载导弹: 79.1,
-            },
-        ],
-    },
-    xAxis: { 
-        type: "category" ,
-        axisLabel: {
-            textStyle: {
-                color: '#ffffff'
-            },
-        },
-},
-    yAxis: {
-        name: "被打击概率",
-        axisLabel: {
-            textStyle: {
-                color: '#ffffff'
-            },
-        },
-    },
-    // Declare several bar series, each will be mapped
-    // to a column of dataset.source by default.
-    series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
-};
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [{ type: "bar" }, { type: "bar" }, { type: "bar" }],
+        };
 
 var year = [];
 for(let i = 39; i>0; i--){

@@ -42,6 +42,120 @@ const atmosphereEnv = ref(null);
 const targetEnv = ref(null);
 const regionalEnv = ref(null);
 
+window.addEventListener('Start', Start, false)
+window.addEventListener('taskAssignment', taskAssignment, false)
+window.addEventListener('Bombing', Bombing, false)
+window.addEventListener('destroyedTank', destroyedTank, false)
+window.addEventListener('tankNum', tankNum, false)
+window.addEventListener('launchingSurfaceToAirMissile', launchingSurfaceToAirMissile, false)
+window.addEventListener('onH20Destroy', onH20Destroy, false)
+window.addEventListener('redJetCounterAttack', redJetCounterAttack, false)
+window.addEventListener('redJetReturn', redJetReturn, false)
+window.addEventListener('onMissileLauncherDestroy', onMissileLauncherDestroy, false)
+window.addEventListener('H20Return', H20Return, false)
+window.addEventListener('blueFighterStrike', blueFighterStrike, false)
+window.addEventListener('redAircraftTakeoff', redAircraftTakeoff, false)
+window.addEventListener('redAircraftReturn', redAircraftReturn, false)
+window.addEventListener('onFighterDestroy', onFighterDestroy, false)
+window.addEventListener('collaboration', collaboration, false)
+window.addEventListener('carrierMissile', carrierMissile, false)
+window.addEventListener('cruiserDestroy', cruiserDestroy, false)
+window.addEventListener('battleshipInterception', battleshipInterception, false)
+
+const iframe = ref(null);
+// onMounted(()=>{
+//   const iframeValue = iframe.value;
+//   iframeValue.onload = () => {
+//     const contentWindow = iframeValue.contentWindow
+//     // console.log(contentWindow);
+//     contentWindow.message('Sphere', 'SetToken', 'vue to unity');
+//   }
+//   // console.log(iframe.value);
+// })
+
+
+
+function unityEvent(res) {
+  //打印返回值的具体信息
+  console.log(res.detail.arr);
+}
+function Start(res) {   //"场景加载成功"（这个函数可能会被调用多次）
+
+  console.log(res.detail.arr);
+
+}
+function taskAssignment(res) {  // "任务分配完毕"
+
+  console.log(res.detail.arr);
+}
+function Bombing(res) {
+
+  console.log("轰炸机 " + res.detail.arr + " 投弹并返航");
+}
+function destroyedTank(res) {
+
+  console.log("坦克 " + res.detail.arr + " 已被摧毁");
+}
+function tankNum(res) {
+
+  console.log("剩余 " + res.detail.arr + " 辆坦克");
+}
+function launchingSurfaceToAirMissile(res) {  // "导弹塔发射导弹"
+
+  console.log(res.detail.arr);
+}
+function onH20Destroy(res) {
+
+  console.log("红方轰炸机 " + res.detail.arr + " 已被摧毁");
+}
+function redJetCounterAttack(res) {   // "红方战斗机出动"
+
+  console.log(res.detail.arr);
+}
+function redJetReturn(res) {    // "红方战斗机返航"
+
+  console.log(res.detail.arr);
+}
+function onMissileLauncherDestroy(res) {  // "地对空导弹 xxx 已被摧毁"
+
+  console.log(res.detail.arr);
+}
+function H20Return(res) {
+  // console.log("红方轰炸机 " + res.detail.arr + " 返航");
+}
+function blueFighterStrike(res) {
+
+  console.log("蓝方战斗机 " + res.detail.arr + " 出击");
+}
+function redAircraftTakeoff(res) {
+
+  console.log("红方舰载机 " + res.detail.arr + " 出动");
+}
+function redAircraftReturn(res) {
+
+  console.log("红方舰载机 " + res.detail.arr + " 发射2枚导弹并返航");
+}
+function onFighterDestroy(res) {
+
+  console.log("蓝方战斗机 " + res.detail.arr + " 被摧毁");
+}
+function collaboration(res) {   // "启动人机协作模式"
+
+  console.log(res.detail.arr);
+}
+function carrierMissile(res) {  // "航母发射导弹"
+
+  console.log(res.detail.arr);
+}
+function cruiserDestroy(res) {
+
+  console.log("蓝方战列舰 " + res.detail.arr + " 被摧毁");
+}
+function battleshipInterception(res) {  // "战列舰拦截导弹"
+
+  console.log(res.detail.arr);
+}
+
 var geoEnvInst, atmosphereEnvInst, targetEnvInst, regionalEnvInst;
 
 proxy.$modal.loading("正在加载态势数据，请稍候！");

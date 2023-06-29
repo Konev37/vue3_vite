@@ -10,6 +10,7 @@
   <body>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width="960" height="600"></canvas>
+      <div id="unity-fullscreen-button"></div>
       <div id="unity-loading-bar">
         <!-- <div id="unity-logo"></div> -->
         <div id="unity-progress-bar-empty">
@@ -113,9 +114,9 @@
         })
           .then((unityInstance) => {
             loadingBar.style.display = "none";
-            // fullscreenButton.onclick = () => {
-            //   unityInstance.SetFullscreen(1);
-            // };
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
             /********** 新增代码 ***********/
             this.gameInstance = unityInstance;
             // console.log(this.gameInstance);

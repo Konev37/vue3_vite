@@ -18,7 +18,7 @@
           <!-- <template #header><span>战场场景演示</span></template> -->
           <div ref="fullScreenDiv">
             <iframe id="iframe" src="../../../../WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
-              width="960px" height="642px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
+              width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
               allowfullscreen="true"></iframe>
             <!-- <iframe id="iframe" src="D:/WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
               width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
@@ -30,7 +30,7 @@
             <el-button @click="play" type="primary">开始/暂停演示</el-button>
             <el-button @click="taskAction" type="primary">开始分配任务</el-button>
             <!-- <el-button @click="replay" type="primary">重置场景</el-button> -->
-            <!-- <el-button id="unity-fullscreen-button">全屏</el-button> -->
+            <el-button @click="toggleFullScreen" type="primary" :key="Math.random()">全屏</el-button>
             <el-button type="primary">人机协作模式</el-button>
             <el-button @click="logout" type="primary">退出登陆</el-button>
           </div>
@@ -94,8 +94,6 @@ import handled from "@/views/userIndex/handled.vue";
 import red from "@/views/userIndex/red.vue";
 import blue from "@/views/userIndex/blue.vue";
 import deduce from "@/views/userIndex/deduce.vue";
-
-
 
 const Env = env;
 const activeName1 = ref("first");
