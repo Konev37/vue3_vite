@@ -55,7 +55,7 @@
     </el-card>
     <el-dialog v-model="editFormDialogVisible" title="设置智能体集群损失率">
       <el-form :model="editForm">
-        <el-form-item label="rate" :label-width="formLabelWidth">
+        <el-form-item label="损失率（%）" :label-width="formLabelWidth">
           <el-input v-model="editForm.rate" placeholder="请输入期望损失率"/>
         </el-form-item>
       </el-form>
