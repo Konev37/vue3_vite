@@ -362,6 +362,6 @@ const sleep = (timeout) => {
   text-align: center;
 }
 .content {
-  height: 800px;
+  height: 1200px;
 }
 </style>
