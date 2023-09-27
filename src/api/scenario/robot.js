@@ -39,3 +39,28 @@ export function getMaxTime() {
     method: 'get'
   })
 }
+
+// 获取任务完成率
+export function getTaskCompRate() {
+    return request({
+        url: '/scenario/robot/taskCompRate',
+        method: 'get'
+    })
+}
+
+// 获取智能体集群损失率
+export function getAgentsLossRate() {
+    return request({
+        url: '/scenario/robot/agentsLossRate',
+        method: 'get'
+    })
+}
+
+// 设置智能体集群损失率
+export function editAgentsLossRate(data) {
+    return request({
+        url: '/scenario/robot/setAgentsLossRate',
+        method: 'put',
+        data: data,
+    })
+}
