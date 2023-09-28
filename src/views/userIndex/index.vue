@@ -4,11 +4,11 @@
       <el-col :span="13">
         <el-row>
           <el-card class="card-1">
-            
-              <div>
-                <red></red>
-              </div>
-            
+
+            <div>
+              <red></red>
+            </div>
+
 
           </el-card>
         </el-row>
@@ -18,8 +18,9 @@
           <!-- <template #header><span>战场场景演示</span></template> -->
           <div ref="fullScreenDiv">
             <iframe id="iframe" src="../../../../WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
-              width="960px" height="642px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
-              allowfullscreen="true"></iframe>
+                    width="960px" height="642px" style="border: 0" webkitallowfullscreen="true"
+                    mozallowfullscreen="true"
+                    allowfullscreen="true"></iframe>
             <!-- <iframe id="iframe" src="D:/WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
               width="960px" height="604.27px" style="border: 0" webkitallowfullscreen="true" mozallowfullscreen="true"
               allowfullscreen="true"></iframe> -->
@@ -46,39 +47,36 @@
       <el-col :span="17">
         <el-row>
           <el-card class="card-2">
-            
-              <div demo-bg>
-                <dv-border-box1 ref="borderRef">
-                  <div>
-                    <rsc></rsc>
-                  </div>
-                </dv-border-box1>
-              </div>
-            
+
+            <div demo-bg>
+              <dv-border-box1 ref="borderRef">
+                <div>
+                  <rsc></rsc>
+                </div>
+              </dv-border-box1>
+            </div>
+
           </el-card>
         </el-row>
       </el-col>
-
-      <el-col :span="7">  
+      <el-col :span="7">
         <el-card class="card-2">
           <template #header>
             <span style="color: #ffffff">战场信息</span>
           </template>
 
           <div demo-bg>
-            <dv-scroll-board ref="scrollBoard" :loop="false" :config="config" style="width: 100%; height: 550px" />
+            <dv-scroll-board ref="scrollBoard" :loop="false" :config="config" style="width: 100%; height: 550px"/>
           </div>
 
         </el-card>
       </el-col>
     </el-row>
-
-
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, reactive, ref, onMounted } from "vue";
+import {defineComponent, reactive, ref, onMounted} from "vue";
 import useUserStore from '@/store/modules/user'
 import type {
   TabsPaneContext,
@@ -86,15 +84,14 @@ import type {
   FormRules,
   Action,
 } from "element-plus";
-import { ElMessage, ElMessageBox } from "element-plus";
-import type { ScrollBoard } from '@kjgl77/datav-vue3/index'
+import {ElMessage, ElMessageBox} from "element-plus";
+import type {ScrollBoard} from '@kjgl77/datav-vue3/index'
 import rsc from "@/views/userIndex/rsc.vue";
 import env from "@/views/userIndex/env.vue";
 import handled from "@/views/userIndex/handled.vue";
 import red from "@/views/userIndex/red.vue";
 import blue from "@/views/userIndex/blue.vue";
 import deduce from "@/views/userIndex/deduce.vue";
-
 
 
 const Env = env;
@@ -169,154 +166,172 @@ const iframe = ref(null);
 // })
 
 
-
 function unityEvent(res) {
   //打印返回值的具体信息
   console.log(res.detail.arr);
 }
+
 function Start(res) {   //"场景加载成功"（这个函数可能会被调用多次）
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   // console.log(res.detail.arr);
 
 }
+
 function taskAssignment(res) {  // "任务分配完毕"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function Bombing(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "轰炸机 " + res.detail.arr + " 投弹并返航"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("轰炸机 " + res.detail.arr + " 投弹并返航");
 }
+
 function destroyedTank(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "坦克 " + res.detail.arr + " 已被摧毁"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("坦克 " + res.detail.arr + " 已被摧毁");
 }
+
 function tankNum(res) {
 
   console.log("剩余 " + res.detail.arr + " 辆坦克");
 }
+
 function launchingSurfaceToAirMissile(res) {  // "导弹塔发射导弹"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function onH20Destroy(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "红方轰炸机 " + res.detail.arr + " 已被摧毁"]);
 
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("红方轰炸机 " + res.detail.arr + " 已被摧毁");
 }
+
 function redJetCounterAttack(res) {   // "红方战斗机出动"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function redJetReturn(res) {    // "红方战斗机返航"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function onMissileLauncherDestroy(res) {  // "地对空导弹 xxx 已被摧毁"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function H20Return(res) {
   // console.log("红方轰炸机 " + res.detail.arr + " 返航");
 }
+
 function blueFighterStrike(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "蓝方战斗机 " + res.detail.arr + " 出击"]);
 
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("蓝方战斗机 " + res.detail.arr + " 出击");
 }
+
 function redAircraftTakeoff(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "红方舰载机 " + res.detail.arr + " 出动"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("红方舰载机 " + res.detail.arr + " 出动");
 }
+
 function redAircraftReturn(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "红方舰载机 " + res.detail.arr + " 发射2枚导弹并返航"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("红方舰载机 " + res.detail.arr + " 发射2枚导弹并返航");
 }
+
 function onFighterDestroy(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "蓝方战斗机 " + res.detail.arr + " 被摧毁"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("蓝方战斗机 " + res.detail.arr + " 被摧毁");
 }
+
 function collaboration(res) {   // "启动人机协作模式"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function carrierMissile(res) {  // "航母发射导弹"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
+
 function cruiserDestroy(res) {
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, "蓝方战列舰 " + res.detail.arr + " 被摧毁"]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log("蓝方战列舰 " + res.detail.arr + " 被摧毁");
 }
+
 function battleshipInterception(res) {  // "战列舰拦截导弹"
   const currentTime = ref(new Date().toLocaleTimeString());
   configdata.push([currentTime.value, res.detail.arr]);
   if (scrollBoard.value)
-    // 此处可以传第二个参数 index，指定下次滚动的起始行
+      // 此处可以传第二个参数 index，指定下次滚动的起始行
     scrollBoard.value.updateRows(configdata);
   console.log(res.detail.arr);
 }
@@ -337,8 +352,8 @@ const ruleForm = reactive({
 
 const rules = reactive<FormRules>({
   name: [
-    { required: true, message: "请输入任务名称", trigger: "blur" },
-    { min: 4, max: 8, message: "名称长度应该在 4 到 8 之间", trigger: "blur" },
+    {required: true, message: "请输入任务名称", trigger: "blur"},
+    {min: 4, max: 8, message: "名称长度应该在 4 到 8 之间", trigger: "blur"},
   ],
   types: [
     {
@@ -355,9 +370,6 @@ const rules = reactive<FormRules>({
     },
   ],
 });
-
-
-
 
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -387,7 +399,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields();
 };
 
-const options = Array.from({ length: 10 }).map((_, idx) => ({
+const options = Array.from({length: 10}).map((_, idx) => ({
   value: `${idx + 1}`,
   label: `属性${idx + 1}`,
 }));
@@ -405,8 +417,7 @@ const play = () => {
     playProp = "1";   // 开始
   } else if (playProp == "1") {
     playProp = "2";   // 暂停
-  }
-  else if (playProp == "2") {
+  } else if (playProp == "2") {
     playProp = "1";   // 开始
   }
   iframe.value.contentWindow.message('Camera', 'setPlayProp', playProp);
@@ -590,7 +601,8 @@ function logout() {
     userStore.logOut().then(() => {
       location.href = '/';
     })
-  }).catch(() => { });
+  }).catch(() => {
+  });
 }
 </script>
 
@@ -598,7 +610,7 @@ function logout() {
 .app-front {
   background: url("@/assets/images/pageBg.png");
 
-  width:2560px;
+  width: 2216px;
   height: 1440px;
 }
 
@@ -633,7 +645,7 @@ function logout() {
   border-right: solid 1px var(--el-border-color);
   display: inline-block;
   width: 100%;
-  height: 740px;
+  //height: 740px;
   box-sizing: border-box;
   vertical-align: top;
   background-color: rgba(255, 255, 255, 0);
@@ -645,7 +657,7 @@ function logout() {
   border-right: solid 1px var(--el-border-color);
   display: inline-block;
   width: 100%;
-  height: 750px;
+  //height: 750px;
   box-sizing: border-box;
   vertical-align: top;
   background-color: rgba(255, 255, 255, 0);
