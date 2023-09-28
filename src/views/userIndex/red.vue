@@ -299,7 +299,7 @@ function battleshipInterception(res) {  // "战列舰拦截导弹"
 
 
 const loadData = () => {
-    proxy.$modal.loading("正在加载模式数据，请稍候！");
+    // proxy.$modal.loading("正在加载模式数据，请稍候！");
     getCache().then(() => {
         //更新数据
         TankDanger=0;

@@ -39,3 +39,11 @@ export function getMaxTime() {
     method: 'get'
   })
 }
+
+// 获取任务完成率
+export function getTaskCompRate() {
+  return request({
+      url: '/scenario/robotuav/taskCompRate',
+      method: 'get'
+  })
+}

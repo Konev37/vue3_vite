@@ -49,9 +49,9 @@
       <el-form :model="addForm">
         <el-form-item label="实体类型" :label-width="formLabelWidth">
           <el-select v-model="addForm.type" placeholder="请选择实体类型">
-            <el-option label="agent" value="agent" />
-            <el-option label="普通任务" value="task" />
-            <el-option label="辅助任务" value="auxiliaryTask" />
+            <el-option label="无人机" value="agent" />
+            <el-option label="坦克" value="task" />
+            <el-option label="海马斯火箭炮" value="auxiliaryTask" />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="名称" :label-width="formLabelWidth">
@@ -96,9 +96,13 @@
       size="10%"
       @open="loadData"
     >
-      <el-table :data="maxTimeTable" stripe border>
-        <el-table-column prop="maxTime" label="任务完成时间" />
+    <el-table :data="maxTimeTable" class="drawerTable" stripe border>
+        <el-table-column prop="maxTime" label="任务完成时间"/>
       </el-table>
+      <el-table :data="taskCompRateTable" class="drawerTable" stripe border>
+        <el-table-column prop="taskCompRate" label="任务完成率"/>
+      </el-table>
+      
     </el-drawer>
   </div>
 </template>
@@ -117,6 +121,7 @@ import {
   targetExecution,
   getGeoEntityTables,
   getMaxTime,
+  getTaskCompRate,
 } from "@/api/scenario/robotuav";
 // import svgUrl from "@/assets/images/san14.svg";
 import svgUrl from "@/assets/images/svg/ditucopy.svg";
@@ -336,11 +341,17 @@ const deleteForm = reactive({
   id: "",
 });
 const maxTimeTable = ref([]);
+const taskCompRateTable = ref([]);
 function loadData() {
   getMaxTime().then((res) => {
     maxTimeTable.value.length = 0;
     var value = { maxTime: res };
     maxTimeTable.value.push(value);
+  });
+  getTaskCompRate().then((res) => {
+    taskCompRateTable.value.length = 0;
+    var value = {taskCompRate: res * 100 + "%"};
+    taskCompRateTable.value.push(value);
   });
 }
 
