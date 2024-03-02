@@ -71,9 +71,12 @@
       <el-form :model="addForm">
         <el-form-item label="实体类型" :label-width="formLabelWidth">
           <el-select v-model="addForm.type" placeholder="请选择实体类型">
-            <el-option label="agent" value="agent"/>
-            <el-option label="普通任务" value="task"/>
-            <el-option label="辅助任务" value="auxiliaryTask"/>
+<!--            <el-option label="agent" value="agent"/>-->
+<!--            <el-option label="普通任务" value="task"/>-->
+<!--            <el-option label="辅助任务" value="auxiliaryTask"/>-->
+            <el-option label="无人机" value="agent"/>
+            <el-option label="坦克" value="task"/>
+            <el-option label="导弹车" value="auxiliaryTask"/>
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="名称" :label-width="formLabelWidth">

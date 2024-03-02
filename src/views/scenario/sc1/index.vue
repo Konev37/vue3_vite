@@ -51,7 +51,8 @@
           <el-select v-model="addForm.type" placeholder="请选择实体类型">
             <el-option label="无人机" value="agent" />
             <el-option label="坦克" value="task" />
-            <el-option label="海马斯火箭炮" value="auxiliaryTask" />
+<!--            <el-option label="海马斯火箭炮" value="auxiliaryTask" />-->
+            <el-option label="导弹车" value="auxiliaryTask" />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="名称" :label-width="formLabelWidth">

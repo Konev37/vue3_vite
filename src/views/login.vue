@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">集群协同计算平台</h3>
+      <h3 class="title">自主无人集群协作与仿真平台</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -49,7 +49,7 @@
           style="width:100%;"
           @click.prevent="handleLogin"
         >
-          <span v-if="!loading">开 发 者 登 录</span>
+          <span v-if="!loading">算 法 开 发 者 登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
         <el-button
@@ -69,7 +69,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2023 SEU.ISSC All Rights Reserved.</span>
+      <span>Copyright © 2021-2024 SEU.ISSC All Rights Reserved.</span>
     </div>
   </div>
 </template>

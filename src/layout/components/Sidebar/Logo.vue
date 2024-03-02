@@ -25,7 +25,8 @@ defineProps({
   }
 })
 
-const title = ref('集群协同计算训练平台');
+// const title = ref('集群协同计算训练平台');
+const title = ref('算法开发平台');
 const settingsStore = useSettingsStore();
 const sideTheme = computed(() => settingsStore.sideTheme);
 </script>
