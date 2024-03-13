@@ -26,7 +26,8 @@
     </div>
     <script>
       /********** 新增代码 ***********/
-      const gameInstance = null;
+      // const gameInstance = null;
+      /********** 以上 ***********/
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
@@ -64,14 +65,14 @@
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/WebGL.loader.js";
       var config = {
-        dataUrl: buildUrl + "/WebGL.data.unityweb",
-        frameworkUrl: buildUrl + "/WebGL.framework.js.unityweb",
-        codeUrl: buildUrl + "/WebGL.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "ISSC.CCCP",
-        productName: "uavStrike",
-        productVersion: "0.1",
-        showBanner: unityShowBanner,
+          dataUrl: buildUrl + "/WebGL.data",
+          frameworkUrl: buildUrl + "/WebGL.framework.js",
+          codeUrl: buildUrl + "/WebGL.wasm",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "ISSC.CCCP",
+          productName: "uavStrike",
+          productVersion: "0.1",
+          showBanner: unityShowBanner,
       };
 
       // By default Unity keeps WebGL canvas render target size matched with
@@ -120,12 +121,14 @@
             /********** 新增代码 ***********/
             this.gameInstance = unityInstance;
             // console.log(this.gameInstance);
+            /********** 以上 ***********/
           })
           .catch((message) => {
             alert(message);
           });
       };
       document.body.appendChild(script);
+      /********** 新增代码 ***********/
       function message(gameObject, method, param) {
         if (param === null) {
           param = "";
@@ -146,6 +149,7 @@
         window.top.dispatchEvent(evt);
         // console.log(eventName);
       };
+      /********** 以上 ***********/
     </script>
   </body>
 </html>

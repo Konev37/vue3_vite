@@ -17,7 +17,7 @@
         <el-card class="card-1">
           <!-- <template #header><span>战场场景演示</span></template> -->
           <div ref="fullScreenDiv">
-            <iframe id="iframe" src="../../../../WebGL/index.html" ref="iframe" frameborder="10" scrolling="yes"
+            <iframe id="iframe" src="../../../../UnityWeb/index.html" ref="iframe" frameborder="10" scrolling="yes"
                     width="960px" height="642px" style="border: 0" webkitallowfullscreen="true"
                     mozallowfullscreen="true"
                     allowfullscreen="true"></iframe>
