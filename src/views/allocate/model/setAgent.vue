@@ -166,6 +166,36 @@ const decisionData = [
     start: "2022-8-2-16-33",
     reward: "60",
   },
+  {
+    agent: "agent6",
+    target: "2",
+    start: "2022-8-2-11-28",
+    reward: "50",
+  },
+  {
+    agent: "agent7",
+    target: "5",
+    start: "2022-8-2-12-14",
+    reward: "80",
+  },
+  {
+    agent: "agent8",
+    target: "1",
+    start: "2022-8-2-10-11",
+    reward: "100",
+  },
+  {
+    agent: "agent9",
+    target: "9",
+    start: "2022-8-2-16-34",
+    reward: "30",
+  },
+  {
+    agent: "agent10",
+    target: "7",
+    start: "2022-8-2-16-33",
+    reward: "60",
+  },
 ];
 
 </script>
