@@ -21,7 +21,7 @@
             <el-table
               :data="space"
               class="table"
-              max-height="600"
+              max-height="450"
               border
               v-fit-columns
             >
@@ -51,7 +51,7 @@
             <el-table
               :data="time"
               class="table"
-              max-height="600"
+              max-height="450"
               border
               v-fit-columns
             >
@@ -76,7 +76,7 @@
             <el-table
               :data="src"
               class="table"
-              max-height="600"
+              max-height="450"
               border
               v-fit-columns
             >
@@ -133,6 +133,21 @@ const spaceData = [
   {
     task: "任务5",
   },
+  {
+    task: "任务6",
+  },
+  {
+    task: "任务7",
+  },
+  {
+    task: "任务8",
+  },
+  {
+    task: "任务9",
+  },
+  {
+    task: "任务10",
+  },
 ];
 const timeData = [
   {
@@ -149,6 +164,21 @@ const timeData = [
   },
   {
     task: "任务5",
+  },
+  {
+    task: "任务6",
+  },
+  {
+    task: "任务7",
+  },
+  {
+    task: "任务8",
+  },
+  {
+    task: "任务9",
+  },
+  {
+    task: "任务10",
   },
 ];
 const srcData = [
@@ -167,6 +197,21 @@ const srcData = [
   {
     task: "任务5",
   },
+  {
+    task: "任务6",
+  },
+  {
+    task: "任务7",
+  },
+  {
+    task: "任务8",
+  },
+  {
+    task: "任务9",
+  },
+  {
+    task: "任务10",
+  },
 ];
 
 function deepClone(obj) {
@@ -175,14 +220,14 @@ function deepClone(obj) {
   return objClone
 }
 var space = deepClone(spaceData);
-var s_coord = ref(["(10,21)", "(3,98)", "(52,34)", "(74,69)", "(23,83)"]);
-var s_range = ref(["129", "321", "672", "47", "297"]);
+var s_coord = ref(["(10,21)", "(3,98)", "(52,34)", "(74,69)", "(23,83)","(10,21)", "(3,98)", "(52,34)", "(74,69)", "(23,83)"]);
+var s_range = ref(["129", "321", "672", "47", "297","129", "321", "672", "47", "297"]);
 var time = deepClone(timeData);
-var t_time = ref(["1h 4min", "56min", "36min", "2h 49min", "43min"]);
-var t_rate = ref(["3 %", "17 %", "5 %", "2 %", "9 %"]);
+var t_time = ref(["1h 4min", "56min", "36min", "2h 49min", "43min","1h 4min", "56min", "36min", "2h 49min", "43min"]);
+var t_rate = ref(["3 %", "17 %", "5 %", "2 %", "9 %","3 %", "17 %", "5 %", "2 %", "9 %"]);
 var src = deepClone(srcData);
-var s_source = ref(["有源", "有源", "无源", "有源", "无源"]);
-var s_recycle = ref(["可回收", "不可回收", "不可回收", "可回收", "不可回收"]);
+var s_source = ref(["有源", "有源", "无源", "有源", "无源","有源", "有源", "无源", "有源", "无源"]);
+var s_recycle = ref(["可回收", "不可回收", "不可回收", "可回收", "不可回收","可回收", "不可回收", "不可回收", "可回收", "不可回收"]);
 
 const onChange = (val) => {
   var index = parseInt(val.slice(-1)) - 1;

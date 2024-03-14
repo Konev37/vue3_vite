@@ -21,7 +21,7 @@
             <el-table
               :data="decision"
               class="table"
-              max-height="600"
+              max-height="450"
               border
               v-fit-columns
             >
@@ -80,16 +80,31 @@ const decisionData = [
     agent: "agent1",
   },
   {
-    agent: "agent1",
+    agent: "agent2",
   },
   {
-    agent: "agent1",
+    agent: "agent3",
   },
   {
-    agent: "agent1",
+    agent: "agent4",
   },
   {
-    agent: "agent1",
+    agent: "agent5",
+  },
+  {
+    agent: "agent6",
+  },
+  {
+    agent: "agent7",
+  },
+  {
+    agent: "agent8",
+  },
+  {
+    agent: "agent9",
+  },
+  {
+    agent: "agent10",
   },
 ];
 
@@ -100,9 +115,9 @@ function deepClone(obj) {
   return objClone
 }
 var decision = deepClone(decisionData);
-var d_target = ref(["2", "5", "1", "9", "7"]);
-var d_start = ref(["2022-8-2-11-28", "2022-8-2-12-14", "2022-8-2-10-11", "2022-8-2-16-34", "2022-8-2-16-33"]);
-var d_reward = ref(["50", "80", "100", "30", "60"]);
+var d_target = ref(["2", "5", "1", "9", "7","2", "5", "1", "9", "7"]);
+var d_start = ref(["2022-8-2-11-28", "2022-8-2-12-14", "2022-8-2-10-11", "2022-8-2-16-34", "2022-8-2-16-33","2022-8-2-11-28", "2022-8-2-12-14", "2022-8-2-10-11", "2022-8-2-16-34", "2022-8-2-16-33"]);
+var d_reward = ref(["50", "80", "100", "30", "60","70", "30", "90", "50", "20"]);
 
 
 

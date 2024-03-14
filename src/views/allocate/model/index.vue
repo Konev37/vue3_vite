@@ -479,7 +479,7 @@ getCache().then(() => {
     setTimeout(function () {
       var smalloption = {
         title: {
-          text: year[data.length - i - 1].toString() + "时刻任务完成率",
+          text: "任务完成率",
         },
         series: [
           {

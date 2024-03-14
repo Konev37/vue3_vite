@@ -174,6 +174,46 @@ const constraintData = [
         maxCost: "60",
         deadline: "3h",
     },
+    {
+        task: "任务6",
+        minEffect: "160%",
+        avgEffect: "120%",
+        maxAgent: "30",
+        maxCost: "60",
+        deadline: "2h 30min",
+    },
+    {
+        task: "任务7",
+        minEffect: "130%",
+        avgEffect: "190%",
+        maxAgent: "15",
+        maxCost: "30",
+        deadline: "2h",
+    },
+    {
+        task: "任务8",
+        minEffect: "130%",
+        avgEffect: "180%",
+        maxAgent: "8",
+        maxCost: "50",
+        deadline: "1h",
+    },
+    {
+        task: "任务9",
+        minEffect: "140%",
+        avgEffect: "160%",
+        maxAgent: "12",
+        maxCost: "20",
+        deadline: "2h 30min",
+    },
+    {
+        task: "任务10",
+        minEffect: "150%",
+        avgEffect: "200%",
+        maxAgent: "20",
+        maxCost: "60",
+        deadline: "3h",
+    },
 ];
 
 

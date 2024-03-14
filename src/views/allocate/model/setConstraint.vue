@@ -21,7 +21,7 @@
               <el-table
                 :data="effect"
                 class="table"
-                max-height="600"
+                max-height="450"
                 border
                 v-fit-columns
               >
@@ -51,7 +51,7 @@
               <el-table
                 :data="agent"
                 class="table"
-                max-height="600"
+                max-height="450"
                 border
                 v-fit-columns
               >
@@ -76,7 +76,7 @@
               <el-table
                 :data="time"
                 class="table"
-                max-height="600"
+                max-height="450"
                 border
                 v-fit-columns
               >
@@ -128,6 +128,21 @@
     {
       task: "任务5",
     },
+    {
+      task: "任务6",
+    },
+    {
+      task: "任务7",
+    },
+    {
+      task: "任务8",
+    },
+    {
+      task: "任务9",
+    },
+    {
+      task: "任务10",
+    },
   ];
   const timeData = [
     {
@@ -144,6 +159,21 @@
     },
     {
       task: "任务5",
+    },
+    {
+      task: "任务6",
+    },
+    {
+      task: "任务7",
+    },
+    {
+      task: "任务8",
+    },
+    {
+      task: "任务9",
+    },
+    {
+      task: "任务10",
     },
   ];
   const AgentData = [
@@ -162,6 +192,21 @@
     {
       task: "任务5",
     },
+    {
+      task: "任务6",
+    },
+    {
+      task: "任务7",
+    },
+    {
+      task: "任务8",
+    },
+    {
+      task: "任务9",
+    },
+    {
+      task: "任务10",
+    },
   ];
   
   function deepClone(obj) {
@@ -170,14 +215,14 @@
     return objClone
   }
   var effect = deepClone(effectData);
-  var e_minEffect = ref(["120%", "130%", "130%", "140%", "150%"]);
-  var e_avgEffect = ref(["180%", "190%", "180%", "160%", "200%"]);
+  var e_minEffect = ref(["120%", "130%", "130%", "140%", "150%","150%", "160%", "130%", "140%", "150%"]);
+  var e_avgEffect = ref(["180%", "190%", "180%", "160%", "200%","200%", "120%", "180%", "160%", "200%"]);
   var time = deepClone(timeData);
-  var t_deadline = ref(["1h 30min", "2h", "1h", "2h 30min", "3h"]);
+  var t_deadline = ref(["1h 30min", "2h", "1h", "2h 30min", "3h","2h 30min", "2h", "1h", "2h 30min", "3h"]);
   
   var agent = deepClone(AgentData);
-  var a_maxAgent = ref(["10", "15", "8", "12", "20"]);
-  var a_maxCost = ref(["40", "30", "50", "20", "60"]);
+  var a_maxAgent = ref(["10", "15", "8", "12", "20","20", "30", "8", "12", "20"]);
+  var a_maxCost = ref(["40", "30", "50", "20", "60","60", "60", "50", "20", "60"]);
   
   const onChange = (val) => {
     var index = parseInt(val.slice(-1)) - 1;

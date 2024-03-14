@@ -209,14 +209,14 @@ var singleClusterIndex;
 
 //动态任务完成率（之后要改）
 const countries = [
-  "任务2",
-  "任务3",
-  "任务4",
-  "任务5",
-  "任务1",
-  "任务6",
-  "任务7",
-  "任务8",
+  "智能体2",
+  "智能体3",
+  "智能体4",
+  "智能体5",
+  "智能体1",
+  "智能体6",
+  "智能体7",
+  "智能体8",
 ];
 const datasetWithFilters = [];
 const seriesList = [];
@@ -229,7 +229,7 @@ echarts.util.each(countries, function (country) {
       type: "filter",
       config: {
         and: [
-          { dimension: "Year", gte: 1950 },
+          { dimension: "Year", gte: 0 },
           { dimension: "Country", "=": country },
         ],
       },

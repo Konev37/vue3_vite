@@ -170,7 +170,7 @@ echarts.util.each(countries, function (country) {
       type: "filter",
       config: {
         and: [
-          { dimension: "Year", gte: 1950 },
+          { dimension: "Year", gte: 0 },
           { dimension: "Country", "=": country },
         ],
       },
@@ -184,7 +184,7 @@ echarts.util.each(countries, function (country) {
     endLabel: {
       show: true,
       formatter: function (params) {
-        return params.value[3] + ": " + params.value[0] / 1000 + "%";
+        return params.value[3]-1800 + ": " + params.value[0] / 1000 + "%";
       },
     },
     labelLayout: {
