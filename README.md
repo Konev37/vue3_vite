@@ -5,7 +5,6 @@
 ## 前端运行
 
 ```bash
-# 推荐使用 VSCode
 # 克隆项目
 git clone https://github.com/Konev37/vue3_vite.git
 

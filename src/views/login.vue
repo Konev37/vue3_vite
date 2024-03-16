@@ -49,7 +49,7 @@
           style="width:100%;"
           @click.prevent="handleLogin"
         >
-          <span v-if="!loading">开 发 者 登 录</span>
+          <span v-if="!loading">算 法 开 发 者 登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
         <el-button
@@ -69,7 +69,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2023 SEU.ISSC All Rights Reserved.</span>
+      <span>Copyright © 2021-2024 SEU.ISSC All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -243,7 +243,7 @@ getCookie();
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: #000000;
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
