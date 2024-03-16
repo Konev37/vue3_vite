@@ -16,6 +16,7 @@
 <script setup>
 import variables from '@/assets/styles/variables.module.scss'
 import logo from '@/assets/logo/logo.png'
+import useSettingsStore from '@/store/modules/settings'
 
 defineProps({
   collapse: {
@@ -24,9 +25,9 @@ defineProps({
   }
 })
 
-const title = ref('集群协同计算平台');
-const store = useStore();
-const sideTheme = computed(() => store.state.settings.sideTheme);
+const title = ref('算法开发平台');
+const settingsStore = useSettingsStore();
+const sideTheme = computed(() => settingsStore.sideTheme);
 </script>
 
 <style lang="scss" scoped>

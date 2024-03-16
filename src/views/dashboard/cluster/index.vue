@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col :span="24">
+      <el-col>
         <el-card class="card">
           <template #header><span>集群信息及任务迁移动态示意图</span></template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
@@ -12,7 +12,7 @@
             <el-col :span="12">
               <el-button
                 type="primary"
-                style="margin-left: 50px; margin-bottom: 10px"
+                style="margin-left: 50px; margin-bottom: 2px"
                 @click="showMigrate"
               >
                 展示任务迁移过程
@@ -21,7 +21,7 @@
             <el-col :span="12">
               <el-button
                 type="primary"
-                style="margin-left: 50px; margin-bottom: 10px"
+                style="margin-left: 50px; margin-bottom: 2px"
                 @click="drawerTask = true"
               >
                 任务迁移记录
@@ -41,7 +41,9 @@
           </template>
           <div class="slider-demo-block">
             <!-- <span class="slide-text">任务完成<br />成本</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />成本</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />成本</el-tag
+            >
             <el-slider
               class="el-slider"
               v-model="valueOptimize"
@@ -50,7 +52,9 @@
               @change="onChange"
             />
             <!-- <span class="slide-text">任务完成<br />比例</span> -->
-            <el-tag class="tag-text" size="large" effect="plain">任务完成<br />比例</el-tag>
+            <el-tag class="tag-text" size="large" effect="plain"
+              >任务完成<br />比例</el-tag
+            >
           </div>
         </el-card>
       </el-col>
@@ -67,9 +71,20 @@
               >
             </div>
           </template>
-          <el-table :data="allClusterInfo" border style="width: 100%">
-            <el-table-column prop="allRatio" label="任务完成率" width="180" />
-            <el-table-column prop="allCost" label="当前总成本" width="180" />
+          <el-table
+            :data="allClusterInfo"
+            border
+            style="width: 100%"
+            v-fit-columns
+          >
+            <el-table-column prop="allRatio" label="任务完成率" />
+            <el-table-column label="总成本">
+              <el-table-column prop="allMigrationCost" label="迁移成本" />
+              <el-table-column
+                prop="allTaskExecCost"
+                label="任务执行成本（时间）"
+              />
+            </el-table-column>
             <el-table-column prop="allLoss" label="Agent损失率" />
           </el-table>
         </el-card>
@@ -99,9 +114,12 @@
       <el-table :data="eachClusterInfo" stripe border>
         <el-table-column prop="clusterId" label="集群编号" />
         <el-table-column prop="eachRatio" label="任务完成率" />
-        <el-table-column prop="eachCost" label="当前总成本" />
+        <el-table-column label="总成本">
+          <el-table-column prop="eachMigCost" label="集群内迁移成本" />
+          <el-table-column prop="eachExecCost" label="任务执行成本（时间）" />
+        </el-table-column>
         <el-table-column prop="eachLoss" label="Agent损失率" />
-        <el-table-column label="详细信息" width="120">
+        <el-table-column label="详细信息" width="100">
           <template #default="scope">
             <el-button
               type="text"
@@ -131,9 +149,39 @@
 
 <script setup name="Cluster">
 import { reactive, ref } from "vue";
-import { getCache } from "@/api/monitor/cache";
+import { getCluster, clusterSurvivability } from "@/api/dashboard/cluster";
+import {
+  getAgent,
+  getLossRatio,
+  getClusterLossRatio,
+  allTaskExecCost,
+  eachTaskExecCost,
+  eachExecCost,
+  eachAgentSurvivability,
+  allAgentSurvivability,
+  agentTaskExecutionTime,
+} from "@/api/dashboard/agent";
+import {
+  getTask,
+  getTimeTask,
+  allTaskRatio,
+  eachAgentProgress,
+  eachClusterRatio,
+  eachClusterTaskInfo,
+} from "@/api/dashboard/task";
+import {
+  getMigration,
+  allMigrationCost,
+  eachMigrationCost,
+  postSliderVal,
+  getMinCost,
+  TasksCanBeMigrated,
+  migrateTask,
+  getAllMinCost,
+} from "@/api/dashboard/migration";
 import * as echarts from "echarts";
 import graph from "@/assets/data/all_cluster.json";
+import taiwan from "@/assets/images/1669800505208.png"
 
 function goTarget(url) {
   window.open(url, "__blank");
@@ -146,93 +194,161 @@ const allInfo = ref(null);
 const singleInfo = ref(null);
 const { proxy } = getCurrentInstance();
 const valueOptimize = ref(0);
-var newLinks = JSON.parse(JSON.stringify(graph.links));
+// var newLinks = JSON.parse(JSON.stringify(graph.links));
+var newLinks;
 
 var allInfoIntance, singleInfoIntance;
 var singleClusterIndex;
 
 proxy.$modal.loading("正在加载Agent数据，请稍候！");
 
-getCache().then(() => {
-  allInfoIntance = echarts.init(allInfo.value, "macarons");
-  proxy.$modal.closeLoading();
-  var option = {
-    tooltip: {
-      show: true,
-      trigger: "item",
-      formatter: (params) => {
-        if (params.name.indexOf(">") == -1) {
-          return (
-            params.name +
-            "<br>能力: " +
-            params.value[0] +
-            "<br>执行任务数量: " +
-            params.value[1] +
-            "<br>执行任务总大小: " +
-            params.value[2]
-          );
-        } else {
-          return (
-            "迁移方向：" +
-            params.name +
-            // "<br>这是第 " +
-            // params.name +
-            // " 个执行的迁移" +
-            "<br>所迁移的任务编号：" +
-            params.value
-          );
-        }
-      },
-    },
-    legend: [
-      {
-        data: graph.categories.map(function (a) {
-          return a.name;
-        }),
-      },
-    ],
-    series: [
-      {
-        name: "Les Miserables",
-        type: "graph",
-        layout: "none",
-        data: graph.nodes,
-        // links: graph.links,
-        categories: graph.categories,
-        roam: true,
-        edgeSymbol: ["circle", "arrow"],
-        label: {
+getAgent().then((agents) => {
+  getMigration().then((migrations) => {
+    getCluster().then((clusters) => {
+      allInfoIntance = echarts.init(allInfo.value, "macarons");
+      proxy.$modal.closeLoading();
+      newLinks = JSON.parse(JSON.stringify(migrations));
+      // console.log(agents);
+      // console.log(migrations);
+      // console.log(clusters);
+      clusterSurvivability().then((res) => {
+        // console.log("clusterSur");
+        // console.log(res);
+      });
+      // eachAgentSurvivability().then((res) => {
+      //   console.log("eachAgentSur");
+      //   console.log(res);
+      // })
+      getTask().then((tasks) => {
+        // console.log(tasks);
+      });
+      // TasksCanBeMigrated().then((res) => {
+      //   console.log(res);
+      // });
+      getTimeTask(2).then((res) => {
+        // console.log("timeTask");
+        // console.log(res);
+      });
+      // allAgentSurvivability().then((res) => {
+      //   console.log("allAgentSur");
+      //   console.log(res);
+      // });
+      // agentTaskExecutionTime().then((res) => {
+      //   console.log("executionTime");
+      //   console.log(res);
+      // });
+      // for (let i = 0; i < agents.length; i++) {
+      //   // 第一次加载的时候大小都是 10
+      //   agents[i].symbolSize = 10;
+      // }
+      var option = {
+        tooltip: {
           show: true,
-          position: "right",
-          formatter: function (params) {
-            return params.dataIndex + ", " + params.name;
+          trigger: "item",
+          formatter: (params) => {
+            if (params.name.indexOf(">") == -1) {
+              return (
+                params.name +
+                "<br>能力: " +
+                params.value[0] +
+                "<br>执行任务数量: " +
+                params.value[3] +
+                "<br>执行任务总大小: " +
+                params.value[2] +
+                "<br>最大负载: " +
+                params.value[1]
+              );
+            } else {
+              return (
+                "迁移方向：" +
+                params.name +
+                // "<br>这是第 " +
+                // params.name +
+                // " 个执行的迁移" +
+                "<br>所迁移的任务编号：" +
+                params.value
+              );
+            }
           },
         },
-        labelLayout: {
-          hideOverlap: true,
-        },
-        scaleLimit: {
-          min: 0.5,
-          max: 4,
-        },
-        lineStyle: {
-          color: "source",
-          curveness: 0.3,
-        },
-        emphasis: {
-          focus: "adjacency",
-          lineStyle: {
-            width: 10,
+        legend: [
+          {
+            // data: graph.categories.map(function (a) {
+            data: clusters.map(function (a) {
+              return a.name;
+            }),
+            textStyle: {
+              fontSize: 20,
+            },
           },
+        ],
+        series: [
+          {
+            name: "Les Miserables",
+            type: "graph",
+            // layout: "force",
+            data: agents,
+            // links: migrations,
+            categories: clusters,
+            // data: graph.nodes,
+            // links: graph.links,
+            // categories: graph.categories,
+            roam: true,
+            edgeSymbol: ["circle", "arrow"],
+            label: {
+              show: true,
+              textStyle: {
+                fontSize: 20,
+              },
+              position: "right",
+              formatter: function (params) {
+                return params.data.id + ", " + params.name;
+              },
+            },
+            labelLayout: {
+              hideOverlap: true,
+            },
+            scaleLimit: {
+              min: 0.005,
+              max: 4,
+            },
+            lineStyle: {
+              color: "source",
+              curveness: 0.3,
+            },
+            emphasis: {
+              focus: "adjacency",
+              lineStyle: {
+                width: 10,
+              },
+            },
+            // force: {
+            //   repulsion: 0.000000000001,
+            // },
+          },
+        ],
+        graphic: {
+          elements: [
+            {
+              type: "image",
+              style: {
+                image: taiwan,
+                width: 1100,
+                height: 620,
+              },
+              left: "center",
+              top: "5%",
+            },
+          ],
         },
-      },
-    ],
-  };
-  allInfoIntance.setOption(option);
+      };
+      allInfoIntance.setOption(option);
+    });
+  });
 });
 const showMigrate = () => {
-  let v = 20; // 每一帧连线数的上限
-  let t = 400; // 动画间隔
+  let v = 3; // 每一帧连线数的上限
+  let t = 500; // 动画间隔
   allInfoIntance.setOption({
     // 清空连线
     series: [{ links: null }],
@@ -282,61 +398,107 @@ const marks = {
 const formatTooltip = (val) => {
   return val / 100;
 };
+var test;
+
+// 修改滑块值带来的变化
 const onChange = (val) => {
-  // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
-  changeMigrate(val);
-  changeAllClusterInfo(val);
-  changeMigrateRecord();
-  changeEachClusterInfo(val);
+  // // console.log(Math.floor(Math.random() * 10)); // 可均衡获取 0 到 9 的随机整数
+  // newLinks = JSON.parse(JSON.stringify(migrations));
+  // postSliderVal(val).then((resMigration) => {
+  migrateTask(val).then((resMigration) => {
+    getAgent().then((agents) => {
+      getCluster().then((clusters) => {
+        getTask().then((tasks) => {
+          allInfoIntance.setOption({
+            series: [
+              { data: agents, links: resMigration, categories: clusters },
+            ],
+          });
+          changeMigrateRecord(resMigration);
+          getEMigrationTopInfo();
+          getImMigrationTopInfo();
+          getAllClusterInfo();
+          getMinCost().then((mincost) => {
+            // console.log(mincost);
+          });
+          getAllMinCost().then((mincost) => {
+            // console.log(mincost);
+          });
+        });
+      });
+    });
+  });
+  // getMigration().then((migrations) => {
+  //   changeMigrate(val, migrations);
+  // });
+  //changeAllClusterInfo(val);
+  // changeEachClusterInfo(val);
 };
 
-function changeMigrate(val) {
-  newLinks = JSON.parse(JSON.stringify(graph.links));
-  var Len = Math.floor((1.0 / 25) * Math.pow(val - 50, 2) + 149); // 新的任务迁移数
+function changeMigrate(val, migrations) {
+  newLinks = JSON.parse(JSON.stringify(migrations));
+  // console.log(migrations);
+  var Len = Math.floor((1.0 / 250) * Math.pow(val - 50, 2) + 1); // 新的任务迁移数
+  // console.log(Len);
   newLinks = newLinks.slice(0, Len);
-  for (let i = 0; i < newLinks.length; i++) {
-    let source = parseInt(newLinks[i].source);
-    let target = parseInt(newLinks[i].target);
-    source += val;
-    target += val;
-    newLinks[i].source = source % 77;
-    newLinks[i].target = target % 77;
-  }
+  // console.log(newLinks);
+  // for (let i = 0; i < newLinks.length; i++) {
+  //   let source = parseInt(newLinks[i].source);
+  //   let target = parseInt(newLinks[i].target);
+  //   source += val;
+  //   target += val;
+  //   newLinks[i].source = source % 77;
+  //   newLinks[i].target = target % 77;
+  // }
   allInfoIntance.setOption({ series: [{ links: newLinks }] });
 }
+
 function changeAllClusterInfo(val) {
   let ACInfo = allClusterInfo.value[0];
   let allRatio = parseInt(ACInfo.allRatio.slice(0, ACInfo.allRatio.length - 1)); // 去除百分号，并转为整型
   // let allCost = parseInt(ACInfo.allCost.slice(0, ACInfo.allCost.length - 1));
   let allCost = parseInt(ACInfo.allCost); // 成本没有百分号
   let allLoss = parseInt(ACInfo.allLoss.slice(0, ACInfo.allLoss.length - 1));
-  allRatio = (10 + val * 0.6).toFixed(2);
-  allCost = (20 + val * 0.6).toFixed(2);
-  allLoss = (30 + val * 0.6).toFixed(2);
+  allRatio = (10 + val * 0.6).toFixed(3);
+  allCost = (20 + val * 0.6).toFixed(3);
+  allLoss = (30 + val * 0.6).toFixed(3);
   ACInfo.allRatio = allRatio + "%";
   ACInfo.allCost = allCost + "";
   ACInfo.allLoss = allLoss + "%";
 }
-function changeMigrateRecord() {
-  migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+
+const migrateRecord = ref([]);
+function changeMigrateRecord(resMigration) {
+  newLinks = JSON.parse(JSON.stringify(resMigration));
+  migrateRecord.value.length = 0;
   for (let i = 0; i < newLinks.length; i++) {
-    // newLinks[i].value.splice(0, newLinks[i].value.length);
-    newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
-    var len = Math.floor(Math.random() * 6);
-    while (newLinks[i].value.length < len) {
-      var dat = Math.floor(Math.random() * 200) + 1;
-      if (newLinks[i].value.indexOf(dat) == -1) {
-        newLinks[i].value.push(dat);
-      }
-    }
     var record = {
       order: i + 1,
       source: newLinks[i].source,
       target: newLinks[i].target,
-      task: newLinks[i].value,
+      task: newLinks[i].taskId,
     };
     migrateRecord.value.push(record);
   }
+  // migrateRecord.value.splice(0, migrateRecord.value.length); // 删除数组中所有元素
+  // for (let i = 0; i < newLinks.length; i++) {
+  //   // newLinks[i].value.splice(0, newLinks[i].value.length);
+  //   newLinks[i].value = []; // 因为有些value是没定义的，所以这里清空的同时顺便定义
+  //   var len = Math.floor(Math.random() * 6);
+  //   while (newLinks[i].value.length < len) {
+  //     var dat = Math.floor(Math.random() * 200) + 1;
+  //     if (newLinks[i].value.indexOf(dat) == -1) {
+  //       newLinks[i].value.push(dat);
+  //     }
+  //   }
+  //   var record = {
+  //     order: i + 1,
+  //     source: newLinks[i].source,
+  //     target: newLinks[i].target,
+  //     task: newLinks[i].value,
+  //   };
+  //   migrateRecord.value.push(record);
+  // }
 }
 function changeEachClusterInfo(val) {
   var ECInfo = eachClusterInfo.value;
@@ -352,9 +514,9 @@ function changeEachClusterInfo(val) {
     eachLoss = parseInt(
       ECInfo[i].eachLoss.slice(0, ECInfo[i].eachLoss.length - 1)
     );
-    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2); // 保留 2 位小数
-    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
-    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(2);
+    eachRatio = (10 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3); // 保留 2 位小数
+    eachCost = (20 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3);
+    eachLoss = (30 + val * 0.6 - 10 + Math.random() * 19 + 1).toFixed(3);
     ECInfo[i].eachRatio = eachRatio + "%";
     ECInfo[i].eachCost = eachCost + "";
     ECInfo[i].eachLoss = eachLoss + "%";
@@ -385,170 +547,230 @@ const getRow = (index) => {
 const handleInnerOpen = (SCIndex) => {
   SCIndex = SCIndex || singleClusterIndex;
   const colors = ["#5470C6", "#91CC75", "#EE6666"];
-  getCache().then(() => {
-    singleInfoIntance = echarts.init(singleInfo.value, "macarons");
-    var singleOption = {
-      color: colors,
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "cross",
+  eachClusterTaskInfo().then((clstTskInfo) => {
+    eachExecCost().then((execCost) => {
+      singleInfoIntance = echarts.init(singleInfo.value, "macarons");
+
+      // 把字符串类型的最大值为 1 的任务完成进度
+      // 转换成浮点数类型，且最大值为100
+      for (var i = 1; i <= Object.keys(clstTskInfo).length; i++) {
+        for (var j = 0; j < clstTskInfo[i][1].length; j++) {
+          clstTskInfo[i][1][j] = +clstTskInfo[i][1][j] * 100;
+        }
+      }
+
+      var singleOption = {
+        color: colors,
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+          },
         },
-      },
-      grid: {
-        // right: '20%'
-      },
-      toolbox: {
-        feature: {
-          dataView: { show: true, readOnly: false },
-          restore: { show: true },
-          saveAsImage: { show: true },
+        grid: {
+          // right: '20%'
         },
-      },
-      legend: {
-        data: ["任务进度", "成本"],
-      },
-      xAxis: [
-        {
-          type: "value",
-          name: "任务进度",
-          position: "top",
-          alignTicks: true, // 是否开启自动对齐刻度
-          min: 0,
-          max: 100,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: colors[0],
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            restore: { show: true },
+            saveAsImage: { show: true },
+          },
+        },
+        legend: {
+          data: ["任务进度", "成本"],
+        },
+        xAxis: [
+          {
+            type: "value",
+            name: "任务进度",
+            position: "top",
+            alignTicks: true, // 是否开启自动对齐刻度
+            min: 0,
+            max: 100,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: colors[0],
+              },
+            },
+            axisLabel: {
+              formatter: "{value}%",
             },
           },
-          axisLabel: {
-            formatter: "{value}%",
-          },
-        },
-        {
-          type: "value",
-          name: "成本",
-          position: "bottom",
-          alignTicks: true,
-          // offset: 80,
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: colors[1],
+          {
+            type: "value",
+            name: "成本",
+            position: "bottom",
+            alignTicks: true,
+            // offset: 80,
+            axisLine: {
+              show: true,
+              lineStyle: {
+                color: colors[1],
+              },
+            },
+            axisLabel: {
+              formatter: "{value}c",
             },
           },
-          axisLabel: {
-            formatter: "{value}c",
+        ],
+        yAxis: [
+          {
+            type: "category",
+            axisTick: {
+              alignWithLabel: true,
+            },
+            // prettier-ignore
+            // data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
+            data: clstTskInfo[SCIndex + 1][0],
           },
-        },
-      ],
-      yAxis: [
-        {
-          type: "category",
-          axisTick: {
-            alignWithLabel: true,
+        ],
+        series: [
+          {
+            name: "任务进度",
+            type: "bar",
+            // data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
+            data: clstTskInfo[SCIndex + 1][1],
           },
-          // prettier-ignore
-          data: innerDrawerData[0].slice(SCIndex, SCIndex+4),
-        },
-      ],
-      series: [
-        {
-          name: "任务进度",
-          type: "bar",
-          data: innerDrawerData[1].slice(SCIndex, SCIndex + 4),
-        },
-        {
-          name: "成本",
-          type: "bar",
-          xAxisIndex: 1,
-          data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
-        },
-      ],
-    };
-    singleInfoIntance.setOption(singleOption);
+          {
+            name: "成本",
+            type: "bar",
+            xAxisIndex: 1,
+            // data: innerDrawerData[2].slice(SCIndex, SCIndex + 4),
+            data: execCost,
+          },
+        ],
+      };
+      singleInfoIntance.setOption(singleOption);
+    });
   });
 };
 
 const allClusterInfo = ref([
   {
-    allRatio: "10%",
-    allCost: "20",
-    allLoss: "30%",
+    // allRatio: "10%",
+    // allCost: 20,
+    // allLoss: "30%",
   },
 ]);
-const migrateRecord = ref([]);
-// for (var i = 0; i < newLinks.length; i++) {
+function getAllClusterInfo() {
+  allTaskRatio().then((ratio) => {
+    allMigrationCost().then((migCost) => {
+      allTaskExecCost().then((execCost) => {
+        getLossRatio().then((lossratio) => {
+          let ACInfo = allClusterInfo.value[0];
+          ratio = (ratio * 100).toFixed(3);
+          ACInfo.allRatio = ratio + "%";
+          ACInfo.allMigrationCost = migCost;
+          ACInfo.allTaskExecCost = execCost.toFixed(3);
+          lossratio = (lossratio * 100).toFixed(3);
+          ACInfo.allLoss = lossratio + "%";
+        });
+      });
+    });
+  });
+}
+getAllClusterInfo();
+
+// console.log(migrations.length);
+// console.log(migrations[1].source);
+// console.log(newLinks)
+// for (let i = 0; i < newLinks.length; i++) {
 //   var record = {
 //     order: i + 1,
 //     source: newLinks[i].source,
 //     target: newLinks[i].target,
-//     task: newLinks[i].value,
+//     task: newLinks[i].taskId,
 //   };
 //   migrateRecord.value.push(record);
 // }
+// console.log(migrateRecord.value);
+
 const eachClusterInfo = ref([
-  {
-    clusterId: "集群1",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群2",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群3",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群4",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群5",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群6",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群7",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群8",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
-  {
-    clusterId: "集群9",
-    eachRatio: "10%",
-    eachCost: "20",
-    eachLoss: "30%",
-  },
+  // {
+  //   clusterId: "集群1",
+  //   // eachRatio: "10%",
+  //   // eachCost: "20",
+  //   // eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群2",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群3",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群4",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群5",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群6",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群7",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群8",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
+  // {
+  //   clusterId: "集群9",
+  //   eachRatio: "10%",
+  //   eachCost: "20",
+  //   eachLoss: "30%",
+  // },
 ]);
+getCluster().then((clusters) => {
+  eachClusterRatio().then((eachRatio) => {
+    eachMigrationCost().then((eachMigCost) => {
+      eachTaskExecCost().then((eachExecCost) => {
+        getClusterLossRatio().then((eachLossRatio) => {
+          for (let i = 0; i < clusters.length; i++) {
+            if (eachMigCost[i + 1] == null) {
+              eachMigCost[i + 1] = 0;
+            }
+            var cluster = {
+              clusterId: clusters[i].name,
+              eachRatio: (eachRatio[i] * 100).toFixed(3) + "%",
+              eachMigCost: eachMigCost[i + 1],
+              eachExecCost: eachExecCost[i].toFixed(3),
+              eachLoss: eachLossRatio[i + 1] * 100 + "%",
+            };
+            eachClusterInfo.value.push(cluster);
+          }
+        });
+      });
+    });
+  });
+});
 </script>
 
 <style scoped lang="scss">
 .el-row {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 .el-row:last-child {
   margin-bottom: 0;
@@ -581,8 +803,8 @@ const eachClusterInfo = ref([
   align-items: center;
 }
 .el-slider {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 13px;
+  margin-right: 13px;
 }
 .tag-text {
   font-size: 13px;
@@ -604,7 +826,7 @@ const eachClusterInfo = ref([
   overflow: visible;
   text-overflow: ellipsis;
   white-space: normal; //文本换行属性
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 .slider-demo-block .slide-text + .el-slider {
   flex: 0 0 70%;

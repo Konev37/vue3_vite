@@ -6,11 +6,12 @@
                v-model="queryParams.deptName"
                placeholder="请输入部门名称"
                clearable
+               style="width: 200px"
                @keyup.enter="handleQuery"
             />
          </el-form-item>
          <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="部门状态" clearable>
+            <el-select v-model="queryParams.status" placeholder="部门状态" clearable style="width: 200px">
                <el-option
                   v-for="dict in sys_normal_disable"
                   :key="dict.value"
@@ -68,25 +69,9 @@
          </el-table-column>
          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template #default="scope">
-               <el-button
-                  type="text"
-                  icon="Edit"
-                  @click="handleUpdate(scope.row)"
-                  v-hasPermi="['system:dept:edit']"
-               >修改</el-button>
-               <el-button
-                  type="text"
-                  icon="Plus"
-                  @click="handleAdd(scope.row)"
-                  v-hasPermi="['system:dept:add']"
-               >新增</el-button>
-               <el-button
-                  v-if="scope.row.parentId != 0"
-                  type="text"
-                  icon="Delete"
-                  @click="handleDelete(scope.row)"
-                  v-hasPermi="['system:dept:remove']"
-               >删除</el-button>
+               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dept:edit']">修改</el-button>
+               <el-button link type="primary" icon="Plus" @click="handleAdd(scope.row)" v-hasPermi="['system:dept:add']">新增</el-button>
+               <el-button v-if="scope.row.parentId != 0" link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dept:remove']">删除</el-button>
             </template>
          </el-table-column>
       </el-table>
@@ -97,11 +82,14 @@
             <el-row>
                <el-col :span="24" v-if="form.parentId !== 0">
                   <el-form-item label="上级部门" prop="parentId">
-                     <tree-select
-                        v-model:value="form.parentId"
-                        :options="deptOptions"
-                        :objMap="{ value: 'deptId', label: 'deptName', children: 'children' }"
+                     <el-tree-select
+                        v-model="form.parentId"
+                        :data="deptOptions"
+                        :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
+                        value-key="deptId"
                         placeholder="选择上级部门"
+                        check-strictly
+                        :render-after-expand="false"
                      />
                   </el-form-item>
                </el-col>
@@ -222,9 +210,9 @@ function resetQuery() {
   handleQuery();
 }
 /** 新增按钮操作 */
-async function handleAdd(row) {
+function handleAdd(row) {
   reset();
-  await listDept().then(response => {
+  listDept().then(response => {
     deptOptions.value = proxy.handleTree(response.data, "deptId");
   });
   if (row != undefined) {
@@ -242,9 +230,9 @@ function toggleExpandAll() {
   });
 }
 /** 修改按钮操作 */
-async function handleUpdate(row) {
+function handleUpdate(row) {
   reset();
-  await listDeptExcludeChild(row.deptId).then(response => {
+  listDeptExcludeChild(row.deptId).then(response => {
     deptOptions.value = proxy.handleTree(response.data, "deptId");
   });
   getDept(row.deptId).then(response => {

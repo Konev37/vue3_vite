@@ -1,6 +1,8 @@
 .DS_Store
 node_modules/
 dist/
+Build/
+TemplateData/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -18,6 +20,8 @@ selenium-debug.log
 *.njsproj
 *.sln
 *.local
+*.zip
 
 package-lock.json
 yarn.lock
+archive.zip

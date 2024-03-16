@@ -1,9 +1,10 @@
+[![OSCS Status](https://www.oscs1024.com/platform/badge/Konev37/vue3_vite.svg?size=large)](https://www.oscs1024.com/project/Konev37/vue3_vite?ref=badge_large)
+
 2022年3月7日开始进行项目移植
 
 ## 前端运行
 
 ```bash
-# 推荐使用VSCode
 # 克隆项目
 git clone https://github.com/Konev37/vue3_vite.git
 
@@ -11,7 +12,6 @@ git clone https://github.com/Konev37/vue3_vite.git
 cd vue3_vite
 
 # 安装依赖
-# yarn --registry=https://registry.npm.taobao.org
 yarn --registry=https://registry.npmmirror.com
 
 # 启动服务

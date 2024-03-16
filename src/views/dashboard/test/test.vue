@@ -1,343 +1,280 @@
 <template>
   <div class="app-container">
-    <el-container>
-      <el-main>
-        <el-card class="card">
-          <div class="card-block">
-            <el-row>
-              <el-col :span="24" class="topo">
-                <!-- 这个写在card下才能有效果 -->
-                <template #header><span>集群拓扑图</span></template>
-                <div
-                  class="el-table el-table--enable-row-hover el-table--medium"
-                >
-                  <div
-                    ref="allInfo"
-                    style="height: 400px; margin-bottom: 20px"
-                  />
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <div>
-                  <div class="slider-demo-block">
-                    <span class="slide-text">任务完成<br />成本</span>
-                    <el-slider
-                      class="el-slider"
-                      v-model="value4"
-                      :format-tooltip="formatTooltip"
-                      :marks="marks"
-                      @change="onChange"
-                    />
-                    <span class="slide-text">任务完成<br />比例</span>
-                  </div>
-                  <!-- <el-button type="primary">优化</el-button> -->
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <template v-slot:header>
-                  <div class="clearfix">
-                    <span>全部集群总状态</span>
-                  </div>
-                </template>
-                <el-table :data="tableData" border>
-                  <el-table-column prop="date" label="任务完成率" width="180" />
-                  <el-table-column prop="name" label="当前总成本" width="180" />
-                  <el-table-column prop="address" label="Agent损失率" />
-                </el-table>
-              </el-col>
-            </el-row>
-          </div>
-        </el-card>
-      </el-main>
-      <el-footer>
-        <!-- <el-row>
-          <el-card class="update-log">
-            <template v-slot:header>
-            <div class="clearfix">
-              <span>Agent集群属性</span>
-            </div>
-          </template>
-          <div class="body">
-            <el-table :data="propData" stripe border>
-              <el-table-column prop="agentId" label="集群编号" width="210" />
-              <el-table-column prop="agentProp" label="属性" width="210"/>
-            </el-table>
-          </div>
-          </el-card>
-        </el-row> -->
-      </el-footer>
-    </el-container>
+    <el-card>
+      <div ref="entity" class="content" />
+      <el-row>
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            style="margin-left: 50px; margin-bottom: 2px"
+            @click="execTask"
+          >
+            开始执行任务
+          </el-button>
+        </el-col>
+        <el-col :span="12">
+          <el-button
+            type="primary"
+            style="margin-left: 50px; margin-bottom: 2px"
+            @click="reset"
+          >
+            重置
+          </el-button>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 
-<script setup name="Test">
-import { reactive, ref } from "vue";
-import { getCache } from "@/api/monitor/cache";
+<script setup name="Blank">
 import * as echarts from "echarts";
-// import graph from "@/assets/data/all_cluster.json";
+import { getEntity } from "@/api/scenario/entity";
+import {
+  targetAssignment,
+  targetExecution,
+  getEntityTables,
+} from "@/api/scenario/robot";
+import png from "@/assets/images/taihai.png";
+import svgUrl from "@/assets/images/san14.svg";
 
-import _ from "lodash";
-// import type { CSSProperties } from 'vue'
-
-function goTarget(url) {
-  window.open(url, "__blank");
-}
-
-const allInfo = ref(null);
 const { proxy } = getCurrentInstance();
-const value4 = ref(50);
+const entity = ref(null);
 
-var year = [
-  2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008,
-  2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, 1996, 1995,
-  1994, 1993, 1992, 1991, 1990, 1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982,
-];
-var data = [
-  [431, 550, 878, 989, 351, 391, 508, 118],
-  [428, 521, 868, 950, 335, 377, 506, 116],
-  [422, 512, 867, 936, 316, 367, 502, 116],
-  [423, 502, 867, 936, 299, 354, 478, 115],
-  [411, 486, 850, 915, 300, 355, 461, 111],
-  [409, 478, 837, 889, 285, 370, 458, 109],
-  [405, 462, 828, 879, 271, 380, 443, 105],
-  [407, 452, 801, 872, 261, 376, 430, 102],
-  [400, 462, 790, 868, 253, 356, 430, 983],
-  [384, 454, 790, 839, 254, 346, 420, 970],
-  [372, 452, 770, 823, 259, 347, 394, 932],
-  [359, 448, 770, 802, 240, 349, 394, 923],
-  [357, 460, 751, 761, 230, 364, 365, 901],
-  [343, 444, 735, 733, 226, 353, 363, 871],
-  [331, 453, 722, 718, 225, 364, 339, 856],
-  [312, 424, 717, 702, 226, 339, 325, 837],
-  [307, 407, 713, 674, 220, 336, 314, 809],
-  [300, 409, 686, 661, 211, 308, 312, 774],
-  [298, 380, 664, 633, 192, 298, 309, 760],
-  [282, 377, 657, 621, 181, 280, 289, 721],
-  [279, 367, 646, 578, 178, 264, 285, 682],
-  [280, 361, 645, 572, 172, 278, 278, 682],
-  [276, 359, 641, 545, 171, 274, 278, 633],
-  [261, 348, 629, 527, 168, 256, 263, 590],
-  [258, 332, 601, 512, 156, 244, 243, 567],
-  [238, 313, 601, 467, 151, 225, 237, 521],
-  [227, 286, 594, 424, 137, 201, 237, 488],
-  [226, 287, 571, 411, 127, 200, 210, 486],
-  [230, 274, 548, 381, 120, 178, 201, 466],
-  [218, 262, 541, 334, 103, 188, 187, 421],
-  [205, 260, 525, 330, 93, 162, 187, 375],
-  [190, 264, 502, 295, 86, 161, 186, 330],
-  [173, 236, 473, 292, 76, 140, 159, 282],
-  [162, 215, 453, 251, 68, 113, 140, 253],
-  [159, 192, 444, 210, 71, 89, 134, 243],
-  [140, 198, 434, 206, 64, 99, 123, 196],
-  [120, 213, 420, 206, 52, 83, 108, 186],
-  [119, 192, 413, 193, 47, 90, 82, 142],
-  [120, 206, 392, 150, 45, 60, 80, 120],
-];
-// 指定图表的配置项和数据
-var option = {
-  title: {
-    text: "ECharts 入门示例",
-  },
-  tooltip: { formatter: "{c}%" },
-  legend: {
-    data: ["Agent"],
-  },
-  yAxis: {
-    data: [
-      "agent1负载",
-      "agent2负载",
-      "agent3负载",
-      "agent4负载",
-      "agent5负载",
-      "agent6负载",
-      "agent7负载",
-      "agent8负载",
-    ],
-    inverse: true,
-    // max: 5,
-  },
-  xAxis: {
-    axisLabel: {
-      formatter: "{value}%",
-    },
-  },
-  series: [
-    {
-      realtimeSort: true,
-      name: "Agent",
-      showBackground: true,
-      label: {
-        show: true,
-        position: "right",
-        valueAnimation: true,
-        formatter: "{c}%",
-      },
-      stack: {},
-      type: "bar",
-      data: [12, 20.6, 39.2, 15],
-    },
-  ],
-  animationDuration: 0,
-  animationDurationUpdate: 500,
-  animationEasing: "linear",
-  animationEasingUpdate: "linear",
-};
+var entityInst, ets, originEts;
+var timeTables;
+proxy.$modal.loading("正在加载数据，请稍候！");
 
-// 使用刚指定的配置项和数据显示图表。
-
-// function run() {
-//   for (var i = 0; i < data.length; ++i) {
-//     if (Math.random() > 0.9) {
-//       data[i] += Math.round(Math.random() * 2000);
-//     } else {
-//       data[i] += Math.round(Math.random() * 200);
-//     }
-//   }
-//   allInfoIntance.setOption({
-//     series: [
-//       {
-//         type: 'bar',
-//         data: data,
-//       }
-//     ]
-//   });
-// }
-
-getCache().then(() => {
-  // proxy.$modal.closeLoading();
-
-  // for(var i=0 ; i< links.length ;i++){
-  //   allInfoIntance.setOption(options[i]);
-  //   sleep(3000);
-  // }
-  const allInfoIntance = echarts.init(allInfo.value, "macarons");
-
-  allInfoIntance.setOption(option);
-
-  for (let i = 0; i < data.length; i++) {
-    for (let j = 0; j < data[data.length - i - 1].length; j++) {
-      data[data.length - i - 1][j] = data[data.length - i - 1][j] / 10;
-    }
-    setTimeout(function () {
-      var option1 = {
-        title: {
-          text: year[data.length - i - 1].toString() + "时刻agent负载状况",
+// getEntity().then((entities) => {
+getEntityTables().then((tables) => {
+  // console.log(entities);
+  // targetAssignment().then((res) => {
+  //   console.log(res);
+  // })
+  console.log(tables[0]);
+  // targetExecution().then((res) => {
+  //   console.log(res);
+  // })
+  timeTables = tables;
+  // ets = deepClone(entities);
+  // originEts = deepClone(entities);
+  entityInst = echarts.init(entity.value, "macarons");
+  //直接引入无法使用，需要加载 svg 文件后再注册加载的 svg 字符串
+  fetch(svgUrl)
+    .then((response) => response.text())
+    .then((svgText) => {
+      echarts.registerMap("san14", { svg: svgText });
+      proxy.$modal.closeLoading();
+      var option = {
+        // title: {
+        //   text: "Basic Graph",
+        // },
+        tooltip: {},
+        // animationDurationUpdate: 1500,
+        // animationEasingUpdate: "linear",
+        geo: {
+          map: "san14",
+          roam: true,
+          layoutCenter: ["50%", "50%"],
+          layoutSize: "100%",
         },
         series: [
           {
-            data: data[data.length - i - 1],
+            name: "Route",
+            type: "lines",
+            coordinateSystem: "geo",
+            geoIndex: 0,
+            emphasis: {
+              label: {
+                show: false,
+              },
+            },
+            polyline: true,
+            lineStyle: {
+              color: "#c46e54",
+              width: 0,
+            },
+            effect: {
+              show: true,
+              period: 8,    //一个回合的时间
+              color: "#a10000",
+              trailLength: 0,
+            },
+            z: 100,
+            data: [
+              {
+                effect: {
+                  color: "#a10000",
+                  symbolSize: [12, 30],
+                  symbol:
+                    "path://M87.1667 3.8333L80.5.5h-60l-6.6667 3.3333L.5 70.5v130l10 10h80l10 -10v-130zM15.5 190.5l15 -20h40l15 20zm75 -65l-15 5v35l15 15zm-80 0l15 5v35l-15 15zm65 0l15 -5v-40l-15 20zm-50 0l-15 -5v-40l15 20zm 65,-55 -15,25 c -15,-5 -35,-5 -50,0 l -15,-25 c 25,-15 55,-15 80,0 z",
+                  // constantSpeed: 100,  //移动速度（像素/秒）
+                  delay: 0,
+                },
+                coords: [
+                  [50.875133928571415, 242.66287667410717],
+                  [62.03696428571425, 264.482421875],
+                  [72.63357421874997, 273.62779017857144],
+                  [92.78291852678569, 285.869140625],
+                  [113.43637834821425, 287.21854073660717],
+                  [141.44788783482142, 288.92947823660717],
+                  [191.71686104910714, 289.5507114955357],
+                  [198.3060072544643, 294.0673828125],
+                  [204.99699497767858, 304.60288783482144],
+                  [210.79177734375003, 316.7373046875],
+                  [212.45179408482142, 329.3656529017857],
+                  [210.8885267857143, 443.3925083705358],
+                  [215.35936941964286, 453.00634765625],
+                  [224.38761997767858, 452.15087890625],
+                  [265.71490792410714, 452.20179966517856],
+                  [493.3408844866072, 453.77525111607144],
+                  [572.8892940848216, 448.77992466517856],
+                  [608.9513755580358, 448.43366350446433],
+                  [619.99099609375, 450.8778599330358],
+                  [624.2479715401787, 456.2194475446429],
+                  [628.1434095982145, 463.9899553571429],
+                  [629.8492550223216, 476.0276227678571],
+                  [631.2750362723216, 535.7322126116071],
+                  [624.6757059151787, 546.6496233258929],
+                  [617.1801702008929, 552.6480887276786],
+                  [603.7269056919645, 554.5066964285714],
+                  [588.0178515625, 557.5517578125],
+                  [529.4386104910716, 556.2991071428571],
+                  [422.1994921875001, 551.38525390625],
+                  [291.66921875, 552.5767996651786],
+                  [219.4279380580357, 547.4949079241071],
+                  [209.53912667410714, 541.5931919642858],
+                  [206.70793247767858, 526.1947544642858],
+                  [206.70793247767858, 507.4049944196429],
+                  [206.12234375000003, 468.7663225446429],
+                  [204.48778738839286, 459.44782366071433],
+                  [197.56256417410714, 452.8943219866071],
+                  [170.31995814732142, 456.27546037946433],
+                  [1.8078906249999704, 460.5935407366071],
+                ],
+              },
+              {
+                effect: {
+                  color: "#00067d",
+                  symbolSize: [12, 30],
+                  symbol:
+                    "path://M87.1667 3.8333L80.5.5h-60l-6.6667 3.3333L.5 70.5v130l10 10h80l10 -10v-130zM15.5 190.5l15 -20h40l15 20zm75 -65l-15 5v35l15 15zm-80 0l15 5v35l-15 15zm65 0l15 -5v-40l-15 20zm-50 0l-15 -5v-40l15 20zm 65,-55 -15,25 c -15,-5 -35,-5 -50,0 l -15,-25 c 25,-15 55,-15 80,0 z",
+                  // constantSpeed: 80,
+                  delay: 0,
+                },
+                coords: [
+                  [779.4595368303574, 287.98744419642856],
+                  [689.07009765625, 291.0477818080357],
+                  [301.83300223214286, 290.49783761160717],
+                  [229.31165736607142, 291.73011997767856],
+                  [220.73660156250003, 297.4077845982143],
+                  [214.74832031250003, 308.52378627232144],
+                  [213.82156250000003, 421.35400390625],
+                  [213.19523716517858, 443.0564313616071],
+                  [222.31005301339286, 455.95465959821433],
+                  [271.71846540178575, 454.37611607142856],
+                  [359.64843191964286, 455.9393833705358],
+                  [580.2524358258929, 448.11286272321433],
+                  [627.7156752232145, 460.7463030133929],
+                  [632.3290959821429, 536.6386021205358],
+                  [628.9123130580358, 548.4776785714286],
+                  [612.5667494419645, 556.8235909598214],
+                  [543.7167912946429, 555.4741908482143],
+                  [429.1756361607143, 551.9402901785714],
+                  [293.42089285714286, 551.2172154017858],
+                  [226.20039899553575, 556.0699637276786],
+                  [215.49176339285714, 562.7253069196429],
+                  [213.21051339285714, 591.6024693080358],
+                  [212.00878348214286, 625.6735491071429],
+                  [197.43017020089286, 645.0743582589286],
+                  [187.41405691964286, 647.0857282366071],
+                  [101.79589285714286, 649.0207170758929],
+                  [69.96023437499997, 650.1613420758929],
+                  [56.48150948660714, 656.8268694196429],
+                  [51.11446149553569, 665.2542550223214],
+                ],
+              },
+              {
+                effect: {
+                  color: "#997405",
+                  symbolSize: [12, 30],
+                  symbol:
+                    "path://M87.1667 3.8333L80.5.5h-60l-6.6667 3.3333L.5 70.5v130l10 10h80l10 -10v-130zM15.5 190.5l15 -20h40l15 20zm75 -65l-15 5v35l15 15zm-80 0l15 5v35l-15 15zm65 0l15 -5v-40l-15 20zm-50 0l-15 -5v-40l15 20zm 65,-55 -15,25 c -15,-5 -35,-5 -50,0 l -15,-25 c 25,-15 55,-15 80,0 z",
+                  // constantSpeed: 60,
+                  delay: 0,
+                },
+                coords: [
+                  [2.5920703124999704, 450.66908482142856],
+                  [204.0651450892857, 453.13364955357144],
+                  [378.72844029017864, 453.13874162946433],
+                  [551.1817745535716, 456.1532505580358],
+                  [578.3734598214287, 456.91196986607144],
+                  [601.2317885044645, 458.9895368303571],
+                  [614.1503850446429, 462.1669921875],
+                  [618.99294921875, 479.68882533482144],
+                  [620.0826534598216, 513.5969587053571],
+                  [615.6932840401787, 528.7306082589286],
+                  [608.4829045758929, 533.2625558035714],
+                  [592.7127455357145, 534.9582170758929],
+                  [583.09890625, 527.5492466517858],
+                  [578.6535239955358, 516.4077845982143],
+                  [578.6535239955358, 498.36146763392856],
+                  [577.9966462053571, 477.0613141741071],
+                  [575.3691350446429, 469.1940569196429],
+                  [569.0753292410716, 462.63037109375],
+                  [553.9518638392858, 460.6444614955358],
+                  [298.10051060267864, 465.61432756696433],
+                  [193.49908761160714, 460.1759905133929],
+                  [116.40505859374997, 465.78236607142856],
+                  [3.5137360491071092, 463.47565569196433],
+                ],
+              },
+            ],
           },
         ],
       };
-      console.log(option1);
-      allInfoIntance.setOption(option1);
-    }, 500 * i);
-  }
+
+      entityInst.setOption(option);
+    });
 });
-
-// for (var i = 1; i < 13; i++) {
-
-// window.addEventListener("resize", function () {
-//   allInfoIntance.resize();
-//   allInfoIntance.setOption({
-//     series: [
-//       {
-//         id: "a",
-//         data: charts.nodes,
-//       },
-//     ],
-//   });
 // });
-
-// function getList() {
-// proxy.$modal.loading("正在加载Agent数据，请稍候！");
-
-const formatTooltip = (val) => {
-  return val / 100;
+const execTask = async () => {
+  // 因为延时函数，所以这里要加async
+  var dt = 300;
+  for (let i = 1; i < timeTables.length; i++) {
+    await sleep(dt);
+    // console.log(i * 4)
+    entityInst.setOption({
+      animationDurationUpdate: dt,
+      series: [{ data: timeTables[i] }],
+    });
+  }
+};
+const reset = () => {
+  entityInst.setOption({
+    animationDurationUpdate: 0,
+    series: [{ data: timeTables[0] }],
+  });
 };
 
-// interface Mark {
-//   style: CSSProperties
-//   label: string
-// }
-
-// type Marks = Record<number, Mark | string>
-
-const marks = {
-  0: "0",
-  20: "0.2",
-  50: {
-    style: {
-      color: "#1989FA",
-    },
-    label: "0.5",
-  },
-  80: "0.8",
-  100: "1",
+function deepClone(obj) {
+  var _obj = JSON.stringify(obj); //  对象转成字符串
+  var objClone = JSON.parse(_obj); //  字符串转成对象
+  return objClone;
+}
+const sleep = (timeout) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, timeout);
+  });
 };
-
-const onChange = (val) => {
-  console.log(val / 100);
-};
-
-const tableData = [
-  {
-    date: "80%",
-    name: "80%",
-    address: "80%",
-  },
-];
-
-// const propData = [
-//   {
-//     agentId: '集群1',
-//     agentProp: '集群1的属性',
-//   },
-//   {
-//     agentId: '集群2',
-//     agentProp: '集群2的属性',
-//   },
-//   {
-//     agentId: '集群3',
-//     agentProp: '集群3的属性',
-//   },
-// ]
 </script>
 
 <style scoped lang="scss">
-.card {
-  margin: 0px;
-}
-.card-block {
+.header {
   text-align: center;
-  border-right: solid 1px var(--el-border-color);
-  display: inline-block;
-  width: 100%;
-  box-sizing: border-box;
-  vertical-align: top;
 }
-.card-block:last-child {
-  border-right: none;
-}
-.slider-demo-block {
-  display: flex;
-  align-items: center;
-}
-.el-slider {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-.slider-demo-block .slide-text {
-  font-size: 14px;
-  color: var(--el-text-color-secondary);
-  line-height: 44px;
-  flex: 1;
-  overflow: visible;
-  text-overflow: ellipsis;
-  white-space: normal; //文本换行属性
-  margin-bottom: 0;
-}
-.slider-demo-block .slide-text + .el-slider {
-  flex: 0 0 70%;
+.content {
+  height: 800px;
 }
 </style>

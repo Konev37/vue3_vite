@@ -25,7 +25,7 @@
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaOnOff">
+      <el-form-item prop="code" v-if="captchaEnabled">
         <el-input
           v-model="loginForm.code"
           size="large"
@@ -49,7 +49,17 @@
           style="width:100%;"
           @click.prevent="handleLogin"
         >
-          <span v-if="!loading">登 录</span>
+          <span v-if="!loading">算 法 开 发 者 登 录</span>
+          <span v-else>登 录 中...</span>
+        </el-button>
+        <el-button
+          :userLoading="userLoading"
+          size="large"
+          type="primary"
+          style="width:100%; margin-left: 0px; margin-top: 10px;"
+          @click.prevent="userLogin"
+        >
+          <span v-if="!userLoading">战 场 指 挥 员 登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
         <div style="float: right;" v-if="register">
@@ -59,7 +69,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2022-now SEU-ISSC All Rights Reserved.</span>
+      <span>Copyright © 2021-2024 SEU.ISSC All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -68,8 +78,9 @@
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
+import useUserStore from '@/store/modules/user'
 
-const store = useStore();
+const userStore = useUserStore()
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 
@@ -89,8 +100,9 @@ const loginRules = {
 
 const codeUrl = ref("");
 const loading = ref(false);
+const userLoading = ref(false);
 // 验证码开关
-const captchaOnOff = ref(true);
+const captchaEnabled = ref(true);
 // 注册开关
 const register = ref(false);
 const redirect = ref(undefined);
@@ -99,7 +111,7 @@ function handleLogin() {
   proxy.$refs.loginRef.validate(valid => {
     if (valid) {
       loading.value = true;
-      // 勾选了需要记住密码设置在cookie中设置记住用户明和名命
+      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (loginForm.value.rememberMe) {
         Cookies.set("username", loginForm.value.username, { expires: 30 });
         Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 });
@@ -111,12 +123,41 @@ function handleLogin() {
         Cookies.remove("rememberMe");
       }
       // 调用action的登录方法
-      store.dispatch("Login", loginForm.value).then(() => {
+      userStore.login(loginForm.value).then(() => {
         router.push({ path: redirect.value || "/" });
       }).catch(() => {
         loading.value = false;
         // 重新获取验证码
-        if (captchaOnOff.value) {
+        if (captchaEnabled.value) {
+          getCode();
+        }
+      });
+    }
+  });
+}
+
+function userLogin() {
+  proxy.$refs.loginRef.validate(valid => {
+    if (valid) {
+      userLoading.value = true;
+      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+      if (loginForm.value.rememberMe) {
+        Cookies.set("username", loginForm.value.username, { expires: 30 });
+        Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 });
+        Cookies.set("rememberMe", loginForm.value.rememberMe, { expires: 30 });
+      } else {
+        // 否则移除
+        Cookies.remove("username");
+        Cookies.remove("password");
+        Cookies.remove("rememberMe");
+      }
+      // 调用action的登录方法
+      userStore.login(loginForm.value).then(() => {
+        router.push({ path: redirect.value || "/userIndex" });
+      }).catch(() => {
+        userLoading.value = false;
+        // 重新获取验证码
+        if (captchaEnabled.value) {
           getCode();
         }
       });
@@ -126,8 +167,8 @@ function handleLogin() {
 
 function getCode() {
   getCodeImg().then(res => {
-    captchaOnOff.value = res.captchaOnOff === undefined ? true : res.captchaOnOff;
-    if (captchaOnOff.value) {
+    captchaEnabled.value = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+    if (captchaEnabled.value) {
       codeUrl.value = "data:image/gif;base64," + res.img;
       loginForm.value.uuid = res.uuid;
     }
@@ -202,7 +243,7 @@ getCookie();
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: #000000;
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
