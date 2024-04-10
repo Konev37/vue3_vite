@@ -103,7 +103,9 @@
       <el-table :data="taskCompRateTable" class="drawerTable" stripe border>
         <el-table-column prop="taskCompRate" label="任务完成率"/>
       </el-table>
-      
+      <el-table :data="algTimeTable" class="drawerTable" stripe border>
+        <el-table-column prop="algTime" label="算法决策时间（s）"/>
+      </el-table>
     </el-drawer>
   </div>
 </template>
@@ -292,13 +294,16 @@ getGeoEntity().then((gEt) => {
       entityInst.setOption(option);
     });
 });
-
+var algRunTime = 0;
 const execTask = async () => {
   // 因为用到了 await 延时函数，所以这里要加async
   proxy.$modal.loading("正在执行算法，请稍候！");
+  const startTime = new Date().getTime();   //获取开始时间
   getGeoEntityTables().then((timeTables) => {
     console.log(timeTables);
     proxy.$modal.closeLoading();
+    const endTime = new Date().getTime();   //获取结束时间
+    algRunTime = ((endTime - startTime) / 1000).toFixed(2); //转化为秒并保留2位小数
     var dt = 300;
     for (let i = 1; i < timeTables.length; i++) {
       // await sleep(dt);
@@ -343,6 +348,7 @@ const deleteForm = reactive({
 });
 const maxTimeTable = ref([]);
 const taskCompRateTable = ref([]);
+const algTimeTable = ref([]);
 function loadData() {
   getMaxTime().then((res) => {
     maxTimeTable.value.length = 0;
@@ -354,6 +360,9 @@ function loadData() {
     var value = {taskCompRate: res * 100 + "%"};
     taskCompRateTable.value.push(value);
   });
+  algTimeTable.value.length = 0;
+  var value = {algTime: algRunTime};
+  algTimeTable.value.push(value);
 }
 
 function deepClone(obj) {
