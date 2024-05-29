@@ -145,7 +145,7 @@ import {
   getGeoEntity,
   insertEntity,
   deleteEntity,
-} from "@/api/scenario/entity";
+} from "@/api/scenario/entity_3";
 import {
   targetAssignment,
   targetExecution,
@@ -154,7 +154,7 @@ import {
   getTaskCompRate,
   getAgentsLossRate,
   editAgentsLossRate,
-} from "@/api/scenario/robot";
+} from "@/api/scenario/robot_3";
 // import svgUrl from "@/assets/images/san14.svg";
 import svgUrl from "@/assets/images/svg/ditucopy2.svg";
 // import symbol from "@/assets/icons/svg/SVG/symbol"

@@ -118,14 +118,14 @@ import {
   getGeoEntity,
   insertEntity,
   deleteEntity,
-} from "@/api/scenario/uav";
+} from "@/api/scenario/uav_1";
 import {
   targetAssignment,
   targetExecution,
   getGeoEntityTables,
   getMaxTime,
   getTaskCompRate,
-} from "@/api/scenario/robotuav";
+} from "@/api/scenario/robotuav_1";
 // import svgUrl from "@/assets/images/san14.svg";
 import svgUrl from "@/assets/images/svg/ditucopy.svg";
 // import symbol from "@/assets/icons/svg/SVG/symbol"
