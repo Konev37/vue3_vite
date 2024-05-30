@@ -145,7 +145,7 @@ import {
   getGeoEntity,
   insertEntity,
   deleteEntity,
-} from "@/api/scenario/entity_1";
+} from "@/api/scenario/entity_2";
 import {
   targetAssignment,
   targetExecution,
@@ -154,7 +154,7 @@ import {
   getTaskCompRate,
   getAgentsLossRate,
   editAgentsLossRate,
-} from "@/api/scenario/robot_1";
+} from "@/api/scenario/robot_2";
 // import svgUrl from "@/assets/images/san14.svg";
 import svgUrl from "@/assets/images/svg/ditucopy2.svg";
 // import symbol from "@/assets/icons/svg/SVG/symbol"
@@ -235,7 +235,9 @@ getGeoEntity().then((gEt) => {
                       params.value[1].toString() +
                       ")" +
                       "<br>任务大小: " +
-                      params.value[3].toString()
+                      params.value[3].toString() +
+                      "<br>到达时间: " +
+                      params.value[5].toString()
                   );
                 }
               },

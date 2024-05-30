@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询场景实体信息列表
 export function getEntity() {
   return request({
-    url: '/scenario/entity/list_2',
+    url: '/scenario/entity_2/list',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export function getEntity() {
 // 查询场景实体 geo 数组信息
 export function getGeoEntity() {
   return request({
-    url: '/scenario/entity/geoList_2',
+    url: '/scenario/entity_2/geoList',
     method: 'get'
   })
 }
@@ -19,7 +19,7 @@ export function getGeoEntity() {
 // 新增实体元素
 export function insertEntity(data) {
   return request({
-    url: '/scenario/entity/insert_2',
+    url: '/scenario/entity_2/insert',
     method: 'post',
     data: data,
   })
@@ -28,7 +28,7 @@ export function insertEntity(data) {
 // 删除实体元素
 export function deleteEntity(id) {
   return request({
-    url: '/scenario/entity/delete_2' + id,
+    url: '/scenario/entity_2/delete' + id,
     method: 'delete',
   })
 }
