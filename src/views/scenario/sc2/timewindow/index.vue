@@ -235,7 +235,11 @@ getGeoEntity().then((gEt) => {
                       params.value[1].toString() +
                       ")" +
                       "<br>任务大小: " +
-                      params.value[3].toString()
+                      params.value[3].toString() +
+                      "<br>到达时间: " +
+                      params.value[5].toString() +
+                      "<br>截止时间: " +
+                      params.value[6].toString()
                   );
                 }
               },
