@@ -40,6 +40,14 @@ export function getMaxTime() {
   })
 }
 
+// 获取任务完成收益
+export function getProfit() {
+  return request({
+    url: '/scenario/robotuav/Profit',
+    method: 'get'
+  })
+}
+
 // 获取任务完成率
 export function getTaskCompRate() {
   return request({

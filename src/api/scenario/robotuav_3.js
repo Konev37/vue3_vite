@@ -40,6 +40,14 @@ export function getMaxTime() {
   })
 }
 
+// 获取任务成本
+export function getCost() {
+  return request({
+    url: '/scenario/robotuav/Cost',
+    method: 'get'
+  })
+}
+
 // 获取任务完成率
 export function getTaskCompRate() {
   return request({

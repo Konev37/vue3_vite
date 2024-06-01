@@ -97,8 +97,8 @@
       size="10%"
       @open="loadData"
     >
-    <el-table :data="maxTimeTable" class="drawerTable" stripe border>
-        <el-table-column prop="maxTime" label="任务完成时间"/>
+    <el-table :data="CostTable" class="drawerTable" stripe border>
+        <el-table-column prop="Cost" label="任务完成成本"/>
       </el-table>
       <el-table :data="taskCompRateTable" class="drawerTable" stripe border>
         <el-table-column prop="taskCompRate" label="任务完成率"/>
@@ -124,6 +124,7 @@ import {
   targetExecution,
   getGeoEntityTables,
   getMaxTime,
+  getCost,
   getTaskCompRate,
 } from "@/api/scenario/robotuav_3";
 // import svgUrl from "@/assets/images/san14.svg";
@@ -347,13 +348,19 @@ const deleteForm = reactive({
   id: "",
 });
 const maxTimeTable = ref([]);
+const CostTable = ref([]);
 const taskCompRateTable = ref([]);
 const algTimeTable = ref([]);
 function loadData() {
-  getMaxTime().then((res) => {
-    maxTimeTable.value.length = 0;
-    var value = { maxTime: res };
-    maxTimeTable.value.push(value);
+  // getMaxTime().then((res) => {
+  //   maxTimeTable.value.length = 0;
+  //   var value = { maxTime: res };
+  //   maxTimeTable.value.push(value);
+  // });
+  getCost().then((res) => {
+    CostTable.value.length = 0;
+    var value = { Cost: res };
+    CostTable.value.push(value);
   });
   getTaskCompRate().then((res) => {
     taskCompRateTable.value.length = 0;
