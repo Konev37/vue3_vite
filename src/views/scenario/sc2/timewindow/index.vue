@@ -337,7 +337,7 @@ const execTask = async () => {
     proxy.$modal.closeLoading();
     const endTime = new Date().getTime();   //获取结束时间
     algRunTime = ((endTime - startTime) / 1000).toFixed(2); //转化为秒并保留2位小数
-    var dt = 300;
+    var dt = 800;  //动画间隔时间
     for (let i = 1; i < timeTables.length; i++) {
       // await sleep(dt);
       // console.log(i * 6)
