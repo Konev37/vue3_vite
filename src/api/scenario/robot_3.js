@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 根据顺序单品拍卖算法得到的包含任务序列的 agent 列表
 export function targetAssignment() {
   return request({
-    url: '/scenario/robot/assign',
+    url: '/scenario/robot_3/assign',
     method: 'get'
   })
 }
@@ -11,7 +11,7 @@ export function targetAssignment() {
 //得到任务执行列表
 export function targetExecution() {
   return request({
-    url: '/scenario/robot/execution',
+    url: '/scenario/robot_3/execution',
     method: 'get'
   })
 }
@@ -19,7 +19,7 @@ export function targetExecution() {
 // 得到很多前端 entity 表
 export function getEntityTables() {
   return request({
-    url: '/scenario/robot/tables',
+    url: '/scenario/robot_3/tables',
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function getEntityTables() {
 // 得到很多前端 geo 的 entity 表
 export function getGeoEntityTables() {
   return request({
-    url: '/scenario/robot/geoTables',
+    url: '/scenario/robot_3/geoTables',
     method: 'get'
   })
 }
@@ -35,7 +35,7 @@ export function getGeoEntityTables() {
 // 获取任务完成时间
 export function getMaxTime() {
   return request({
-    url: '/scenario/robot/maxTime',
+    url: '/scenario/robot_3/maxTime',
     method: 'get'
   })
 }
@@ -43,7 +43,7 @@ export function getMaxTime() {
 // 获取任务完成率
 export function getTaskCompRate() {
     return request({
-        url: '/scenario/robot/taskCompRate',
+        url: '/scenario/robot_3/taskCompRate',
         method: 'get'
     })
 }
@@ -51,7 +51,7 @@ export function getTaskCompRate() {
 // 获取智能体集群损失率
 export function getAgentsLossRate() {
     return request({
-        url: '/scenario/robot/agentsLossRate',
+        url: '/scenario/robot_3/agentsLossRate',
         method: 'get'
     })
 }
@@ -59,7 +59,7 @@ export function getAgentsLossRate() {
 // 设置智能体集群损失率
 export function editAgentsLossRate(data) {
     return request({
-        url: '/scenario/robot/setAgentsLossRate',
+        url: '/scenario/robot_3/setAgentsLossRate',
         method: 'put',
         data: data,
     })
