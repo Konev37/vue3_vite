@@ -12,7 +12,9 @@ git clone https://github.com/Konev37/vue3_vite.git
 cd vue3_vite
 
 # 安装依赖
-yarn --registry=https://registry.npmmirror.com
+#yarn --registry=https://registry.npmmirror.com
+#绕过ssl检查
+yarn install --registry=https://registry.npmmirror.com --strict-ssl=false
 
 # 启动服务
 yarn dev
